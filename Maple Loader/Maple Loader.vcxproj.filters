@@ -22,6 +22,9 @@
     <Filter Include="TCP">
       <UniqueIdentifier>{83cc88e4-7cb0-4805-aa4a-bdf7bae20c9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TCP\Utils">
+      <UniqueIdentifier>{3e8ed154-2d4a-4b3c-94b5-85826f9a1021}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h">
@@ -41,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="TCP\Pipe_Ret_T.h">
       <Filter>TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="TCP\Utils\SendByteVector.hpp">
+      <Filter>TCP\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -168,6 +168,7 @@
     <ClInclude Include="TCP\Client_Observer.h" />
     <ClInclude Include="TCP\Pipe_Ret_T.h" />
     <ClInclude Include="TCP\TCP_Client.h" />
+    <ClInclude Include="TCP\Utils\SendByteVector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

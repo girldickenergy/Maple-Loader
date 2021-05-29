@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "TCP/TCP_Client.h"
+#include "TCP/Utils/SendByteVector.hpp"
 
 TcpClient client;
 
@@ -37,10 +38,24 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	std::string msg = "[=>] mcf is living\n";
-	pipe_ret_t sendRet = client.sendMsg(msg.c_str(), msg.size());
+	// construct some unit tests.,.. writing this at 1am... been awake for 20 hours, kill me please
+	message constructOne = message();
+	constructOne.push_back(0x30); // request type -> heartbeat
+	addStringToBytes("this right here is my hwid", &constructOne);
+	addStringToBytes("this right here is my session", &constructOne);
+
+	//message constructTwo = message();
+	//constructTwo.push_back(0x01); // request type -> login
+
+	pipe_ret_t sendRet = sendBytes(&client, constructOne);
 	if (!sendRet.success)
 		std::cout << "Failed to send msg: " << sendRet.msg << std::endl;
+
+	/*std::string msg = "[=>] mcf is living\n";
+	int i = 0xFF;
+	pipe_ret_t sendRet = client.sendMsg(reinterpret_cast<char*>(i), msg.size());
+	if (!sendRet.success)
+		std::cout << "Failed to send msg: " << sendRet.msg << std::endl;*/
 
 	return 0;
 }
