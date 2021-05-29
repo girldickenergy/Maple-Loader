@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Maple Loader.cpp" />
+    <ClCompile Include="AntiDebug\Security.cpp">
+      <Filter>AntiDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="TCP\TCP_Client.cpp">
+      <Filter>TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="TCP\Client.cpp">
+      <Filter>TCP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="AntiDebug">
+      <UniqueIdentifier>{095baf3c-3c77-4807-8d8f-d850833d956e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TCP">
+      <UniqueIdentifier>{83cc88e4-7cb0-4805-aa4a-bdf7bae20c9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AntiDebug\Security.h">
+      <Filter>AntiDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="AntiDebug\xorstr.hpp">
+      <Filter>AntiDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="TCP\TCP_Client.h">
+      <Filter>TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="TCP\Client.h">
+      <Filter>TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="TCP\Client_Observer.h">
+      <Filter>TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="TCP\Pipe_Ret_T.h">
+      <Filter>TCP</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
