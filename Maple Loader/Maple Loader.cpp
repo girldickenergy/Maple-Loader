@@ -40,9 +40,11 @@ int main()
 
 	// construct some unit tests.,.. writing this at 1am... been awake for 20 hours, kill me please
 	message constructOne = message();
-	constructOne.push_back(0x30); // request type -> heartbeat
+	constructOne.push_back(0x31); // request type -> heartbeat
 	addStringToBytes("this right here is my hwid", &constructOne);
-	addStringToBytes("this right here is my session", &constructOne);
+	addStringToBytes("this right here is my username", &constructOne);
+	addStringToBytes("this right here is my password", &constructOne);
+	addStringToBytes("this right here is my ip", &constructOne);
 
 	//message constructTwo = message();
 	//constructTwo.push_back(0x01); // request type -> login
