@@ -57,7 +57,7 @@ pipe_ret_t TcpClient::connectTo(const std::string& address, int port)
 pipe_ret_t TcpClient::sendMsg(const char* msg, size_t size)
 {
 	pipe_ret_t ret;
-	int numBytesSent = send(m_sockfd, msg, size, 0);
+	int numBytesSent = send(m_sockfd, msg, size , 0);
 	if (numBytesSent < 0) { // send failed
 		ret.success = false;
 		ret.msg = strerror(errno);
