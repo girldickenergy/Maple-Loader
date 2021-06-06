@@ -62,201 +62,6 @@
     <ClCompile Include="TCP\Client.cpp">
       <Filter>TCP</Filter>
     </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_32bit.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_64bit.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_acle_header.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_aes.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_asimd.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_crc.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_neon.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_neon_header.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_pmull.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_sha1.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_sha256.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_sha3.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_sha512.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_sm3.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_arm_sm4.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_asm_mixed.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_alignas.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_alignof.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_assert.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_atomic.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_auto.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_constexpr.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_deletefn.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_enumtype.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_initializer.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_lambda.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_noexcept.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_nullptr.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_staticinit.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_sync.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx11_vartemplates.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx14.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx17.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx17_assert.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx17_exceptions.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_cxx98_exception.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_glibc.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_newlib.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_aes.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_altivec.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_power7.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_power8.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_power9.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_sha.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_ppc_vmull.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_pthreads.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_aes.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_avx.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_avx2.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_avx512.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_clmul.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_cpuid.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_rdrand.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_rdseed.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_sha.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_sse2.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_sse3.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_sse41.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_sse42.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_ssse3.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_via_aes.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_via_rng.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\TestPrograms\test_x86_via_sha.cxx">
-      <Filter>Crypto</Filter>
-    </ClCompile>
     <ClCompile Include="Crypto\3way.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
@@ -297,15 +102,6 @@
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\basecode.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\bench1.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\bench2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\bench3.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\bfinit.cpp">
@@ -378,9 +174,6 @@
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\darn.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\datatest.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\default.cpp">
@@ -635,18 +428,6 @@
     <ClCompile Include="Crypto\rdtables.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Crypto\regtest1.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\regtest2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\regtest3.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\regtest4.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
     <ClCompile Include="Crypto\rijndael.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
@@ -755,9 +536,6 @@
     <ClCompile Include="Crypto\tea.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Crypto\test.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
     <ClCompile Include="Crypto\tftables.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
@@ -777,39 +555,6 @@
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\twofish.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat0.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat1.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat3.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat4.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat5.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat6.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat7.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat8.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat9.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\validat10.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\vmac.cpp">
@@ -931,9 +676,6 @@
       <Filter>Crypto</Filter>
     </ClInclude>
     <ClInclude Include="Crypto\basecode.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\bench.h">
       <Filter>Crypto</Filter>
     </ClInclude>
     <ClInclude Include="Crypto\blake2.h">
@@ -1417,9 +1159,6 @@
       <Filter>Crypto</Filter>
     </ClInclude>
     <ClInclude Include="Crypto\twofish.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\validate.h">
       <Filter>Crypto</Filter>
     </ClInclude>
     <ClInclude Include="Crypto\vmac.h">
