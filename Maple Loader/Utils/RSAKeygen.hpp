@@ -4,6 +4,8 @@
 #include "../Crypto/osrng.h"
 #include "../Crypto/hex.h"
 #include "../Crypto/files.h"
+#include "../Crypto/pssr.h"
+#include "../Crypto/Wrapper/RSADecrypt.h"
 #include <filesystem>
 
 using CryptoPP::FileSink;
@@ -14,6 +16,7 @@ static void GenerateKey()
 	AutoSeededRandomPool rng;
 
 	InvertibleRSAFunction params;
+	params.SetPublicExponent(65537);
 	params.GenerateRandomWithKeySize(rng, 1024 * 3);
 
 	const Integer& n = params.GetModulus();
@@ -40,6 +43,83 @@ static void GenerateKey()
 	std::cout << " private.key written" << std::endl;
 	publicKey.Save(FileSink(s1.c_str(), true).Ref());
 	std::cout << " public.key written" << std::endl;
+}
+
+static void BM2()
+{
+	try {
+
+		std::string s = std::filesystem::current_path().string() + "/private.key";
+		std::string s1 = std::filesystem::current_path().string() + "/public.key";
+		AutoSeededRandomPool rng;
+
+		RSA::PrivateKey privateKey;
+		privateKey.Load(FileSource(s.c_str(), true, NULL, true).Ref());
+
+		RSA::PublicKey publicKey;
+		publicKey.Load(FileSource(s1.c_str(), true, NULL, true).Ref());
+		// Secret to protect
+
+
+// Signing      
+		RSASS<PSSR, SHA256>::Signer signer(privateKey);
+		RSASS<PSSR, SHA256>::Verifier verifier(publicKey);
+
+		// Setup
+		byte message[] = "maple.software is superior to megumi";
+		size_t messageLen = sizeof(message);
+
+		////////////////////////////////////////////////
+		// Sign and Encode
+		SecByteBlock signature(signer.MaxSignatureLength(messageLen));
+
+		size_t signatureLen = signer.SignMessageWithRecovery(rng, message,
+			messageLen, NULL, 0, signature);
+
+		// Resize now we know the true size of the signature
+		signature.resize(signatureLen);
+
+		////////////////////////////////////////////////
+		// Verify and Recover
+		SecByteBlock recovered(
+			verifier.MaxRecoverableLengthFromSignatureLength(signatureLen)
+		);
+
+		DecodingResult result = verifier.RecoverMessage(recovered, NULL,
+			0, signature, signatureLen);
+
+		if (!result.isValidCoding) {
+			throw Exception(Exception::OTHER_ERROR, "Invalid Signature");
+		}
+
+		////////////////////////////////////////////////
+		// Use recovered message
+		//  MaxSignatureLength is likely larger than messageLength
+		recovered.resize(result.messageLength);
+
+		std::cout << "Recovered plain text" << std::endl;
+
+		std::string cipher, rec;
+		cipher.resize(signature.size());
+		rec.resize(recovered.size());
+		std::memcpy(&cipher[0], &signature[0], signature.size());
+
+		std::memcpy(&rec[0], &recovered[0], rec.size());
+
+		std::cout << "plain: " << message << " | en: " << cipher << std::endl;
+		std::cout << " | rec: " << rec << std::endl;
+
+		RSADecrypt rsaD = RSADecrypt();
+		std::string r = rsaD.Decode(cipher, signature.size());
+		std::cout << std::endl << std::endl << std::endl;
+		std::cout << "output from b64 wrapper: ";
+		std::cout << r << std::endl;
+	}
+	catch (CryptoPP::Exception & e) {
+
+		std::cout << "caught ex" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
 }
 
 static void Benchmark()

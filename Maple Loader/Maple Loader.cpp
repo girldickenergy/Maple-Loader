@@ -25,8 +25,9 @@ void onDisconnection(const pipe_ret_t& ret)
 
 int main()
 {
-	GenerateKey();
-	Benchmark();
+	// uncomment to generate and test new key, if leaked!
+	//GenerateKey();
+	BM2();
 	return 0;
 	//client_observer_t observer;
 	//observer.wantedIp = "127.0.0.1";

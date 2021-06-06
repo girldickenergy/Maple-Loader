@@ -1,0 +1,23 @@
+#pragma once
+#include <string>
+#include "../base64.h"
+#include "../rsa.h"
+#include "../osrng.h"
+#include "../hex.h"
+#include "../files.h"
+#include "../pssr.h"
+
+using namespace CryptoPP;
+
+class RSADecrypt {
+
+private:
+	std::string pubKey;
+	std::string pubKeyDecoded;
+
+	void decodePubKeyBase64();
+public:
+	RSADecrypt();
+
+	std::string Decode(std::string input, int signatureLen);
+};

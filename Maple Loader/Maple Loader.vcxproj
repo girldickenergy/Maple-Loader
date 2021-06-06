@@ -122,7 +122,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;DCRYPTOPP_DISABLE_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -322,6 +322,7 @@
     <ClCompile Include="Crypto\vmac.cpp" />
     <ClCompile Include="Crypto\wake.cpp" />
     <ClCompile Include="Crypto\whrlpool.cpp" />
+    <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp" />
     <ClCompile Include="Crypto\xed25519.cpp" />
     <ClCompile Include="Crypto\xtr.cpp" />
     <ClCompile Include="Crypto\xtrcrypt.cpp" />
@@ -537,6 +538,7 @@
     <ClInclude Include="Crypto\wake.h" />
     <ClInclude Include="Crypto\whrlpool.h" />
     <ClInclude Include="Crypto\words.h" />
+    <ClInclude Include="Crypto\Wrapper\RSADecrypt.h" />
     <ClInclude Include="Crypto\xed25519.h" />
     <ClInclude Include="Crypto\xtr.h" />
     <ClInclude Include="Crypto\xtrcrypt.h" />

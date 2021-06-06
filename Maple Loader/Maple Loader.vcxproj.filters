@@ -587,6 +587,9 @@
     <ClCompile Include="Crypto\zlib.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
+    <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp">
+      <Filter>Crypto\Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AntiDebug">
@@ -603,6 +606,9 @@
     </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{3d364ecb-0e1d-45ff-978e-ef958d871c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crypto\Wrapper">
+      <UniqueIdentifier>{eac0d85d-5dc6-494d-8297-bd5c323881e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1196,6 +1202,9 @@
     </ClInclude>
     <ClInclude Include="Utils\RSAKeygen.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\Wrapper\RSADecrypt.h">
+      <Filter>Crypto\Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
