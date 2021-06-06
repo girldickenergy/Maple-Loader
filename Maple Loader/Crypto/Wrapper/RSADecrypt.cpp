@@ -40,9 +40,6 @@ std::string RSADecrypt::Decode(std::string input, int signatureLen)
 		throw Exception(Exception::OTHER_ERROR, "Invalid Signature");
 	}
 
-	////////////////////////////////////////////////
-	// Use recovered message
-	//  MaxSignatureLength is likely larger than messageLength
 	recovered.resize(result.messageLength);
 
 	std::string rec;
