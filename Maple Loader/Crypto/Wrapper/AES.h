@@ -13,7 +13,8 @@
 #include "../pssr.h"
 #include "../modes.h"
 
-using genBytes = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned char>;
+//had to change unsigned char to unsigned long, otherwise it wouldn't compile. no idea how it compiled before, feel free to tell me why!
+using genBytes = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned long>;
 
 class AES {
 private:

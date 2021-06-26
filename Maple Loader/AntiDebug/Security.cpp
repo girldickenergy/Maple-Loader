@@ -1,5 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <Windows.h>
 #include "security.h"
 #include <cstdio>
@@ -104,7 +102,7 @@ int security::internal::memory::check_window_name() {
 	const wchar_t* names[4] = { get_string(0), get_string(1), get_string(2), get_string(3) };
 
 	for (const wchar_t* name : names) {
-		if (FindWindow(utf16ToUTF8(name).c_str(), 0)) { return security::internal::debug_results::find_window; }
+		if (FindWindowA(utf16ToUTF8(name).c_str(), 0)) { return security::internal::debug_results::find_window; }
 	}
 
 	return security::internal::debug_results::none;
@@ -210,7 +208,7 @@ int security::internal::memory::debug_active_process() {
 	std::string args = stream.str();
 
 	const char* cp_id = args.c_str();
-	CreateMutex(NULL, FALSE, utf16ToUTF8(get_string(5)).c_str());
+	CreateMutexA(NULL, FALSE, utf16ToUTF8(get_string(5)).c_str());
 	if (GetLastError() != ERROR_SUCCESS)
 	{
 		//if we get here, we're in the child process
@@ -314,7 +312,7 @@ int security::internal::memory::write_buffer() {
 	}
 
 	//make some calls where a buffer *can* be written to, but isn't actually edited because we pass invalid parameters	
-	if (GlobalGetAtomName(INVALID_ATOM, (LPTSTR)buffer, 1) != FALSE || GetEnvironmentVariable(utf16ToUTF8(get_string(6)).c_str(), (LPSTR)buffer, 4096 * 4096) != FALSE || GetBinaryType(utf16ToUTF8(get_string(7)).c_str(), (LPDWORD)buffer) != FALSE
+	if (GlobalGetAtomName(INVALID_ATOM, (LPTSTR)buffer, 1) != FALSE || GetEnvironmentVariableA(utf16ToUTF8(get_string(6)).c_str(), (LPSTR)buffer, 4096 * 4096) != FALSE || GetBinaryTypeA(utf16ToUTF8(get_string(7)).c_str(), (LPDWORD)buffer) != FALSE
 		|| HeapQueryInformation(0, (HEAP_INFORMATION_CLASS)69, buffer, 4096, NULL) != FALSE || ReadProcessMemory(INVALID_HANDLE_VALUE, (LPCVOID)0x69696969, buffer, 4096, NULL) != FALSE
 		|| GetThreadContext(INVALID_HANDLE_VALUE, (LPCONTEXT)buffer) != FALSE || GetWriteWatch(0, &security::internal::memory::write_buffer, 0, NULL, NULL, (PULONG)buffer) == 0) {
 		result = false;
@@ -612,26 +610,26 @@ int security::internal::virtualization::check_cpuid() {
 
 int security::internal::virtualization::check_registry() {
 	HKEY h_key = 0;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, xor ("HARDWARE\\ACPI\\DSDT\\VBOX__"), 0, KEY_READ, &h_key) == ERROR_SUCCESS) { return security::internal::debug_results::check_registry; }
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, xor ("HARDWARE\\ACPI\\DSDT\\VBOX__"), 0, KEY_READ, &h_key) == ERROR_SUCCESS) { return security::internal::debug_results::check_registry; }
 
 	return security::internal::debug_results::none;
 }
 
 int security::internal::virtualization::vm() {
-	if (CreateFile(xor ("\\\\.\\VBoxMiniRdrDN"), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0, OPEN_EXISTING, 0, 0) != INVALID_HANDLE_VALUE) { return security::internal::debug_results::vm; }
+	if (CreateFileA(xor ("\\\\.\\VBoxMiniRdrDN"), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0, OPEN_EXISTING, 0, 0) != INVALID_HANDLE_VALUE) { return security::internal::debug_results::vm; }
 
-	if (LoadLibrary(xor ("VBoxHook.dll"))) { return security::internal::debug_results::vm; }
+	if (LoadLibraryA(xor ("VBoxHook.dll"))) { return security::internal::debug_results::vm; }
 
 	HKEY h_key = 0;
-	if ((ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, xor ("SOFTWARE\\Oracle\\VirtualBox Guest Additions"), 0, KEY_READ, &h_key)) && h_key) { RegCloseKey(h_key); return security::internal::debug_results::vm; }
+	if ((ERROR_SUCCESS == RegOpenKeyExA(HKEY_LOCAL_MACHINE, xor ("SOFTWARE\\Oracle\\VirtualBox Guest Additions"), 0, KEY_READ, &h_key)) && h_key) { RegCloseKey(h_key); return security::internal::debug_results::vm; }
 
 	h_key = 0;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, xor ("HARDWARE\\DESCRIPTION\\System"), 0, KEY_READ, &h_key) == ERROR_SUCCESS)
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, xor ("HARDWARE\\DESCRIPTION\\System"), 0, KEY_READ, &h_key) == ERROR_SUCCESS)
 	{
 		unsigned long type = 0;
 		unsigned long size = 0x100;
 		char* systembiosversion = (char*)LocalAlloc(LMEM_ZEROINIT, size + 10);
-		if (ERROR_SUCCESS == RegQueryValueEx(h_key, xor ("SystemBiosVersion"), 0, &type, (unsigned char*)systembiosversion, &size))
+		if (ERROR_SUCCESS == RegQueryValueExA(h_key, xor ("SystemBiosVersion"), 0, &type, (unsigned char*)systembiosversion, &size))
 		{
 			to_lower((unsigned char*)systembiosversion);
 			if (type == REG_SZ || type == REG_MULTI_SZ)
@@ -647,7 +645,7 @@ int security::internal::virtualization::vm() {
 		type = 0;
 		size = 0x200;
 		char* videobiosversion = (char*)LocalAlloc(LMEM_ZEROINIT, size + 10);
-		if (ERROR_SUCCESS == RegQueryValueEx(h_key, xor ("VideoBiosVersion"), 0, &type, (unsigned char*)videobiosversion, &size))
+		if (ERROR_SUCCESS == RegQueryValueExA(h_key, xor ("VideoBiosVersion"), 0, &type, (unsigned char*)videobiosversion, &size))
 		{
 			if (type == REG_MULTI_SZ)
 			{
@@ -664,7 +662,7 @@ int security::internal::virtualization::vm() {
 		RegCloseKey(h_key);
 	}
 
-	HANDLE h = CreateFile(xor ("\\\\.\\pipe\\VBoxTrayIPC"), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
+	HANDLE h = CreateFileA(xor ("\\\\.\\pipe\\VBoxTrayIPC"), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
 	if (h != INVALID_HANDLE_VALUE) { CloseHandle(h); return security::internal::debug_results::vm; }
 
 	unsigned long pnsize = 0x1000;
@@ -676,7 +674,7 @@ int security::internal::virtualization::vm() {
 	const char* s_subkey = xor ("SYSTEM\\CurrentControlSet\\Enum\\IDE");
 	wchar_t w_subkey[22];
 	mbstowcs(w_subkey, s_subkey, strlen(s_subkey) + 1);
-	if ((ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, utf16ToUTF8(w_subkey).c_str(), 0, KEY_READ, &h_key)) && h_key)
+	if ((ERROR_SUCCESS == RegOpenKeyExA(HKEY_LOCAL_MACHINE, utf16ToUTF8(w_subkey).c_str(), 0, KEY_READ, &h_key)) && h_key)
 	{
 		unsigned long n_subkeys = 0;
 		unsigned long max_subkey_length = 0;
@@ -711,7 +709,7 @@ int security::internal::virtualization::vm() {
 								{
 									unsigned long size = 0xFFF;
 									unsigned char value_name[0x1000] = { 0 };
-									if (RegQueryValueEx(h_new_key, xor ("FriendlyName"), 0, 0, value_name, &size) == ERROR_SUCCESS) { to_lower(value_name); if (strstr((char*)value_name, xor ("vbox"))) { return security::internal::debug_results::vm; } }
+									if (RegQueryValueExA(h_new_key, xor ("FriendlyName"), 0, 0, value_name, &size) == ERROR_SUCCESS) { to_lower(value_name); if (strstr((char*)value_name, xor ("vbox"))) { return security::internal::debug_results::vm; } }
 									RegCloseKey(HKKK);
 								}
 							}

@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{0AE54478-1AF6-4CD9-B9E7-2201C8EE6240}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e152963c-f233-493c-9b06-b803878b2792}</ProjectGuid>
     <RootNamespace>MapleLoader</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -30,7 +30,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -73,80 +73,71 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -322,6 +313,7 @@
     <ClCompile Include="Crypto\vmac.cpp" />
     <ClCompile Include="Crypto\wake.cpp" />
     <ClCompile Include="Crypto\whrlpool.cpp" />
+    <ClCompile Include="Crypto\Wrapper\AES.cpp" />
     <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp" />
     <ClCompile Include="Crypto\xed25519.cpp" />
     <ClCompile Include="Crypto\xtr.cpp" />
@@ -333,25 +325,14 @@
     <ClCompile Include="Maple Loader.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Crypto\adhoc.cpp.proto" />
-    <None Include="Crypto\aes_armv4.S" />
-    <None Include="Crypto\bds10.zip" />
-    <None Include="Crypto\Doxyfile" />
-    <None Include="Crypto\GNUmakefile" />
-    <None Include="Crypto\GNUmakefile-cross" />
-    <None Include="Crypto\rdrand.asm" />
-    <None Include="Crypto\rdseed.asm" />
-    <None Include="Crypto\sha1_armv4.S" />
-    <None Include="Crypto\sha256_armv4.S" />
-    <None Include="Crypto\sha512_armv4.S" />
-    <None Include="Crypto\TestData\defdmac1.bin" />
-    <None Include="Crypto\TestData\defdmac2.bin" />
-    <None Include="Crypto\vs2005.zip" />
-    <None Include="Crypto\x64dll.asm" />
-    <None Include="Crypto\x64masm.asm" />
-    <None Include="README.md" />
+    <ClCompile Include="UI\ImGui\imgui.cpp" />
+    <ClCompile Include="UI\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="UI\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="UI\ImGui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="UI\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="UI\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="UI\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="UI\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h" />
@@ -538,6 +519,7 @@
     <ClInclude Include="Crypto\wake.h" />
     <ClInclude Include="Crypto\whrlpool.h" />
     <ClInclude Include="Crypto\words.h" />
+    <ClInclude Include="Crypto\Wrapper\AES.h" />
     <ClInclude Include="Crypto\Wrapper\RSADecrypt.h" />
     <ClInclude Include="Crypto\xed25519.h" />
     <ClInclude Include="Crypto\xtr.h" />
@@ -546,12 +528,47 @@
     <ClInclude Include="Crypto\zdeflate.h" />
     <ClInclude Include="Crypto\zinflate.h" />
     <ClInclude Include="Crypto\zlib.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="TCP\Client.h" />
     <ClInclude Include="TCP\Client_Observer.h" />
     <ClInclude Include="TCP\Pipe_Ret_T.h" />
     <ClInclude Include="TCP\TCP_Client.h" />
     <ClInclude Include="TCP\Utils\SendByteVector.hpp" />
+    <ClInclude Include="UI\Fonts.h" />
+    <ClInclude Include="UI\ImGui\imconfig.h" />
+    <ClInclude Include="UI\ImGui\imgui.h" />
+    <ClInclude Include="UI\ImGui\imgui_impl_dx9.h" />
+    <ClInclude Include="UI\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="UI\ImGui\imgui_internal.h" />
+    <ClInclude Include="UI\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="UI\ImGui\imstb_textedit.h" />
+    <ClInclude Include="UI\ImGui\imstb_truetype.h" />
+    <ClInclude Include="UI\StyleProvider.h" />
+    <ClInclude Include="UI\UI.h" />
+    <ClInclude Include="Utils\HWID.h" />
     <ClInclude Include="Utils\RSAKeygen.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Maple Loader.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\loaderIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Crypto\adhoc.cpp.proto" />
+    <None Include="Crypto\aes_armv4.S" />
+    <None Include="Crypto\bds10.zip" />
+    <None Include="Crypto\Doxyfile" />
+    <None Include="Crypto\GNUmakefile" />
+    <None Include="Crypto\GNUmakefile-cross" />
+    <None Include="Crypto\rdrand.asm" />
+    <None Include="Crypto\rdseed.asm" />
+    <None Include="Crypto\sha1_armv4.S" />
+    <None Include="Crypto\sha256_armv4.S" />
+    <None Include="Crypto\sha512_armv4.S" />
+    <None Include="Crypto\vs2005.zip" />
+    <None Include="Crypto\x64dll.asm" />
+    <None Include="Crypto\x64masm.asm" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Crypto\Filelist.txt" />

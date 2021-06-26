@@ -80,7 +80,7 @@ std::string AES::Decrypt(std::string input)
 
 	try
 	{
-		CBC_Mode< AES >::Decryption d;
+		CBC_Mode< CryptoPP::AES >::Decryption d;
 		d.SetKeyWithIV(key, key.size(), iv);
 
 		StringSource s(input, true,
