@@ -552,7 +552,7 @@
     <ResourceCompile Include="Maple Loader.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\loaderIcon.ico" />
+    <Image Include="loaderIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Crypto\adhoc.cpp.proto" />
