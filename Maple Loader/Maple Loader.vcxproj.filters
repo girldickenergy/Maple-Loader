@@ -590,6 +590,9 @@
     <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp">
       <Filter>Crypto\Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\StringUtilities.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="AntiDebug">
