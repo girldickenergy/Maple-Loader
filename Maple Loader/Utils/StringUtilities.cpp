@@ -1,16 +1,37 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include <string.h>
 #include <stdlib.h>
 #include <regex>
 
-static std::vector<std::string> Split(std::string input, char delimiter)
+static std::vector<std::string> Split(const std::string str, const std::regex re)
 {
-	std::vector<std::string> ret = std::vector<std::string>();
-	int init_size = strlen(input.c_str());
+	const std::sregex_token_iterator it{
+		str.begin(),
+		str.end(), re, -1
+	};
+	std::vector<std::string> tokenized{it, {}};
 
-	char* ptr = strtok(_strdup(input.c_str()), &delimiter);
+	tokenized.erase(
+		std::remove_if(tokenized.begin(),
+		               tokenized.end(),
+		               [](const std::string& s)
+		               {
+			               return s.size() == 0;
+		               }),
+		tokenized.end());
+
+	return tokenized;
+}
+
+static std::vector<std::string> Split(const std::string str, char delimiter)
+{
+	auto ret = std::vector<std::string>();
+	int init_size = strlen(str.c_str());
+
+	char* ptr = strtok(_strdup(str.c_str()), &delimiter);
 
 	while (ptr != nullptr)
 	{

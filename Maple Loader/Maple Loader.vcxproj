@@ -333,6 +333,7 @@
     <ClCompile Include="Maple Loader.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
+    <ClCompile Include="Utils\StringUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Crypto\adhoc.cpp.proto" />

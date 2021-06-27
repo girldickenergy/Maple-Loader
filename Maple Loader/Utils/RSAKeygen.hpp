@@ -110,7 +110,7 @@ static void BM2()
 		std::cout << " | rec: " << rec << std::endl;
 
 		RSADecrypt rsaD = RSADecrypt();
-		std::string r = rsaD.Decode(cipher, signature.size());
+		std::string r = /*rsaD.Decode(cipher, signature.size())*/"x";
 		std::cout << std::endl << std::endl << std::endl;
 		std::cout << "output from b64 wrapper: ";
 		std::cout << r << std::endl;
