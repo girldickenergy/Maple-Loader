@@ -10,6 +10,8 @@ static inline RSADecrypt* RSAA = new RSADecrypt();
 
 void onIncomingMsg(const char* msg, size_t size)
 {
+	//TODO: add filtering and handler
+	// IF HEARTBEAT
 	const std::regex re(R"(0xdeadbeef)");
 	const std::vector<std::string> tokenized = Split(std::string(msg, size), re);
 
