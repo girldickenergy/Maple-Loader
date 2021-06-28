@@ -1,5 +1,6 @@
-#pragma once
 #include "RSADecrypt.h"
+
+using namespace CryptoPP;
 
 void RSADecrypt::decodePubKeyBase64()
 {
@@ -21,7 +22,7 @@ RSADecrypt::RSADecrypt() {
 	RSADecrypt::decodePubKeyBase64();
 }
 
-std::string RSADecrypt::Decode(std::string input, int signatureLen)
+std::vector<unsigned char> RSADecrypt::Decode(std::vector<unsigned char> input, int signatureLen)
 {
 	RSA::PublicKey publicKey;
 	publicKey.Load(StringSource(RSADecrypt::pubKeyDecoded, true).Ref());
@@ -42,7 +43,7 @@ std::string RSADecrypt::Decode(std::string input, int signatureLen)
 
 	recovered.resize(result.messageLength);
 
-	std::string rec;
+	std::vector<unsigned char> rec;
 	rec.resize(recovered.size());
 	std::memcpy(&rec[0], &recovered[0], rec.size());
 

@@ -1,17 +1,20 @@
 ﻿#define _WINSOCKAPI_
 #include <windows.h>
 
-#include "AntiDebug/security.h"
 #include "AntiDebug/xorstr.hpp"
 #include "TCP/TCP_Client.h"
+#include "Crypto/Wrapper/RSADecrypt.h"
+#include "TCP/Utils/SendByteVector.hpp"
 
 #include "UI/UI.h"
 #include "UI/ImGui/imgui_impl_dx9.h"
 #include "UI/ImGui/imgui_impl_win32.h"
 #include "UI/StyleProvider.h"
 #include "Utils/HWID.h"
+#include "Utils/StringUtilities.cpp"
 
 TcpClient client;
+static inline RSADecrypt* RSAA = new RSADecrypt();
 
 static inline int dragOffsetX = 0;
 static inline int dragOffsetY = 0;
@@ -129,8 +132,21 @@ bool DrawMenu()
 				ImGui::Spacing();
 
 				ImGui::SetCursorPosX(loginAreaSize.x / 2 - 50);
-				if (ImGui::Button(xor("Login"), ImVec2(100, ImGui::GetFrameHeight())))
+				if (ImGui::Button(xor ("Login"), ImVec2(100, ImGui::GetFrameHeight())))
+				{
+					//construct login packet here later =w=
+					std::string hwid = HWID::GetHWID();
+					if (hwid.empty())
+					{
+						MessageBoxA(UI::Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+						return 0;
+					}
+
+					MessageBoxA(UI::Window, xor (hwid.c_str()), xor ("Your HWID"), MB_OK);
+					
 					loggedIn = true;
+				}
 
 				ImGui::PopFont();
 			}
@@ -203,10 +219,24 @@ bool DrawMenu()
 
 void OnIncomingMessage(const char* msg, size_t size)
 {
-	char text[256] = "A message from the server: ";
+	/*char text[256] = "A message from the server: ";
 	strcat(text, msg);
 	
-	MessageBoxA(UI::Window, xor (text), xor ("Maple Loader"), MB_OK);
+	MessageBoxA(UI::Window, xor (text), xor ("Maple Loader"), MB_OK);*/
+
+	//TODO: add filtering and handler
+	// IF HEARTBEAT
+	const std::regex re(R"(0xdeadbeef)");
+	const std::vector<std::string> tokenized = Split(std::string(msg, size), re);
+
+	std::vector<unsigned char> encrypted = std::vector<unsigned char>();
+	for (const auto& byte : tokenized[1])
+		encrypted.push_back(byte);
+
+	encrypted.erase(encrypted.begin());
+
+	std::vector<unsigned char> s = RSAA->Decode(encrypted, std::stoi(tokenized[0]));
+	//std::cout << "Got msg from server: " << s << std::endl;
 }
 
 void OnDisconnection(const pipe_ret_t& ret)
@@ -225,7 +255,7 @@ bool ConnectToServer()
 	observer.disconnected_func = OnDisconnection;
 	client.subscribe(observer);
 
-	pipe_ret_t connectRet = client.connectTo("195.58.39.35", 9999);
+	pipe_ret_t connectRet = client.connectTo("127.0.0.1", 9999);
 	if (connectRet.success)
 		return true;
 
@@ -234,23 +264,17 @@ bool ConnectToServer()
 
 int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int show_cmd)
 {
-	if (false/*!ConnectToServer()*/)
+	#ifdef _DEBUG
+		AllocConsole();
+		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+	#endif
+	
+	if (!ConnectToServer())
 	{
 		MessageBoxA(UI::Window, xor ("Failed to connect to server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
 		return 0;
 	}
-
-	//construct login packet here later =w=
-	std::string hwid = HWID::GetHWID();
-	if (hwid.empty())
-	{
-		MessageBoxA(UI::Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-
-		return 0;
-	}
-
-	MessageBoxA(UI::Window, xor (hwid.c_str()), xor ("Your HWID"), MB_OK);
 	
 	if (!UI::Initialize(inst, show_cmd))
 	{

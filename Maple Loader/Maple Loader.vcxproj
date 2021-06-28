@@ -333,6 +333,7 @@
     <ClCompile Include="UI\ImGui\imgui_tables.cpp" />
     <ClCompile Include="UI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="UI\UI.cpp" />
+    <ClCompile Include="Utils\StringUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h" />

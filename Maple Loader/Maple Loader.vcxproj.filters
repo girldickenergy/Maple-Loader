@@ -566,6 +566,9 @@
     <ClCompile Include="Crypto\adler32.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\StringUtilities.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -1233,7 +1236,7 @@
     <ResourceCompile Include="Maple Loader.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\loaderIcon.ico" />
+    <Image Include="loaderIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Crypto\aes_armv4.S">

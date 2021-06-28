@@ -7,8 +7,6 @@
 #include "../files.h"
 #include "../pssr.h"
 
-using namespace CryptoPP;
-
 class RSADecrypt {
 
 private:
@@ -19,5 +17,5 @@ private:
 public:
 	RSADecrypt();
 
-	std::string Decode(std::string input, int signatureLen);
+	std::vector<unsigned char> Decode(std::vector<unsigned char> input, int signatureLen);
 };
