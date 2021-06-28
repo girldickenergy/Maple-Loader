@@ -32,7 +32,7 @@ std::vector<unsigned char> RSADecrypt::Decode(std::vector<unsigned char> input, 
 		verifier.MaxRecoverableLengthFromSignatureLength(signatureLen)
 	);
 
-	SecByteBlock signature((const byte*)input.data(), input.size());
+	SecByteBlock signature(input.data(), input.size());
 
 	DecodingResult result = verifier.RecoverMessage(recovered, NULL,
 		0, signature, signatureLen);
