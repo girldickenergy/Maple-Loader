@@ -7,8 +7,6 @@
 #include "../files.h"
 #include "../pssr.h"
 
-using namespace CryptoPP;
-
 class RSADecrypt {
 
 private:

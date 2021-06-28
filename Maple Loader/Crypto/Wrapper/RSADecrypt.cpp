@@ -1,5 +1,6 @@
-#pragma once
 #include "RSADecrypt.h"
+
+using namespace CryptoPP;
 
 void RSADecrypt::decodePubKeyBase64()
 {

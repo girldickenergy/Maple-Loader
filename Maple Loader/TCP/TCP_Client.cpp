@@ -1,6 +1,8 @@
 #pragma once
 #include "TCP_Client.h"
 
+#pragma warning(disable : 4996)
+
 pipe_ret_t TcpClient::connectTo(const std::string& address, int port)
 {
 	m_sockfd = 0;

@@ -12,15 +12,15 @@ static std::vector<std::string> Split(const std::string str, const std::regex re
 		str.begin(),
 		str.end(), re, -1
 	};
-	std::vector<std::string> tokenized{it, {}};
+	std::vector<std::string> tokenized{ it, {} };
 
 	tokenized.erase(
 		std::remove_if(tokenized.begin(),
-		               tokenized.end(),
-		               [](const std::string& s)
-		               {
-			               return s.size() == 0;
-		               }),
+			tokenized.end(),
+			[](const std::string& s)
+			{
+				return s.size() == 0;
+			}),
 		tokenized.end());
 
 	return tokenized;

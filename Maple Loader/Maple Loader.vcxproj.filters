@@ -1,58 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <None Include="README.md" />
-    <None Include="Crypto\adhoc.cpp.proto">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\aes_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\bds10.zip">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\Doxyfile">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\GNUmakefile">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\GNUmakefile-cross">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\rdrand.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\rdseed.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\sha1_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\sha256_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\sha512_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\vs2005.zip">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\x64dll.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\x64masm.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\TestData\defdmac1.bin">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\TestData\defdmac2.bin">
-      <Filter>Crypto</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Maple Loader.cpp" />
+    <ClCompile Include="UI\UI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui_impl_win32.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui_tables.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui_widgets.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui_demo.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui_draw.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ImGui\imgui_impl_dx9.cpp">
+      <Filter>UI\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="AntiDebug\Security.cpp">
       <Filter>AntiDebug</Filter>
     </ClCompile>
@@ -62,11 +35,11 @@
     <ClCompile Include="TCP\Client.cpp">
       <Filter>TCP</Filter>
     </ClCompile>
-    <ClCompile Include="Crypto\3way.cpp">
-      <Filter>Crypto</Filter>
+    <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp">
+      <Filter>Crypto\Wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="Crypto\adler32.cpp">
-      <Filter>Crypto</Filter>
+    <ClCompile Include="Crypto\Wrapper\AES.cpp">
+      <Filter>Crypto\Wrapper</Filter>
     </ClCompile>
     <ClCompile Include="Crypto\algebra.cpp">
       <Filter>Crypto</Filter>
@@ -587,45 +560,85 @@
     <ClCompile Include="Crypto\zlib.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp">
-      <Filter>Crypto\Wrapper</Filter>
+    <ClCompile Include="Crypto\3way.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\adler32.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\StringUtilities.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils\StringUtilities.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="UI">
+      <UniqueIdentifier>{14a0aae5-7965-4e39-b54d-f012d6ccdd31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\ImGui">
+      <UniqueIdentifier>{ddc22103-d61b-4bd3-96ca-4eea4dc42908}</UniqueIdentifier>
+    </Filter>
     <Filter Include="AntiDebug">
-      <UniqueIdentifier>{095baf3c-3c77-4807-8d8f-d850833d956e}</UniqueIdentifier>
+      <UniqueIdentifier>{81726de9-fa66-49ee-b1a2-0047d8d9de33}</UniqueIdentifier>
     </Filter>
     <Filter Include="TCP">
-      <UniqueIdentifier>{83cc88e4-7cb0-4805-aa4a-bdf7bae20c9f}</UniqueIdentifier>
+      <UniqueIdentifier>{a9192820-5ba8-4a46-9e15-2fedc5b9ec12}</UniqueIdentifier>
     </Filter>
     <Filter Include="TCP\Utils">
-      <UniqueIdentifier>{3e8ed154-2d4a-4b3c-94b5-85826f9a1021}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Crypto">
-      <UniqueIdentifier>{9762bba0-d725-458b-82b2-a71d1a98697c}</UniqueIdentifier>
+      <UniqueIdentifier>{3f2196f1-ef0a-45a2-8acd-cced74250b64}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils">
-      <UniqueIdentifier>{3d364ecb-0e1d-45ff-978e-ef958d871c1d}</UniqueIdentifier>
+      <UniqueIdentifier>{41fe62f5-5ac5-4718-bb91-9d75172b7600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{63eb04b0-a15c-416c-94bf-2cc8937dbf6b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Crypto\Wrapper">
-      <UniqueIdentifier>{eac0d85d-5dc6-494d-8297-bd5c323881e6}</UniqueIdentifier>
+      <UniqueIdentifier>{0bc33171-ccbf-4807-915b-f9dcb890f100}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UI\UI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Fonts.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imgui_impl_win32.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imgui_internal.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imstb_rectpack.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imstb_textedit.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imstb_truetype.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imconfig.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imgui.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ImGui\imgui_impl_dx9.h">
+      <Filter>UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="AntiDebug\Security.h">
       <Filter>AntiDebug</Filter>
     </ClInclude>
     <ClInclude Include="AntiDebug\xorstr.hpp">
       <Filter>AntiDebug</Filter>
     </ClInclude>
-    <ClInclude Include="TCP\TCP_Client.h">
-      <Filter>TCP</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\Client.h">
-      <Filter>TCP</Filter>
+    <ClInclude Include="TCP\Utils\SendByteVector.hpp">
+      <Filter>TCP\Utils</Filter>
     </ClInclude>
     <ClInclude Include="TCP\Client_Observer.h">
       <Filter>TCP</Filter>
@@ -633,20 +646,20 @@
     <ClInclude Include="TCP\Pipe_Ret_T.h">
       <Filter>TCP</Filter>
     </ClInclude>
-    <ClInclude Include="TCP\Utils\SendByteVector.hpp">
-      <Filter>TCP\Utils</Filter>
+    <ClInclude Include="TCP\TCP_Client.h">
+      <Filter>TCP</Filter>
     </ClInclude>
-    <ClInclude Include="Crypto\3way.h">
-      <Filter>Crypto</Filter>
+    <ClInclude Include="TCP\Client.h">
+      <Filter>TCP</Filter>
     </ClInclude>
-    <ClInclude Include="Crypto\adler32.h">
-      <Filter>Crypto</Filter>
+    <ClInclude Include="Utils\RSAKeygen.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Crypto\adv_simd.h">
-      <Filter>Crypto</Filter>
+    <ClInclude Include="Crypto\Wrapper\RSADecrypt.h">
+      <Filter>Crypto\Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="Crypto\aes.h">
-      <Filter>Crypto</Filter>
+    <ClInclude Include="Crypto\Wrapper\AES.h">
+      <Filter>Crypto\Wrapper</Filter>
     </ClInclude>
     <ClInclude Include="Crypto\aes_armv4.h">
       <Filter>Crypto</Filter>
@@ -1203,12 +1216,74 @@
     <ClInclude Include="Crypto\zlib.h">
       <Filter>Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\RSAKeygen.hpp">
+    <ClInclude Include="Crypto\3way.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\adler32.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\adv_simd.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\aes.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\StyleProvider.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\HWID.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Crypto\Wrapper\RSADecrypt.h">
-      <Filter>Crypto\Wrapper</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Maple Loader.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="loaderIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Crypto\aes_armv4.S">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\bds10.zip">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\Doxyfile">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\GNUmakefile">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\GNUmakefile-cross">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\rdrand.asm">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\rdseed.asm">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\sha1_armv4.S">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\sha256_armv4.S">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\sha512_armv4.S">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\vs2005.zip">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\x64dll.asm">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\x64masm.asm">
+      <Filter>Crypto</Filter>
+    </None>
+    <None Include="Crypto\adhoc.cpp.proto">
+      <Filter>Crypto</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Crypto\Filelist.txt">
