@@ -322,6 +322,7 @@
     <ClCompile Include="Crypto\zdeflate.cpp" />
     <ClCompile Include="Crypto\zinflate.cpp" />
     <ClCompile Include="Crypto\zlib.cpp" />
+    <ClCompile Include="Macros.cpp" />
     <ClCompile Include="Maple Loader.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />

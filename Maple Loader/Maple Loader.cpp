@@ -14,7 +14,7 @@
 #include "Utils/StringUtilities.cpp"
 
 TcpClient client;
-static inline RSADecrypt* RSAA = new RSADecrypt();
+static inline RSADecrypt* Rsa = new RSADecrypt();
 
 static inline int dragOffsetX = 0;
 static inline int dragOffsetY = 0;
@@ -229,9 +229,13 @@ void OnIncomingMessage(const char* msg, size_t size)
 	const std::regex re(R"(0xdeadbeef)");
 	const std::vector<std::string> tokenized = Split(std::string(msg, size), re);
 
-	std::vector<unsigned char> encrypted = std::vector<unsigned char>();
-	for (const auto& byte : tokenized[1])
-		encrypted.push_back(byte);
+	switch (type /*Packet Identifier*/)
+	{
+	case 0xA0 /*Heartbeat*/:
+		{
+			auto encrypted = std::vector<unsigned char>();
+			for (const auto& byte : splitString[2] /*Encrypted Stream*/)
+				encrypted.push_back(byte);
 
 	encrypted.erase(encrypted.begin());
 
