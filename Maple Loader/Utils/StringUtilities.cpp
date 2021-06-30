@@ -6,8 +6,9 @@
 #include <stdlib.h>
 #include <regex>
 
-static std::vector<std::string> Split(const std::string str, const std::regex re)
+static std::vector<std::string> Split(const std::string str)
 {
+	const std::regex re(R"(0xdeadbeef)");
 	const std::sregex_token_iterator it{
 		str.begin(),
 		str.end(), re, -1
