@@ -149,7 +149,7 @@ bool DrawMenu()
 
 					// Construct Login Packet
 					std::vector<unsigned char> packet = std::vector<unsigned char>();
-					auto loginMsg = message();
+					auto loginMsg = std::vector<unsigned char>();
 					loginMsg.push_back(0xF3); // 0xF3 -> Login identifier
 
 					for (const auto& c : "0xdeadbeef")
@@ -166,10 +166,18 @@ bool DrawMenu()
 						packet.push_back(c);
 
 					std::vector<unsigned char> encrypted = mClient->aes->Encrypt(packet);
+
+					for (const auto& c : "0xdeadbeef")
+						loginMsg.push_back(c);
+					for (const auto& c : std::to_string(encrypted.size()))
+						loginMsg.push_back(c);
+					for (const auto& c : "0xdeadbeef")
+						loginMsg.push_back(c);
 					for (const auto& c : encrypted)
 						loginMsg.push_back(c);
-
-					if (const pipe_ret_t sendRet = sendBytes(&client, loginMsg); !sendRet.success)
+					//loginMsg.push_back(0x00);
+					pipe_ret_t sendRet = sendBytes(&client, loginMsg);
+					if (!sendRet.success)
 					{
 						MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
