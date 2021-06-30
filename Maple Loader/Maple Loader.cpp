@@ -12,8 +12,10 @@
 #include "UI/StyleProvider.h"
 #include "Utils/HWID.h"
 #include "Utils/StringUtilities.cpp"
+#include "Communication/Client.cpp"
 
 TcpClient client;
+MatchedClient* mClient = new MatchedClient(TcpClient());
 static inline RSADecrypt* Rsa = new RSADecrypt();
 
 static inline int dragOffsetX = 0;
@@ -144,6 +146,35 @@ bool DrawMenu()
 					}
 
 					MessageBoxA(UI::Window, xor (hwid.c_str()), xor ("Your HWID"), MB_OK);
+
+					// Construct Login Packet
+					std::vector<unsigned char> packet = std::vector<unsigned char>();
+					auto loginMsg = message();
+					loginMsg.push_back(0xF3); // 0xF3 -> Login identifier
+
+					for (const auto& c : "0xdeadbeef")
+						packet.push_back(c);
+					for(int i = 0; i < strlen(hwid.c_str()); i++)
+						packet.push_back(hwid[i]);
+					for (const auto& c : "0xdeadbeef")
+						packet.push_back(c);
+					for (const auto& c : usernameBuf)
+						packet.push_back(c);
+					for (const auto& c : "0xdeadbeef")
+						packet.push_back(c);
+					for (const auto& c : passwordBuf)
+						packet.push_back(c);
+
+					std::vector<unsigned char> encrypted = mClient->aes->Encrypt(packet);
+					for (const auto& c : encrypted)
+						loginMsg.push_back(c);
+
+					if (const pipe_ret_t sendRet = sendBytes(&client, loginMsg); !sendRet.success)
+					{
+						MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+						return 0;
+					}
 					
 					loggedIn = true;
 				}
@@ -221,26 +252,43 @@ void OnIncomingMessage(const char* msg, size_t size)
 {
 	/*char text[256] = "A message from the server: ";
 	strcat(text, msg);
-	
+
 	MessageBoxA(UI::Window, xor (text), xor ("Maple Loader"), MB_OK);*/
 
 	//TODO: add filtering and handler
 	// IF HEARTBEAT
-	const std::regex re(R"(0xdeadbeef)");
-	const std::vector<std::string> tokenized = Split(std::string(msg, size), re);
+	std::vector<std::string> splitString = Split(std::string(msg, size));
+	unsigned char type = splitString[0][0];
 
 	switch (type /*Packet Identifier*/)
 	{
 	case 0xA0 /*Heartbeat*/:
-		{
-			auto encrypted = std::vector<unsigned char>();
-			for (const auto& byte : splitString[2] /*Encrypted Stream*/)
-				encrypted.push_back(byte);
+	{
+		auto encrypted = std::vector<unsigned char>();
+		for (const auto& byte : splitString[2] /*Encrypted Stream*/)
+			encrypted.push_back(byte);
 
-	encrypted.erase(encrypted.begin());
+		encrypted.erase(encrypted.begin());
+		splitString[1].erase(splitString[1].begin()); // \0 at beginning after split
 
-	std::vector<unsigned char> s = RSAA->Decode(encrypted, std::stoi(tokenized[0]));
-	//std::cout << "Got msg from server: " << s << std::endl;
+		std::vector<unsigned char> s = Rsa->Decode(encrypted, std::stoi(splitString[1]/*Encrypted Length*/));
+
+		std::vector<unsigned char> iv = std::vector<unsigned char>(s.begin(), s.end() - 32);
+		std::vector<unsigned char> key = std::vector<unsigned char>(s.begin() + 16, s.end());
+
+		mClient = new MatchedClient(client);
+		mClient->aes->SetIV(iv);
+		mClient->aes->SetKey(key);
+		break;
+	}
+	case 0xF3 /*Login*/:
+	{
+		break;
+	}
+	default:
+		break;
+		//std::cout << "Got msg from server: " << s << std::endl;
+	}
 }
 
 void OnDisconnection(const pipe_ret_t& ret)
@@ -250,6 +298,16 @@ void OnDisconnection(const pipe_ret_t& ret)
 	client.finish();
 	exit(0);
 }
+
+//pipe_ret_t SendHeartbeat()
+//{
+//	auto constructOne = message();
+//	constructOne.push_back(0xF3); // request type -> heartbeat
+//
+//	pipe_ret_t sendRet = sendBytes(&client, constructOne);
+//	if (!sendRet.success)
+//		std::cout << "Failed to send msg: " << sendRet.msg << std::endl;
+//}
 
 bool ConnectToServer()
 {
@@ -261,7 +319,19 @@ bool ConnectToServer()
 
 	pipe_ret_t connectRet = client.connectTo("127.0.0.1", 9999);
 	if (connectRet.success)
+	{
+		// Send initial Handshake, to get RSA Encrypted Client Key and IV
+		auto initMsg = message();
+		initMsg.push_back(0xA0); // 0xA0 -> Handshake identifier
+
+		if (const pipe_ret_t sendRet = sendBytes(&client, initMsg); !sendRet.success)
+		{
+			MessageBoxA(UI::Window, xor ("Failed to communicate with the server!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+			return false;
+		}
 		return true;
+	}
 
 	return false;
 }

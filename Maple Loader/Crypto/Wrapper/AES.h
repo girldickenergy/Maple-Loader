@@ -26,6 +26,9 @@ public:
 	std::vector<unsigned char> DumpIV();
 	std::vector<unsigned char> DumpKey();
 
-	std::string Encrypt(std::vector<unsigned char> input);
+	void SetIV(std::vector<unsigned char> iv);
+	void SetKey(std::vector<unsigned char> key);
+
+	std::vector<unsigned char> Encrypt(std::vector<unsigned char> input);
 	std::string Decrypt(std::vector<unsigned char> input);
 };

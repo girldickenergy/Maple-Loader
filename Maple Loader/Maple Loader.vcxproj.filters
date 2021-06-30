@@ -575,6 +575,9 @@
     <ClCompile Include="Macros.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Communication\Client.cpp">
+      <Filter>Communication</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -600,6 +603,9 @@
     </Filter>
     <Filter Include="Crypto\Wrapper">
       <UniqueIdentifier>{0bc33171-ccbf-4807-915b-f9dcb890f100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Communication">
+      <UniqueIdentifier>{cdb9f389-f41f-4d33-990b-f9ccbf3091d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

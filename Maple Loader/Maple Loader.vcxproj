@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AntiDebug\Security.cpp" />
+    <ClCompile Include="Communication\Client.cpp" />
     <ClCompile Include="Crypto\3way.cpp" />
     <ClCompile Include="Crypto\adler32.cpp" />
     <ClCompile Include="Crypto\algebra.cpp" />

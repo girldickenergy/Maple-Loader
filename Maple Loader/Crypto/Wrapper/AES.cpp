@@ -29,39 +29,56 @@ std::vector<unsigned char> AESWrapper::DumpKey()
 	return Key;
 }
 
-std::string AESWrapper::Encrypt(std::vector<unsigned char> input)
+void AESWrapper::SetIV(std::vector<unsigned char> iv)
+{
+	IV = iv;
+}
+
+void AESWrapper::SetKey(std::vector<unsigned char> key)
+{
+	Key = key;
+}
+
+std::vector<unsigned char> AESWrapper::Encrypt(std::vector<unsigned char> input)
 {
 	using namespace CryptoPP;
 
 	if (IV.empty() || IV.size() <= 0)
-		return "IV null";
+		return std::vector<unsigned char>();
 	if (Key.empty() || Key.size() <= 0)
-		return "Key null";
+		return std::vector<unsigned char>();
 
 	AutoSeededRandomPool prng;
-	HexEncoder encoder(new FileSink(std::cout));
 
 	SecByteBlock key((&Key[0]), Key.size());
 	SecByteBlock iv((&IV[0]), IV.size());
 
-	std::string cipher;
+	std::vector<unsigned char> cipher;
 
-	try
+
+	CryptoPP::AES::Encryption aesEncryption(key, 32);
+	CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, iv);
+
+	CryptoPP::StreamTransformationFilter stfEncryptor(cbcEncryption, new CryptoPP::VectorSink(cipher));
+	stfEncryptor.Put(reinterpret_cast<const unsigned char*>(&input[0]), input.size());
+	stfEncryptor.MessageEnd();
+
+	/*try
 	{
 		CBC_Mode<AES>::Encryption e;
 		e.SetKeyWithIV(key, key.size(), iv);
 
-		VectorSource s(input, true,
+		ArraySource s(input.data(), input.size(), true,
 			new StreamTransformationFilter(e,
-				new StringSink(cipher)
+				new VectorSink(cipher)
 			)
 		);
 	}
 	catch (Exception & e)
 	{
-		return e.what();
+		return std::vector<unsigned char>();
 	}
-
+*/
 	return cipher;
 }
 
@@ -74,7 +91,6 @@ std::string AESWrapper::Decrypt(std::vector<unsigned char> input)
 		return "Key null";
 
 	AutoSeededRandomPool prng;
-	HexEncoder encoder(new FileSink(std::cout));
 
 	SecByteBlock key((&Key[0]), Key.size());
 	SecByteBlock iv((&IV[0]), IV.size());
