@@ -37,8 +37,7 @@ static pipe_ret_t sendBytes(TcpClient *tcpC, message bytes)
 		byte b = bytes[i];
 		msg += (char)b;
 	}
-	std::cout << msg << std::endl;
-	return tcpC->sendMsg(msg.c_str(), strlen(msg.c_str()));
+	return tcpC->sendMsg(msg.c_str(), bytes.size());
 }
 
 static void addStringToBytes(std::string str, message* bytes)
