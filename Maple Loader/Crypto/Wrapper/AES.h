@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 #include <random>
 #include <climits>
@@ -13,21 +12,20 @@
 #include "../pssr.h"
 #include "../modes.h"
 
-//had to change unsigned char to unsigned long, otherwise it wouldn't compile. no idea how it compiled before, feel free to tell me why!
-using genBytes = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned long>;
+//using genBytes = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned char>;
 
-class AES {
+class AESWrapper {
 private:
 	std::vector<unsigned char> IV = std::vector<unsigned char>(16);
 	std::vector<unsigned char> Key = std::vector<unsigned char>(32);
 public:
-	AES();
+	AESWrapper();
 	void GenerateRandomIV();
 	void GenerateRandomKey();
 
 	std::vector<unsigned char> DumpIV();
 	std::vector<unsigned char> DumpKey();
 
-	std::string Encrypt(std::string input);
-	std::string Decrypt(std::string input);
+	std::string Encrypt(std::vector<unsigned char> input);
+	std::string Decrypt(std::vector<unsigned char> input);
 };
