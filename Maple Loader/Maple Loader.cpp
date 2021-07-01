@@ -18,6 +18,26 @@ TcpClient client;
 MatchedClient* mClient = new MatchedClient(TcpClient());
 static inline RSADecrypt* Rsa = new RSADecrypt();
 
+enum LoaderState
+{
+	Idle,
+	LoggingIn,
+	LoggedIn
+};
+
+LoaderState State = Idle;
+
+std::string sessionToken;
+std::string expiresAt;
+
+void ShutdownAndExit(int exitCode = 0)
+{
+	client.finish();
+	UI::Shutdown();
+
+	exit(exitCode);
+}
+
 static inline int dragOffsetX = 0;
 static inline int dragOffsetY = 0;
 void HandleWindowDrag()
@@ -46,7 +66,6 @@ void HandleWindowDrag()
 char usernameBuf[24];
 char passwordBuf[256];
 int currItem = 0;
-bool loggedIn = false;
 bool DrawMenu()
 {
 	ImGui_ImplDX9_NewFrame();
@@ -75,7 +94,7 @@ bool DrawMenu()
 		ImGui::SetCursorPos(ImVec2(5, 5));
 
 		if (ImGui::Button(xor ("x"), ImVec2(20, 20)))
-			exit(0);
+			ShutdownAndExit();
 
 		ImGui::SameLine();
 
@@ -98,7 +117,7 @@ bool DrawMenu()
 
 		ImGui::SetCursorPos(ImVec2(StyleProvider::WindowPadding.x, StyleProvider::TitleBarHeight + StyleProvider::WindowPadding.y));
 
-		if (!loggedIn)
+		if (State != LoggedIn)
 		{
 			ImGui::BeginChild(xor ("LoginArea"), ImVec2(340, 180));
 			{
@@ -134,7 +153,7 @@ bool DrawMenu()
 				ImGui::Spacing();
 
 				ImGui::SetCursorPosX(loginAreaSize.x / 2 - 50);
-				if (ImGui::Button(xor ("Login"), ImVec2(100, ImGui::GetFrameHeight())))
+				if (ImGui::Button(xor (State == LoggingIn ? "Logging in..." : "Login"), ImVec2(100, ImGui::GetFrameHeight())))
 				{
 					//construct login packet here later =w=
 					std::string hwid = HWID::GetHWID();
@@ -158,11 +177,11 @@ bool DrawMenu()
 						packet.push_back(hwid[i]);
 					for (const auto& c : "0xdeadbeef")
 						packet.push_back(c);
-					for (const auto& c : usernameBuf)
+					for (const auto& c : std::string(usernameBuf))
 						packet.push_back(c);
 					for (const auto& c : "0xdeadbeef")
 						packet.push_back(c);
-					for (const auto& c : passwordBuf)
+					for (const auto& c : std::string(passwordBuf))
 						packet.push_back(c);
 
 					std::vector<unsigned char> encrypted = mClient->aes->Encrypt(packet);
@@ -181,10 +200,10 @@ bool DrawMenu()
 					{
 						MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
-						return 0;
+						ShutdownAndExit();
 					}
-					
-					loggedIn = true;
+
+					State = LoggingIn;
 				}
 
 				ImGui::PopFont();
@@ -217,9 +236,9 @@ bool DrawMenu()
 				ImGui::Combo("", &currItem, combo, IM_ARRAYSIZE(combo));
 				ImGui::PopStyleColor(2);
 
-				auto expiresAt = ImGui::CalcTextSize(xor ("Expires at: never"));
-				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - expiresAt.x / 2);
-				ImGui::TextColored(StyleProvider::ExpirationColour, xor ("Expires at: never"));
+				auto expiresAtSize = ImGui::CalcTextSize(expiresAt.c_str());
+				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - expiresAtSize.x / 2);
+				ImGui::TextColored(StyleProvider::ExpirationColour, xor (expiresAt.c_str()));
 
 				ImGui::Spacing();
 				ImGui::Spacing();
@@ -258,11 +277,13 @@ bool DrawMenu()
 
 void OnIncomingMessage(const char* msg, size_t size)
 {
-	/*char text[256] = "A message from the server: ";
-	strcat(text, msg);
+	if (strcmp(msg, xor("Unknown session")) == 0)
+	{
+		MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
-	MessageBoxA(UI::Window, xor (text), xor ("Maple Loader"), MB_OK);*/
-
+		ShutdownAndExit();
+	}
+	
 	//TODO: add filtering and handler
 	// IF HEARTBEAT
 	std::vector<std::string> splitString = Split(std::string(msg, size));
@@ -270,41 +291,64 @@ void OnIncomingMessage(const char* msg, size_t size)
 
 	switch (type /*Packet Identifier*/)
 	{
-	case 0xA0 /*Heartbeat*/:
-	{
-		auto encrypted = std::vector<unsigned char>();
-		for (const auto& byte : splitString[2] /*Encrypted Stream*/)
-			encrypted.push_back(byte);
+		case 0xA0 /*Heartbeat*/:
+		{
+			auto encrypted = std::vector<unsigned char>();
+			for (const auto& byte : splitString[2] /*Encrypted Stream*/)
+				encrypted.push_back(byte);
 
-		encrypted.erase(encrypted.begin());
-		splitString[1].erase(splitString[1].begin()); // \0 at beginning after split
+			encrypted.erase(encrypted.begin());
+			splitString[1].erase(splitString[1].begin()); // \0 at beginning after split
 
-		std::vector<unsigned char> s = Rsa->Decode(encrypted, std::stoi(splitString[1]/*Encrypted Length*/));
+			std::vector<unsigned char> s = Rsa->Decode(encrypted, std::stoi(splitString[1]/*Encrypted Length*/));
 
-		std::vector<unsigned char> iv = std::vector<unsigned char>(s.begin(), s.end() - 32);
-		std::vector<unsigned char> key = std::vector<unsigned char>(s.begin() + 16, s.end());
+			std::vector<unsigned char> iv = std::vector<unsigned char>(s.begin(), s.end() - 32);
+			std::vector<unsigned char> key = std::vector<unsigned char>(s.begin() + 16, s.end());
 
-		mClient = new MatchedClient(client);
-		mClient->aes->SetIV(iv);
-		mClient->aes->SetKey(key);
-		break;
-	}
-	case 0xF3 /*Login*/:
-	{
-		break;
-	}
-	default:
-		break;
-		//std::cout << "Got msg from server: " << s << std::endl;
+			mClient = new MatchedClient(client);
+			mClient->aes->SetIV(iv);
+			mClient->aes->SetKey(key);
+			break;
+		}
+		case 0xF3 /*Login*/:
+		{
+			auto encrypted = std::vector<unsigned char>();
+			for (const auto& byte : splitString[2])
+				encrypted.push_back(byte);
+
+			encrypted.erase(encrypted.begin());
+			splitString[1].erase(splitString[1].begin());
+
+			std::string decodedString;
+			for (const auto& c : Rsa->Decode(encrypted, std::stoi(splitString[1])))
+				decodedString += c;
+
+			std::vector<std::string> decodedSplit = Split(decodedString);
+			decodedSplit[1].erase(decodedSplit[1].begin());
+			decodedSplit[2].erase(decodedSplit[2].begin());
+
+			sessionToken = decodedSplit[1];
+			expiresAt = std::string("Expires at: " + decodedSplit[2]);
+
+			if (decodedSplit[0][0] == 0x0)
+				State = LoggedIn;
+			else if (decodedSplit[0][0] == 0x2)
+				MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+			else
+				MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+				
+			break;
+		}
+		default:
+			break;
 	}
 }
 
 void OnDisconnection(const pipe_ret_t& ret)
 {
 	MessageBoxA(UI::Window, xor ("You have been disconnected from the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-	
-	client.finish();
-	exit(0);
+
+	ShutdownAndExit();
 }
 
 //pipe_ret_t SendHeartbeat()
@@ -384,7 +428,5 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 		}
 	}
 
-	UI::Shutdown();
-
-	return 0;
+	ShutdownAndExit();
 }

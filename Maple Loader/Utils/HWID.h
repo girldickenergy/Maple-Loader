@@ -123,7 +123,7 @@ public:
 			return { };
 
 		std::stringstream hwid;
-		hwid << diskSerial << "&" << cpuVendor << "&" << macAddress;
+		hwid << diskSerial << "|" << cpuVendor << "|" << macAddress;
 
 		return hwid.str();
 	}
