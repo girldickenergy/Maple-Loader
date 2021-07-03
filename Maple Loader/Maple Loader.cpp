@@ -313,26 +313,26 @@ void OnIncomingMessage(const char* msg, size_t size)
 		case 0xF3 /*Login*/:
 		{
 			auto encrypted = std::vector<unsigned char>();
-			for (const auto& byte : splitString[2])
+			for (const auto& byte : splitString[1])
 				encrypted.push_back(byte);
 
 			encrypted.erase(encrypted.begin());
 			splitString[1].erase(splitString[1].begin());
 
-			std::string decodedString;
-			for (const auto& c : Rsa->Decode(encrypted, std::stoi(splitString[1])))
-				decodedString += c;
+			std::string decryptedString;
+			for (const auto& c : mClient->aes->Decrypt(encrypted))
+				decryptedString += c;
 
-			std::vector<std::string> decodedSplit = Split(decodedString);
-			decodedSplit[1].erase(decodedSplit[1].begin());
-			decodedSplit[2].erase(decodedSplit[2].begin());
+			std::vector<std::string> decryptedSplit = Split(decryptedString);
+			decryptedSplit[1].erase(decryptedSplit[1].begin());
+			decryptedSplit[2].erase(decryptedSplit[2].begin());
 
-			sessionToken = decodedSplit[1];
-			expiresAt = std::string("Expires at: " + decodedSplit[2]);
+			sessionToken = decryptedSplit[1];
+			expiresAt = std::string("Expires at: " + decryptedSplit[2]);
 
-			if (decodedSplit[0][0] == 0x0)
+			if (decryptedSplit[0][0] == 0x0)
 				State = LoggedIn;
-			else if (decodedSplit[0][0] == 0x2)
+			else if (decryptedSplit[0][0] == 0x2)
 				MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 			else
 				MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
