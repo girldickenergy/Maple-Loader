@@ -45,6 +45,7 @@ public:
 	~TcpClient();
 	pipe_ret_t connectTo(const std::string& address, int port);
 	pipe_ret_t sendMsg(const char* msg, size_t size);
+	pipe_ret_t sendBytes(std::vector<unsigned char> bytes);
 
 	void subscribe(const client_observer_t& observer);
 	void unsubscribeAll();

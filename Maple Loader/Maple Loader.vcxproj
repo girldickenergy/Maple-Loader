@@ -325,6 +325,9 @@
     <ClCompile Include="Crypto\zlib.cpp" />
     <ClCompile Include="Macros.cpp" />
     <ClCompile Include="Maple Loader.cpp" />
+    <ClCompile Include="Packets\Handshake.cpp" />
+    <ClCompile Include="Packets\Login.cpp" />
+    <ClCompile Include="Packets\Packet.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
     <ClCompile Include="UI\ImGui\imgui.cpp" />
@@ -531,6 +534,10 @@
     <ClInclude Include="Crypto\zdeflate.h" />
     <ClInclude Include="Crypto\zinflate.h" />
     <ClInclude Include="Crypto\zlib.h" />
+    <ClInclude Include="Packets\Handshake.h" />
+    <ClInclude Include="Packets\Login.h" />
+    <ClInclude Include="Packets\Packet.h" />
+    <ClInclude Include="Packets\PacketType.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TCP\Client.h" />
     <ClInclude Include="TCP\Client_Observer.h" />

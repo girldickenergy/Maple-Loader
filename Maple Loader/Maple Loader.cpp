@@ -13,6 +13,8 @@
 #include "Utils/HWID.h"
 #include "Utils/StringUtilities.cpp"
 #include "Communication/Client.cpp"
+#include "Packets/Handshake.h"
+#include "Packets/Login.h"
 
 TcpClient client;
 MatchedClient* mClient = new MatchedClient(TcpClient());
@@ -167,35 +169,9 @@ bool DrawMenu()
 					MessageBoxA(UI::Window, xor (hwid.c_str()), xor ("Your HWID"), MB_OK);
 
 					// Construct Login Packet
-					std::vector<unsigned char> packet = std::vector<unsigned char>();
-					auto loginMsg = std::vector<unsigned char>();
-					loginMsg.push_back(0xF3); // 0xF3 -> Login identifier
-
-					for (const auto& c : "0xdeadbeef")
-						packet.push_back(c);
-					for(int i = 0; i < strlen(hwid.c_str()); i++)
-						packet.push_back(hwid[i]);
-					for (const auto& c : "0xdeadbeef")
-						packet.push_back(c);
-					for (const auto& c : std::string(usernameBuf))
-						packet.push_back(c);
-					for (const auto& c : "0xdeadbeef")
-						packet.push_back(c);
-					for (const auto& c : std::string(passwordBuf))
-						packet.push_back(c);
-
-					std::vector<unsigned char> encrypted = mClient->aes->Encrypt(packet);
-
-					for (const auto& c : "0xdeadbeef")
-						loginMsg.push_back(c);
-					for (const auto& c : std::to_string(encrypted.size()))
-						loginMsg.push_back(c);
-					for (const auto& c : "0xdeadbeef")
-						loginMsg.push_back(c);
-					for (const auto& c : encrypted)
-						loginMsg.push_back(c);
-					//loginMsg.push_back(0x00);
-					pipe_ret_t sendRet = sendBytes(&client, loginMsg);
+					Login loginPacket = Login(hwid, std::string(usernameBuf), std::string(passwordBuf), mClient);
+					
+					pipe_ret_t sendRet = client.sendBytes(loginPacket.Data);
 					if (!sendRet.success)
 					{
 						MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
@@ -351,16 +327,6 @@ void OnDisconnection(const pipe_ret_t& ret)
 	ShutdownAndExit();
 }
 
-//pipe_ret_t SendHeartbeat()
-//{
-//	auto constructOne = message();
-//	constructOne.push_back(0xF3); // request type -> heartbeat
-//
-//	pipe_ret_t sendRet = sendBytes(&client, constructOne);
-//	if (!sendRet.success)
-//		std::cout << "Failed to send msg: " << sendRet.msg << std::endl;
-//}
-
 bool ConnectToServer()
 {
 	client_observer_t observer;
@@ -373,15 +339,15 @@ bool ConnectToServer()
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
-		auto initMsg = message();
-		initMsg.push_back(0xA0); // 0xA0 -> Handshake identifier
+		Handshake handshakePacket = Handshake();
 
-		if (const pipe_ret_t sendRet = sendBytes(&client, initMsg); !sendRet.success)
+		if (const pipe_ret_t sendRet = client.sendBytes(handshakePacket.Data); !sendRet.success)
 		{
 			MessageBoxA(UI::Window, xor ("Failed to communicate with the server!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
 			return false;
 		}
+		
 		return true;
 	}
 

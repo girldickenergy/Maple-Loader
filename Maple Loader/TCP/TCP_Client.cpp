@@ -76,6 +76,16 @@ pipe_ret_t TcpClient::sendMsg(const char* msg, size_t size)
 	return ret;
 }
 
+pipe_ret_t TcpClient::sendBytes(std::vector<unsigned char> bytes)
+{
+	std::string msg;
+	for (int i = 0; i < bytes.size(); i++) {
+		byte b = bytes[i];
+		msg += (char)b;
+	}
+	return sendMsg(msg.c_str(), bytes.size());
+}
+
 void TcpClient::subscribe(const client_observer_t& observer)
 {
 	m_subscibers.push_back(observer);
