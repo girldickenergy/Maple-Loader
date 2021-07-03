@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "PacketType.h"
-#include "../Communication/Client.cpp"
+#include "../Communication/MatchedClient.h"
 
 class Packet
 {

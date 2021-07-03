@@ -145,7 +145,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AntiDebug\Security.cpp" />
-    <ClCompile Include="Communication\Client.cpp" />
     <ClCompile Include="Crypto\3way.cpp" />
     <ClCompile Include="Crypto\adler32.cpp" />
     <ClCompile Include="Crypto\algebra.cpp" />
@@ -323,7 +322,6 @@
     <ClCompile Include="Crypto\zdeflate.cpp" />
     <ClCompile Include="Crypto\zinflate.cpp" />
     <ClCompile Include="Crypto\zlib.cpp" />
-    <ClCompile Include="Macros.cpp" />
     <ClCompile Include="Maple Loader.cpp" />
     <ClCompile Include="Packets\Handshake.cpp" />
     <ClCompile Include="Packets\Login.cpp" />
@@ -343,6 +341,7 @@
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h" />
     <ClInclude Include="AntiDebug\xorstr.hpp" />
+    <ClInclude Include="Communication\MatchedClient.h" />
     <ClInclude Include="Crypto\3way.h" />
     <ClInclude Include="Crypto\adler32.h" />
     <ClInclude Include="Crypto\adv_simd.h" />
@@ -543,7 +542,6 @@
     <ClInclude Include="TCP\Client_Observer.h" />
     <ClInclude Include="TCP\Pipe_Ret_T.h" />
     <ClInclude Include="TCP\TCP_Client.h" />
-    <ClInclude Include="TCP\Utils\SendByteVector.hpp" />
     <ClInclude Include="UI\Fonts.h" />
     <ClInclude Include="UI\ImGui\imconfig.h" />
     <ClInclude Include="UI\ImGui\imgui.h" />
@@ -557,6 +555,7 @@
     <ClInclude Include="UI\UI.h" />
     <ClInclude Include="Utils\HWID.h" />
     <ClInclude Include="Utils\RSAKeygen.hpp" />
+    <ClInclude Include="Utils\StringUtilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Maple Loader.rc" />

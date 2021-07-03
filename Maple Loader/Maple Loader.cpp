@@ -11,10 +11,9 @@
 #include "UI/ImGui/imgui_impl_win32.h"
 #include "UI/StyleProvider.h"
 #include "Utils/HWID.h"
-#include "Utils/StringUtilities.cpp"
-#include "Communication/Client.cpp"
 #include "Packets/Handshake.h"
 #include "Packets/Login.h"
+#include "Utils/StringUtilities.h"
 
 TcpClient client;
 MatchedClient* mClient = new MatchedClient(TcpClient());
@@ -262,7 +261,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 	
 	//TODO: add filtering and handler
 	// IF HEARTBEAT
-	std::vector<std::string> splitString = Split(std::string(msg, size));
+	std::vector<std::string> splitString = StringUtilities::Split(std::string(msg, size));
 	unsigned char type = splitString[0][0];
 
 	switch (type /*Packet Identifier*/)
@@ -299,7 +298,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 			for (const auto& c : mClient->aes->Decrypt(encrypted))
 				decryptedString += c;
 
-			std::vector<std::string> decryptedSplit = Split(decryptedString);
+			std::vector<std::string> decryptedSplit = StringUtilities::Split(decryptedString);
 			decryptedSplit[1].erase(decryptedSplit[1].begin());
 			decryptedSplit[2].erase(decryptedSplit[2].begin());
 

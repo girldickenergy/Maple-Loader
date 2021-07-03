@@ -572,12 +572,6 @@
     <ClCompile Include="Utils\StringUtilities.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Macros.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Communication\Client.cpp">
-      <Filter>Communication</Filter>
-    </ClCompile>
     <ClCompile Include="Packets\Packet.cpp">
       <Filter>Packets</Filter>
     </ClCompile>
@@ -600,9 +594,6 @@
     </Filter>
     <Filter Include="TCP">
       <UniqueIdentifier>{a9192820-5ba8-4a46-9e15-2fedc5b9ec12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TCP\Utils">
-      <UniqueIdentifier>{3f2196f1-ef0a-45a2-8acd-cced74250b64}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{41fe62f5-5ac5-4718-bb91-9d75172b7600}</UniqueIdentifier>
@@ -657,9 +648,6 @@
     </ClInclude>
     <ClInclude Include="AntiDebug\xorstr.hpp">
       <Filter>AntiDebug</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\Utils\SendByteVector.hpp">
-      <Filter>TCP\Utils</Filter>
     </ClInclude>
     <ClInclude Include="TCP\Client_Observer.h">
       <Filter>TCP</Filter>
@@ -1266,6 +1254,12 @@
     </ClInclude>
     <ClInclude Include="Packets\Login.h">
       <Filter>Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\MatchedClient.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\StringUtilities.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
