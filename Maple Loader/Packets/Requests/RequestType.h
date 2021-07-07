@@ -1,6 +1,6 @@
 #pragma once
 
-enum class PacketType
+enum class RequestType
 {
 	Handshake = 0xA0,
 	Login = 0xF3

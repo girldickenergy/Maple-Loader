@@ -3,21 +3,25 @@
 
 #include "AntiDebug/xorstr.hpp"
 #include "TCP/TCP_Client.h"
-#include "Crypto/Wrapper/RSADecrypt.h"
-#include "TCP/Utils/SendByteVector.hpp"
 
 #include "UI/UI.h"
 #include "UI/ImGui/imgui_impl_dx9.h"
 #include "UI/ImGui/imgui_impl_win32.h"
 #include "UI/StyleProvider.h"
+
 #include "Utils/HWID.h"
-#include "Packets/Handshake.h"
-#include "Packets/Login.h"
-#include "Utils/StringUtilities.h"
+
+#include "Packets/Requests/HandshakeRequest.h"
+#include "Packets/Requests/LoginRequest.h"
+
+#include "Packets/Responses/FatalErrorResponse.h"
+#include "Packets/Responses/HandshakeResponse.h"
+#include "Packets/Responses/LoginResponse.h"
+#include "Packets/Responses/Response.h"
+
 
 TcpClient client;
 MatchedClient* mClient = new MatchedClient(TcpClient());
-static inline RSADecrypt* Rsa = new RSADecrypt();
 
 enum LoaderState
 {
@@ -165,10 +169,8 @@ bool DrawMenu()
 						return 0;
 					}
 
-					MessageBoxA(UI::Window, xor (hwid.c_str()), xor ("Your HWID"), MB_OK);
-
 					// Construct Login Packet
-					Login loginPacket = Login(hwid, std::string(usernameBuf), std::string(passwordBuf), mClient);
+					LoginRequest loginPacket = LoginRequest(hwid, std::string(usernameBuf), std::string(passwordBuf), mClient);
 					
 					pipe_ret_t sendRet = client.sendBytes(loginPacket.Data);
 					if (!sendRet.success)
@@ -252,71 +254,74 @@ bool DrawMenu()
 
 void OnIncomingMessage(const char* msg, size_t size)
 {
-	if (strcmp(msg, xor("Unknown session")) == 0)
+	auto* const response = static_cast<Response*>(Response::ConstructResponse(msg, size, mClient));
+	switch (response->Type)
 	{
-		MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-
-		ShutdownAndExit();
-	}
-	
-	//TODO: add filtering and handler
-	// IF HEARTBEAT
-	std::vector<std::string> splitString = StringUtilities::Split(std::string(msg, size));
-	unsigned char type = splitString[0][0];
-
-	switch (type /*Packet Identifier*/)
-	{
-		case 0xA0 /*Heartbeat*/:
+		case ResponseType::FatalError:
 		{
-			auto encrypted = std::vector<unsigned char>();
-			for (const auto& byte : splitString[2] /*Encrypted Stream*/)
-				encrypted.push_back(byte);
+			auto* const fatalErrorResponse = static_cast<FatalErrorResponse*>(response);
 
-			encrypted.erase(encrypted.begin());
-			splitString[1].erase(splitString[1].begin()); // \0 at beginning after split
+			std::string str;
+			for (const auto& c : "Fatal error occurred: " + fatalErrorResponse->ErrorMessage + "\nThe application will now exit.")
+				if (c != '\0') //fuck fuck fuck null terminators
+					str.push_back(c);
 
-			std::vector<unsigned char> s = Rsa->Decode(encrypted, std::stoi(splitString[1]/*Encrypted Length*/));
+			MessageBoxA(UI::Window, xor (str.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
-			std::vector<unsigned char> iv = std::vector<unsigned char>(s.begin(), s.end() - 32);
-			std::vector<unsigned char> key = std::vector<unsigned char>(s.begin() + 16, s.end());
+			ShutdownAndExit();
 
-			mClient = new MatchedClient(client);
-			mClient->aes->SetIV(iv);
-			mClient->aes->SetKey(key);
 			break;
 		}
-		case 0xF3 /*Login*/:
+		case ResponseType::Handshake:
 		{
-			auto encrypted = std::vector<unsigned char>();
-			for (const auto& byte : splitString[1])
-				encrypted.push_back(byte);
+			auto* const handshakeResponse = static_cast<HandshakeResponse*>(response);
 
-			encrypted.erase(encrypted.begin());
-			splitString[1].erase(splitString[1].begin());
+			mClient = new MatchedClient(client);
+			mClient->aes->SetIV(handshakeResponse->IV);
+			mClient->aes->SetKey(handshakeResponse->Key);
+			
+			break;
+		}
+		case ResponseType::Login:
+		{
+			auto* const loginResponse = static_cast<LoginResponse*>(response);
+				
+			sessionToken = loginResponse->SessionToken;
+			expiresAt = "Expires at: " + loginResponse->ExpiresAt;
 
-			std::string decryptedString;
-			for (const auto& c : mClient->aes->Decrypt(encrypted))
-				decryptedString += c;
+			switch (loginResponse->Result)
+			{
+				case LoginResult::Success:
+				{
+					State = LoggedIn;
 
-			std::vector<std::string> decryptedSplit = StringUtilities::Split(decryptedString);
-			decryptedSplit[1].erase(decryptedSplit[1].begin());
-			decryptedSplit[2].erase(decryptedSplit[2].begin());
-
-			sessionToken = decryptedSplit[1];
-			expiresAt = std::string("Expires at: " + decryptedSplit[2]);
-
-			if (decryptedSplit[0][0] == 0x0)
-				State = LoggedIn;
-			else if (decryptedSplit[0][0] == 0x2)
-				MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-			else
-				MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					break;
+				}
+				case LoginResult::IncorrectCredentials:
+				{
+					MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						
+					break;
+				}
+				case LoginResult::HWIDMismatch:
+				{
+					MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						
+					break;
+				}
+				default:
+				{
+					MessageBoxA(UI::Window, xor ("An internal error occured: unknown login result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						
+					break;
+				}
+			}
 				
 			break;
 		}
-		default:
-			break;
 	}
+
+	delete response;
 }
 
 void OnDisconnection(const pipe_ret_t& ret)
@@ -338,7 +343,7 @@ bool ConnectToServer()
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
-		Handshake handshakePacket = Handshake();
+		HandshakeRequest handshakePacket = HandshakeRequest();
 
 		if (const pipe_ret_t sendRet = client.sendBytes(handshakePacket.Data); !sendRet.success)
 		{

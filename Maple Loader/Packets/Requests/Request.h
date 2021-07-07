@@ -1,19 +1,17 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
-#include "PacketType.h"
-#include "../Communication/MatchedClient.h"
+#include "RequestType.h"
 
-class Packet
+class Request
 {
-protected:
-	MatchedClient* matchedClient;
 public:
-	PacketType Type;
+	RequestType Type;
 	std::vector<unsigned char> Data; //type | data size | data
 
-	Packet(PacketType type, MatchedClient* matchedClient);
+	Request(RequestType type);
 
 	void AddDelimiter(std::vector<unsigned char>* dest);
 	void AddByte(unsigned char byte, std::vector<unsigned char>* dest);

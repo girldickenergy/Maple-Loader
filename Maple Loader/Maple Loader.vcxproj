@@ -323,9 +323,13 @@
     <ClCompile Include="Crypto\zinflate.cpp" />
     <ClCompile Include="Crypto\zlib.cpp" />
     <ClCompile Include="Maple Loader.cpp" />
-    <ClCompile Include="Packets\Handshake.cpp" />
-    <ClCompile Include="Packets\Login.cpp" />
-    <ClCompile Include="Packets\Packet.cpp" />
+    <ClCompile Include="Packets\Requests\HandshakeRequest.cpp" />
+    <ClCompile Include="Packets\Requests\LoginRequest.cpp" />
+    <ClCompile Include="Packets\Requests\Request.cpp" />
+    <ClCompile Include="Packets\Responses\FatalErrorResponse.cpp" />
+    <ClCompile Include="Packets\Responses\HandshakeResponse.cpp" />
+    <ClCompile Include="Packets\Responses\LoginResponse.cpp" />
+    <ClCompile Include="Packets\Responses\Response.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
     <ClCompile Include="UI\ImGui\imgui.cpp" />
@@ -336,7 +340,6 @@
     <ClCompile Include="UI\ImGui\imgui_tables.cpp" />
     <ClCompile Include="UI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="UI\UI.cpp" />
-    <ClCompile Include="Utils\StringUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h" />
@@ -533,10 +536,16 @@
     <ClInclude Include="Crypto\zdeflate.h" />
     <ClInclude Include="Crypto\zinflate.h" />
     <ClInclude Include="Crypto\zlib.h" />
-    <ClInclude Include="Packets\Handshake.h" />
-    <ClInclude Include="Packets\Login.h" />
-    <ClInclude Include="Packets\Packet.h" />
-    <ClInclude Include="Packets\PacketType.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="Packets\Requests\HandshakeRequest.h" />
+    <ClInclude Include="Packets\Requests\LoginRequest.h" />
+    <ClInclude Include="Packets\Requests\Request.h" />
+    <ClInclude Include="Packets\Requests\RequestType.h" />
+    <ClInclude Include="Packets\Responses\FatalErrorResponse.h" />
+    <ClInclude Include="Packets\Responses\HandshakeResponse.h" />
+    <ClInclude Include="Packets\Responses\LoginResponse.h" />
+    <ClInclude Include="Packets\Responses\Response.h" />
+    <ClInclude Include="Packets\Responses\ResponseType.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TCP\Client.h" />
     <ClInclude Include="TCP\Client_Observer.h" />

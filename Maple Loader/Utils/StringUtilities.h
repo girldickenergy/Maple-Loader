@@ -45,4 +45,22 @@ public:
 		}
 		return ret;
 	}
+
+	static std::vector<unsigned char> StringToByteArray(const std::string str)
+	{
+		std::vector<unsigned char> arr;
+		for (const auto& c : str)
+			arr.push_back(c);
+
+		return arr;
+	}
+
+	static std::string ByteArrayToString(const std::vector<unsigned char> arr)
+	{
+		std::string str;
+		for (const auto& c : arr)
+			str.push_back(c);
+
+		return str;
+	}
 };
