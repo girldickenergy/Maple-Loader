@@ -19,7 +19,6 @@
 #include "Packets/Responses/LoginResponse.h"
 #include "Packets/Responses/Response.h"
 
-
 TcpClient client;
 MatchedClient* mClient = new MatchedClient(TcpClient());
 
