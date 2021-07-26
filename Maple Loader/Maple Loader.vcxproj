@@ -323,9 +323,11 @@
     <ClCompile Include="Crypto\zinflate.cpp" />
     <ClCompile Include="Crypto\zlib.cpp" />
     <ClCompile Include="Maple Loader.cpp" />
+    <ClCompile Include="Packets\Requests\DllStreamRequest.cpp" />
     <ClCompile Include="Packets\Requests\HandshakeRequest.cpp" />
     <ClCompile Include="Packets\Requests\LoginRequest.cpp" />
     <ClCompile Include="Packets\Requests\Request.cpp" />
+    <ClCompile Include="Packets\Responses\DllStreamResponse.cpp" />
     <ClCompile Include="Packets\Responses\FatalErrorResponse.cpp" />
     <ClCompile Include="Packets\Responses\HandshakeResponse.cpp" />
     <ClCompile Include="Packets\Responses\LoginResponse.cpp" />
@@ -537,10 +539,12 @@
     <ClInclude Include="Crypto\zinflate.h" />
     <ClInclude Include="Crypto\zlib.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Packets\Requests\DllStreamRequest.h" />
     <ClInclude Include="Packets\Requests\HandshakeRequest.h" />
     <ClInclude Include="Packets\Requests\LoginRequest.h" />
     <ClInclude Include="Packets\Requests\Request.h" />
     <ClInclude Include="Packets\Requests\RequestType.h" />
+    <ClInclude Include="Packets\Responses\DllStreamResponse.h" />
     <ClInclude Include="Packets\Responses\FatalErrorResponse.h" />
     <ClInclude Include="Packets\Responses\HandshakeResponse.h" />
     <ClInclude Include="Packets\Responses\LoginResponse.h" />

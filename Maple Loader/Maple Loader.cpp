@@ -13,6 +13,7 @@
 
 #include "Packets/Requests/HandshakeRequest.h"
 #include "Packets/Requests/LoginRequest.h"
+#include "Packets/Requests/DllStreamRequest.h"
 
 #include "Packets/Responses/FatalErrorResponse.h"
 #include "Packets/Responses/HandshakeResponse.h"
@@ -220,7 +221,20 @@ bool DrawMenu()
 				ImGui::Spacing();
 
 				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - 50);
-				ImGui::Button(xor ("Load"), ImVec2(100, ImGui::GetFrameHeight()));
+				if(ImGui::Button(xor ("Load"), ImVec2(100, ImGui::GetFrameHeight())))
+				{
+					// TODO: maple onii-chan, we need some visuals for the loading process
+					// request maple dll
+					DllStreamRequest dllStream = DllStreamRequest(mClient);
+
+					pipe_ret_t sendRet = client.sendBytes(dllStream.Data);
+					if (!sendRet.success)
+					{
+						MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+						ShutdownAndExit();
+					}
+				}
 
 				ImGui::PopFont();
 			}

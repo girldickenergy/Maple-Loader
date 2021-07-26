@@ -587,6 +587,12 @@
     <ClCompile Include="Packets\Requests\Request.cpp">
       <Filter>Packets\Requests</Filter>
     </ClCompile>
+    <ClCompile Include="Packets\Requests\DllStreamRequest.cpp">
+      <Filter>Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Packets\Responses\DllStreamResponse.cpp">
+      <Filter>Packets\Responses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -1288,6 +1294,12 @@
     </ClInclude>
     <ClInclude Include="Packets\Requests\RequestType.h">
       <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Requests\DllStreamRequest.h">
+      <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Responses\DllStreamResponse.h">
+      <Filter>Packets\Responses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
