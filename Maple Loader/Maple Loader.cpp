@@ -346,6 +346,9 @@ void OnIncomingMessage(const char* msg, size_t size)
 		{
 			MessageBoxA(UI::Window, xor ("Received DLL Stream"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
+			State = State & ~DownloadingDLL; // remove the downloading flag
+			State = State | Injecting; // start injecting and therefore add the injecting flag
+
 			break;
 		}
 	}
