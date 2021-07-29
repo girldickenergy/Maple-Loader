@@ -6,7 +6,8 @@ enum class LoginResult : unsigned char
 {
 	Success = 0x0,
 	IncorrectCredentials = 0x1,
-	HWIDMismatch = 0x2
+	HWIDMismatch = 0x2,
+	InvalidRequest = 0x3
 };
 
 class LoginResponse : public Response

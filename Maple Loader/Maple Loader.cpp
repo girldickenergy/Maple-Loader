@@ -27,10 +27,12 @@ enum LoaderState
 {
 	Idle,
 	LoggingIn,
-	LoggedIn
+	LoggedIn,
+	DownloadingDLL,
+	Injecting
 };
 
-LoaderState State = Idle;
+int State = Idle;
 
 std::string sessionToken;
 std::string expiresAt;
@@ -122,7 +124,7 @@ bool DrawMenu()
 
 		ImGui::SetCursorPos(ImVec2(StyleProvider::WindowPadding.x, StyleProvider::TitleBarHeight + StyleProvider::WindowPadding.y));
 
-		if (State != LoggedIn)
+		if ((State & LoggedIn) != LoggedIn)
 		{
 			ImGui::BeginChild(xor ("LoginArea"), ImVec2(340, 180));
 			{
@@ -180,7 +182,7 @@ bool DrawMenu()
 						ShutdownAndExit();
 					}
 
-					State = LoggingIn;
+					State = State | LoggingIn;
 				}
 
 				ImGui::PopFont();
@@ -234,6 +236,8 @@ bool DrawMenu()
 
 						ShutdownAndExit();
 					}
+
+					State = State | DownloadingDLL;
 				}
 
 				ImGui::PopFont();
@@ -322,6 +326,12 @@ void OnIncomingMessage(const char* msg, size_t size)
 						
 					break;
 				}
+				case LoginResult::InvalidRequest:
+				{
+					MessageBoxA(UI::Window, xor ("Invalid request!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+					break;
+				}
 				default:
 				{
 					MessageBoxA(UI::Window, xor ("An internal error occured: unknown login result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
@@ -330,6 +340,12 @@ void OnIncomingMessage(const char* msg, size_t size)
 				}
 			}
 				
+			break;
+		}
+		case ResponseType::DllStream:
+		{
+			MessageBoxA(UI::Window, xor ("Received DLL Stream"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
 			break;
 		}
 	}
