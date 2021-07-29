@@ -116,10 +116,10 @@ void TcpClient::publishServerDisconnected(const pipe_ret_t& ret)
 
 void TcpClient::ReceiveTask()
 {
-	char msg[MAX_PACKET_SIZE];
+	char* msg = static_cast<char*>(malloc(5000000));
 	while (!stop) {
 		memset(msg, 0, sizeof msg);
-		int numOfBytesReceived = recv(m_sockfd, msg, MAX_PACKET_SIZE, 0);
+		int numOfBytesReceived = recv(m_sockfd, msg, 5000000, 0);
 		if (numOfBytesReceived < 1) {
 			pipe_ret_t ret;
 			ret.success = false;

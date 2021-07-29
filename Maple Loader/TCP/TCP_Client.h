@@ -25,8 +25,6 @@ typedef unsigned int uint;
 #include "client_observer.h"
 #include "pipe_ret_t.h"
 
-#define MAX_PACKET_SIZE (4096 * 64)
-
 class TcpClient
 {
 private:
