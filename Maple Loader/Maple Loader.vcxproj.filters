@@ -628,6 +628,9 @@
     <Filter Include="Packets\Requests">
       <UniqueIdentifier>{48fae14b-3cf8-4054-a621-8364d0ceaf02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\DirectX">
+      <UniqueIdentifier>{996b5e0a-1fbe-448c-b673-ad38ebfbb011}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\UI.h">
@@ -1295,6 +1298,48 @@
     <ClInclude Include="Packets\Requests\RequestType.h">
       <Filter>Packets\Requests</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Textures.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9core.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9effect.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9math.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9mesh.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9shader.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9shape.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9tex.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9xof.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9anim.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Widgets.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Cheat.h" />
+    <ClInclude Include="Utils\TextureUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Packets\Requests\DllStreamRequest.h">
       <Filter>Packets\Requests</Filter>
     </ClInclude>
@@ -1351,6 +1396,9 @@
     <None Include="Crypto\adhoc.cpp.proto">
       <Filter>Crypto</Filter>
     </None>
+    <None Include="UI\DirectX\d3dx9math.inl">
+      <Filter>UI\DirectX</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Crypto\Filelist.txt">
@@ -1368,5 +1416,10 @@
     <Text Include="Crypto\Readme.txt">
       <Filter>Crypto</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="UI\DirectX\d3dx9.lib">
+      <Filter>UI\DirectX</Filter>
+    </Library>
   </ItemGroup>
 </Project>

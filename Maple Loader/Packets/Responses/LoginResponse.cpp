@@ -4,17 +4,59 @@
 
 LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
 {
-	auto encrypted = StringUtilities::StringToByteArray(RawData[0]);
+	//login result
+	auto encryptedLoginResult = StringUtilities::StringToByteArray(RawData[0]);
 	
-	encrypted.erase(encrypted.begin());
+	encryptedLoginResult.erase(encryptedLoginResult.begin());
 
-	std::string decrypted = matchedClient->aes->Decrypt(encrypted);
+	std::string decryptedLoginResult = matchedClient->aes->Decrypt(encryptedLoginResult);
 
-	std::vector<std::string> decryptedSplit = StringUtilities::Split(decrypted);
-	decryptedSplit[1].erase(decryptedSplit[1].begin());
-	decryptedSplit[2].erase(decryptedSplit[2].begin());
+	std::vector<std::string> decryptedLoginResultSplit = StringUtilities::Split(decryptedLoginResult);
+	Result = static_cast<LoginResult>(decryptedLoginResultSplit[0][0]);
+	if (Result != LoginResult::Success)
+		return;
 
-	Result = static_cast<LoginResult>(decryptedSplit[0][0]);
-	SessionToken = decryptedSplit[1];
-	ExpiresAt = decryptedSplit[2];
+	decryptedLoginResultSplit[1].erase(decryptedLoginResultSplit[1].begin());
+	SessionToken = decryptedLoginResultSplit[1];
+	//login result
+
+	//games list
+	auto encryptedGames = StringUtilities::StringToByteArray(RawData[1]);
+
+	encryptedGames.erase(encryptedGames.begin());
+
+	std::string decryptedGames = matchedClient->aes->Decrypt(encryptedGames);
+	std::vector<std::string> decryptedGamesSplit = StringUtilities::Split(decryptedGames);
+	for (int i = 0; i < decryptedGamesSplit.size(); i++)
+	{
+		if (i > 0)
+			decryptedGamesSplit[i].erase(decryptedGamesSplit[i].begin());
+		
+		std::vector<std::string> gameSplit = StringUtilities::Split(matchedClient->aes->Decrypt(StringUtilities::StringToByteArray(decryptedGamesSplit[i])));
+		gameSplit[1].erase(gameSplit[1].begin());
+		gameSplit[2].erase(gameSplit[2].begin());
+
+		Games.push_back(new Game(std::stoi(gameSplit[0]), gameSplit[1], gameSplit[2]));
+	}
+	//games list
+	
+	//cheats list
+	auto encryptedCheats = StringUtilities::StringToByteArray(RawData[2]);
+
+	encryptedCheats.erase(encryptedCheats.begin());
+
+	std::string decryptedCheats = matchedClient->aes->Decrypt(encryptedCheats);
+	std::vector<std::string> decryptedCheatsSplit = StringUtilities::Split(decryptedCheats);
+	for (int i = 0; i < decryptedCheatsSplit.size(); i++)
+	{
+		if (i > 0)
+			decryptedCheatsSplit[i].erase(decryptedCheatsSplit[i].begin());
+
+		std::vector<std::string> cheatSplit = StringUtilities::Split(matchedClient->aes->Decrypt(StringUtilities::StringToByteArray(decryptedCheatsSplit[i])));
+		for (int j = 1; j < cheatSplit.size(); j++)
+			cheatSplit[j].erase(cheatSplit[j].begin());
+
+		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), cheatSplit[2], std::stoi(cheatSplit[3]), static_cast<CheatStatus>(std::stoi(cheatSplit[4])), cheatSplit[5], cheatSplit[6]));
+	}
+	//cheats list
 }

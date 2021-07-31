@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include <windows.h>
 
 #include <Iphlpapi.h>
 #pragma comment(lib, "iphlpapi.lib")
@@ -50,7 +49,7 @@ class HWID
 			return { };
 
 		m_sResult = reinterpret_cast<const char*>(m_pOutBuffer.get() + m_dwSerialNumberOffset);
-		m_sResult.erase(std::remove_if(m_sResult.begin(), m_sResult.end(), std::isspace), m_sResult.end());
+		m_sResult.erase(std::remove_if(m_sResult.begin(), m_sResult.end(), [](unsigned char x) { return std::isspace(x); }), m_sResult.end());
 
 		return m_sResult;
 	}

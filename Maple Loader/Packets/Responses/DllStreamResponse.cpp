@@ -10,5 +10,12 @@ DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient
 
 	std::string decrypted = matchedClient->aes->Decrypt(encrypted);
 
-	std::vector<unsigned char> byteArray = StringUtilities::StringToByteArray(decrypted);
+	std::vector<std::string> decryptedSplit = StringUtilities::Split(decrypted);
+	Result = static_cast<DllStreamResult>(decryptedSplit[0][0]);
+	if (Result != DllStreamResult::Success)
+		return;
+	
+	decryptedSplit[1].erase(decryptedSplit[1].begin());
+
+	std::vector<unsigned char> byteArray = StringUtilities::StringToByteArray(decryptedSplit[1]);
 }
