@@ -263,7 +263,7 @@ bool UI::Render()
 			{
 				ImGui::PushFont(StyleProvider::FontHugeBold);
 				ImVec2 titleSize = ImGui::CalcTextSize(xor ("Maple"));
-				ImGui::SetCursorPosX(ImGui::GetWindowSize().x / 2 - titleSize.x / 2 - ImGui::GetStyle().ItemSpacing.x - StyleProvider::MapleLogoSize.x);
+				ImGui::SetCursorPosX(ImGui::GetWindowSize().x / 2 - titleSize.x / 2 - ImGui::GetStyle().ItemSpacing.x - (StyleProvider::MapleLogoSize.x / 2));
 				ImGui::Image(StyleProvider::MapleLogoTexture, StyleProvider::MapleLogoSize);
 				ImGui::SameLine();
 				ImGui::TextColored(StyleProvider::LinkColour, xor ("Maple"));
