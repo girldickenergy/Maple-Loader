@@ -1349,9 +1349,6 @@
     <ClInclude Include="Packets\Responses\DllStreamResponse.h">
       <Filter>Packets\Responses</Filter>
     </ClInclude>
-    <ClInclude Include="UI\AnimatedTexture.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\AnimationHandler.h">
       <Filter>UI</Filter>
     </ClInclude>

@@ -565,7 +565,6 @@
     <ClInclude Include="TCP\Pipe_Ret_T.h" />
     <ClInclude Include="TCP\TCP_Client.h" />
     <ClInclude Include="UI\AnimatedLogin.h" />
-    <ClInclude Include="UI\AnimatedTexture.h" />
     <ClInclude Include="UI\AnimationHandler.h" />
     <ClInclude Include="UI\DirectX\d3dx9.h" />
     <ClInclude Include="UI\DirectX\d3dx9anim.h" />
