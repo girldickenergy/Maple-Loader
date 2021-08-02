@@ -8,12 +8,12 @@
 
 #include "StyleProvider.h"
 #include "Widgets.h"
+#include "AnimationHandler.h"
 
 #include "../AntiDebug/xorstr.hpp"
 #include "../Packets/Requests/DllStreamRequest.h"
 #include "../Packets/Requests/LoginRequest.h"
 #include "../Utils/HWID.h"
-#include "AnimationHandler.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT UI::wndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

@@ -1,9 +1,7 @@
 #include "AnimationHandler.h"
+
 #include "../Utils/TextureUtils.h"
 #include "StyleProvider.h"
-
-#include "DirectX/d3dx9tex.h"
-#pragma comment(lib, "D3dx9")
 
 void AnimationHandler::StartAnimation(AnimatedTexture aniTex)
 {

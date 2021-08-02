@@ -1,12 +1,12 @@
 #pragma once
 
-#include "DirectX/d3dx9tex.h"
-#pragma comment(lib, "D3dx9")
-#include "../Utils/TextureUtils.h"
 #include "ImGui/imgui.h"
+
+#include "../Utils/TextureUtils.h"
 
 #include "Fonts.h"
 #include "Textures.h"
+
 #include "AnimatedTexture.h"
 #include "AnimatedLogin.h"
 

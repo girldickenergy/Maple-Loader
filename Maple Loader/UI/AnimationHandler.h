@@ -1,4 +1,5 @@
 #pragma once
+
 #include "AnimatedTexture.h"
 #include "ImGui/imgui.h"
 

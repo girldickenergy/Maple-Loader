@@ -1,4 +1,3 @@
-#define CURL_STATICLIB
 #include "Globals.h"
 
 #include "UI/UI.h"
