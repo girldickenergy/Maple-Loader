@@ -114,6 +114,16 @@ void OnIncomingMessage(const char* msg, size_t size)
 					Globals::LoaderState = LoaderStates::LoggedIn;
 
 					break;
+				case DllStreamResult::InvalidSession:
+					MessageBoxA(UI::Window, xor ("Your session has expired.\n\nPlease log in again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::LoaderState = LoaderStates::Idle;
+
+					break;
+				case DllStreamResult::InternalError:
+					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::LoaderState = LoaderStates::LoggedIn;
+
+					break;
 				default:
 					MessageBoxA(UI::Window, xor ("An internal error occured: unknown dllstream result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 					Globals::LoaderState = LoaderStates::LoggedIn;
