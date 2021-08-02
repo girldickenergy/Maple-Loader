@@ -3,25 +3,28 @@
 #include "../Utils/TextureUtils.h"
 #include "StyleProvider.h"
 
-void AnimationHandler::StartAnimation(AnimatedTexture aniTex)
+void AnimationHandler::StartAnimation(AnimatedTexture* aniTex)
 {
-	aniTex.startedAt = GetTickCount();
-	aniTex.lastFrameUpdate = GetTickCount();
+	aniTex->startedAt = GetTickCount();
+	aniTex->lastFrameUpdate = GetTickCount();
 }
 
-void AnimationHandler::DoAnimation(AnimatedTexture aniTex, const ImVec2& loc, const ImVec2& max)
+void AnimationHandler::DoAnimation(AnimatedTexture* aniTex, const ImVec2& loc, const ImVec2& max)
 {
-	if (!aniTex.IsStarted())
+	if (!aniTex->IsStarted())
 		StartAnimation(aniTex);
 
-	if (aniTex.currFrame == aniTex.Frames.size()) // loop
-		aniTex.currFrame = 0;
+	if (aniTex->currFrame == aniTex->Textures.size() - 1) // loop
+		aniTex->currFrame = 0;
 	
-	if (GetTickCount() - aniTex.lastFrameUpdate > 33) { // 30fps
-		aniTex.currFrame++;
-		aniTex.lastFrameUpdate = GetTickCount();
+	if (GetTickCount() - aniTex->lastFrameUpdate > 33) { // 30fps
+		aniTex->currFrame++;
+		aniTex->lastFrameUpdate = GetTickCount();
 	}
 
-	IDirect3DTexture9* tex = TextureUtils::CreateTexture(aniTex.Frames[aniTex.currFrame].data(), aniTex.Frames[aniTex.currFrame].size());
-	ImGui::GetWindowDrawList()->AddImage(tex, ImVec2(0, 0), StyleProvider::WindowSize);
+	if (!aniTex->AreTexturesConstructed())
+		aniTex->ConstructTextures();
+
+	if (IDirect3DTexture9* tex = aniTex->GetCurrentFrameTexture(); tex!=nullptr)
+		ImGui::GetWindowDrawList()->AddImage(tex, ImVec2(0, 0), StyleProvider::WindowSize);
 }

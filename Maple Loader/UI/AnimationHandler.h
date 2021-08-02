@@ -6,7 +6,7 @@
 class AnimationHandler
 {
 private:
-	static void StartAnimation(AnimatedTexture aniTex);
+	static void StartAnimation(AnimatedTexture* aniTex);
 public:
-	static void DoAnimation(AnimatedTexture aniTex, const ImVec2& loc, const ImVec2& max);
+	static void DoAnimation(AnimatedTexture* aniTex, const ImVec2& loc, const ImVec2& max);
 };
