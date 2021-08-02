@@ -121,8 +121,6 @@ bool UI::Initialize(HINSTANCE instance, int showCmd)
 	StyleProvider::LoadFonts();
 	StyleProvider::LoadColours();
 	StyleProvider::LoadTextures();
-
-	AnimationHandler::SetFrames(StyleProvider::LoginBackgroundTextureAnimated);
 	
 	ImGuiIO& io = ImGui::GetIO();
 	io.IniFilename = nullptr;
@@ -157,7 +155,7 @@ bool UI::Render()
 		ImGui::PushFont(StyleProvider::FontDefault);
 
 		if (Globals::LoaderState < LoaderStates::LoggedIn)
-			AnimationHandler::DoAnimation(ImVec2(0, 0), StyleProvider::WindowSize);
+			AnimationHandler::DoAnimation(StyleProvider::LoginBackgroundTextureAnimated, ImVec2(0, 0), StyleProvider::WindowSize);
 			//ImGui::GetWindowDrawList()->AddImage(StyleProvider::LoginBackgroundTexture, ImVec2(0, 0), StyleProvider::WindowSize);
 
 		if (Globals::LoaderState < LoaderStates::LoggedIn)
