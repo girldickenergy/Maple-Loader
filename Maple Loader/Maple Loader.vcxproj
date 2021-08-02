@@ -340,6 +340,7 @@
     <ClCompile Include="Packets\Responses\Response.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
+    <ClCompile Include="UI\AnimationHandler.cpp" />
     <ClCompile Include="UI\ImGui\imgui.cpp" />
     <ClCompile Include="UI\ImGui\imgui_demo.cpp" />
     <ClCompile Include="UI\ImGui\imgui_draw.cpp" />
@@ -563,6 +564,9 @@
     <ClInclude Include="TCP\Client_Observer.h" />
     <ClInclude Include="TCP\Pipe_Ret_T.h" />
     <ClInclude Include="TCP\TCP_Client.h" />
+    <ClInclude Include="UI\AnimatedLogin.h" />
+    <ClInclude Include="UI\AnimatedTexture.h" />
+    <ClInclude Include="UI\AnimationHandler.h" />
     <ClInclude Include="UI\DirectX\d3dx9.h" />
     <ClInclude Include="UI\DirectX\d3dx9anim.h" />
     <ClInclude Include="UI\DirectX\d3dx9core.h" />

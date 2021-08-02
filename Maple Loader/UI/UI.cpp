@@ -13,6 +13,7 @@
 #include "../Packets/Requests/DllStreamRequest.h"
 #include "../Packets/Requests/LoginRequest.h"
 #include "../Utils/HWID.h"
+#include "AnimationHandler.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT UI::wndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
@@ -154,7 +155,8 @@ bool UI::Render()
 		ImGui::PushFont(StyleProvider::FontDefault);
 
 		if (Globals::LoaderState < LoaderStates::LoggedIn)
-			ImGui::GetWindowDrawList()->AddImage(StyleProvider::LoginBackgroundTexture, ImVec2(0, 0), StyleProvider::WindowSize);
+			AnimationHandler::DoAnimation(StyleProvider::LoginBackgroundTextureAnimated, ImVec2(0, 0), StyleProvider::WindowSize);
+			//ImGui::GetWindowDrawList()->AddImage(StyleProvider::LoginBackgroundTexture, ImVec2(0, 0), StyleProvider::WindowSize);
 
 		if (Globals::LoaderState < LoaderStates::LoggedIn)
 		{

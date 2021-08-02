@@ -593,6 +593,9 @@
     <ClCompile Include="Packets\Responses\DllStreamResponse.cpp">
       <Filter>Packets\Responses</Filter>
     </ClCompile>
+    <ClCompile Include="UI\AnimationHandler.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -1345,6 +1348,15 @@
     </ClInclude>
     <ClInclude Include="Packets\Responses\DllStreamResponse.h">
       <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\AnimatedTexture.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\AnimationHandler.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\AnimatedLogin.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
