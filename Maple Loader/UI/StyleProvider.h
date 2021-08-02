@@ -64,12 +64,9 @@ public:
 
 	//textures/texture sizes
 	static inline float LoginBackgroundWavesWidth = 225;
-	static inline IDirect3DTexture9* LoginBackgroundTexture;
 	static inline ImVec2 MapleLogoSize = ImVec2(24, 24);
 	static inline IDirect3DTexture9* MapleLogoTexture;
 	static inline ImVec2 CheatBannerSize = ImVec2(400, 150);
-
-	static inline IDirect3DTexture9* WhitePixelTexture;
 
 	//animations
 	static inline AnimatedTexture LoginBackgroundTextureAnimated;
@@ -134,9 +131,7 @@ public:
 
 	static void LoadTextures()
 	{
-		LoginBackgroundTexture = TextureUtils::CreateTexture(Textures::LoginBackground, Textures::LoginBackgroundSize);
 		MapleLogoTexture = TextureUtils::CreateTexture(Textures::MapleLogo, Textures::MapleLogoSize);
-		WhitePixelTexture = TextureUtils::CreateTexture(Textures::WhitePixel, Textures::WhitePixelSize);
 
 		AnimatedTexture loginAnim = AnimatedTexture();
 		loginAnim.Frames.push_back(std::vector<unsigned char>(std::begin(AnimatedLogin::Anim0), std::end(AnimatedLogin::Anim0)));
