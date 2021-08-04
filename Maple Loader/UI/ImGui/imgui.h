@@ -75,6 +75,8 @@ Index of this file:
 #define IMGUI_IMPL_API              IMGUI_API
 #endif
 
+// #define IMGUI_ENABLE_FREETYPE
+
 // Helper Macros
 #ifndef IM_ASSERT
 #include <assert.h>
