@@ -10,9 +10,4 @@
     <ClCompile Include="Injector.cpp" />
     <ClCompile Include="MMap.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <Filter Include="mmap">
-      <UniqueIdentifier>{38d61a6a-4bee-49ae-843c-d06755158b44}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
 </Project>
