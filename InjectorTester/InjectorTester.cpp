@@ -194,9 +194,9 @@ int main()
 
 	cacheMemoryRegions(hProcess);
 	
-	char* maple = ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xAD\xFD\xAA\xFF", "xxxxxxxxxxxxxxxx", 
+	char* maple = ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63", "xxxxxxxxxxx", 
 		(char*)memoryRegions[0].BaseAddress, (char*)((uintptr_t)mi.lpBaseOfDll + (uintptr_t)pmc.PeakWorkingSetSize), hProcess);
-	char* userData = ScanEx("\x63\x69\x67\x61\x6d\x5f\x69\x6b\x75\x7a\x61\xFF\xAD\xFD\xAA\xFF", "xxxxxxxxxxxxxxxx", 
+	char* userData = ScanEx("\x63\x69\x67\x61\x6d\x5f\x69\x6b\x75\x7a\x61", "xxxxxxxxxxx", 
 		(char*)memoryRegions[0].BaseAddress, (char*)((uintptr_t)mi.lpBaseOfDll + (uintptr_t)pmc.PeakWorkingSetSize), hProcess);
 
 	// write maple binary

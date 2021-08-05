@@ -154,9 +154,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Injector.cpp" />
+    <ClCompile Include="MMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryUtils.h" />
+    <ClInclude Include="MMap.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
