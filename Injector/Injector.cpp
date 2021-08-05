@@ -5,31 +5,31 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <algorithm>
+#include <psapi.h>
+#include <filesystem>
 
 #include "MemoryUtils.h"
 #include "../ThemidaSDK.h"
+typedef HMODULE(WINAPI* pLoadLibraryA)(LPCSTR);
+typedef FARPROC(WINAPI* pGetProcAddress)(HMODULE, LPCSTR);
 
-using pLoadLibraryA = HMODULE(__stdcall*)(LPCSTR);
-using pGetProcAddress = FARPROC(__stdcall*)(HMODULE, LPCSTR);
+typedef BOOL(WINAPI* PDLL_MAIN)(HMODULE, DWORD, PVOID);
 
-using dllMain = INT(__stdcall*)(HMODULE, DWORD, LPVOID);
-#pragma optimize("", off)
-struct lData
+typedef struct _MANUAL_INJECT
 {
-	LPVOID ImageBase;
-
+	PVOID ImageBase;
 	PIMAGE_NT_HEADERS NtHeaders;
-	PIMAGE_BASE_RELOCATION BaseReloc;
+	PIMAGE_BASE_RELOCATION BaseRelocation;
 	PIMAGE_IMPORT_DESCRIPTOR ImportDirectory;
-
 	pLoadLibraryA fnLoadLibraryA;
 	pGetProcAddress fnGetProcAddress;
-};
+}MANUAL_INJECT, * PMANUAL_INJECT;
+#pragma optimize("", off)
 
 auto FindProcessId(const std::wstring& processName) -> DWORD
 {
-	VM_START
-	PROCESSENTRY32 processInfo;
+	//VM_START
+		PROCESSENTRY32 processInfo;
 	processInfo.dwSize = sizeof processInfo;
 
 	HANDLE processSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
@@ -55,122 +55,173 @@ auto FindProcessId(const std::wstring& processName) -> DWORD
 	}
 
 	CloseHandle(processSnapshot);
-	VM_END
-	return 0;
+	//VM_END
+		return 0;
 }
 
-DWORD __stdcall LibraryLoader(LPVOID Memory)
+
+DWORD WINAPI LoadDll(PVOID p)
 {
-	VM_START
-	auto* LoaderParams = static_cast<lData*>(Memory);
+	PMANUAL_INJECT ManualInject;
 
-	PIMAGE_BASE_RELOCATION pIBR = LoaderParams->BaseReloc;
+	HMODULE hModule;
+	DWORD i, Function, count, delta;
 
-	auto delta = (DWORD)(static_cast<LPBYTE>(LoaderParams->ImageBase) - LoaderParams->NtHeaders->OptionalHeader.
-		ImageBase); // Calculate the delta
+	PDWORD ptr;
+	PWORD list;
 
-	while (pIBR->VirtualAddress != 0u)
+	PIMAGE_BASE_RELOCATION pIBR;
+	PIMAGE_IMPORT_DESCRIPTOR pIID;
+	PIMAGE_IMPORT_BY_NAME pIBN;
+	PIMAGE_THUNK_DATA FirstThunk, OrigFirstThunk;
+
+	PDLL_MAIN EntryPoint;
+
+	ManualInject = (PMANUAL_INJECT)p;
+
+	pIBR = ManualInject->BaseRelocation;
+	delta = (DWORD)((LPBYTE)ManualInject->ImageBase - ManualInject->NtHeaders->OptionalHeader.ImageBase); // Calculate the delta
+
+	// Relocate the image
+
+	while (pIBR->VirtualAddress)
 	{
 		if (pIBR->SizeOfBlock >= sizeof(IMAGE_BASE_RELOCATION))
 		{
-			int count = (pIBR->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
-			auto* list = reinterpret_cast<PWORD>(pIBR + 1);
+			count = (pIBR->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
+			list = (PWORD)(pIBR + 1);
 
-			for (int i = 0; i < count; i++)
+			for (i = 0;i < count;i++)
 			{
-				if (list[i] != 0u)
+				if (list[i])
 				{
-					auto* ptr = reinterpret_cast<PDWORD>(static_cast<LPBYTE>(LoaderParams->ImageBase) + (pIBR->
-						VirtualAddress + (list[i]
-							& 0xFFF)));
+					ptr = (PDWORD)((LPBYTE)ManualInject->ImageBase + (pIBR->VirtualAddress + (list[i] & 0xFFF)));
 					*ptr += delta;
 				}
 			}
 		}
 
-		pIBR = reinterpret_cast<PIMAGE_BASE_RELOCATION>(reinterpret_cast<LPBYTE>(pIBR) + pIBR->SizeOfBlock);
+		pIBR = (PIMAGE_BASE_RELOCATION)((LPBYTE)pIBR + pIBR->SizeOfBlock);
 	}
 
-	PIMAGE_IMPORT_DESCRIPTOR pIID = LoaderParams->ImportDirectory;
+	pIID = ManualInject->ImportDirectory;
 
 	// Resolve DLL imports
-	while (pIID->Characteristics != 0u)
+
+	while (pIID->Characteristics)
 	{
-		auto* OrigFirstThunk = reinterpret_cast<PIMAGE_THUNK_DATA>(static_cast<LPBYTE>(LoaderParams->ImageBase) + pIID->
-			OriginalFirstThunk);
-		auto* FirstThunk = reinterpret_cast<PIMAGE_THUNK_DATA>(static_cast<LPBYTE>(LoaderParams->ImageBase) + pIID->
-			FirstThunk);
+		OrigFirstThunk = (PIMAGE_THUNK_DATA)((LPBYTE)ManualInject->ImageBase + pIID->OriginalFirstThunk);
+		FirstThunk = (PIMAGE_THUNK_DATA)((LPBYTE)ManualInject->ImageBase + pIID->FirstThunk);
 
-		HMODULE hModule = LoaderParams->fnLoadLibraryA(static_cast<LPCSTR>(LoaderParams->ImageBase) + pIID->Name);
+		hModule = ManualInject->fnLoadLibraryA((LPCSTR)ManualInject->ImageBase + pIID->Name);
 
-		if (hModule == nullptr)
+		if (!hModule)
 		{
 			return FALSE;
 		}
 
-		while (OrigFirstThunk->u1.AddressOfData != 0u)
+		while (OrigFirstThunk->u1.AddressOfData)
 		{
-			if ((OrigFirstThunk->u1.Ordinal & IMAGE_ORDINAL_FLAG) != 0u)
+			if (OrigFirstThunk->u1.Ordinal & IMAGE_ORDINAL_FLAG)
 			{
 				// Import by ordinal
-				auto Function = (DWORD)LoaderParams->fnGetProcAddress(hModule,
-				                                                      (LPCSTR)(OrigFirstThunk->u1.Ordinal & 0xFFFF));
-				if (Function == 0u)
+
+				Function = (DWORD)ManualInject->fnGetProcAddress(hModule, (LPCSTR)(OrigFirstThunk->u1.Ordinal & 0xFFFF));
+
+				if (!Function)
+				{
 					return FALSE;
+				}
 
 				FirstThunk->u1.Function = Function;
 			}
+
 			else
 			{
 				// Import by name
-				auto* pIBN = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(static_cast<LPBYTE>(LoaderParams->ImageBase) +
-					OrigFirstThunk->u1.
-					                AddressOfData);
-				auto Function = (DWORD)LoaderParams->fnGetProcAddress(hModule, static_cast<LPCSTR>(pIBN->Name));
-				if (Function == 0u)
+
+				pIBN = (PIMAGE_IMPORT_BY_NAME)((LPBYTE)ManualInject->ImageBase + OrigFirstThunk->u1.AddressOfData);
+				Function = (DWORD)ManualInject->fnGetProcAddress(hModule, (LPCSTR)pIBN->Name);
+
+				if (!Function)
+				{
 					return FALSE;
+				}
 
 				FirstThunk->u1.Function = Function;
 			}
+
 			OrigFirstThunk++;
 			FirstThunk++;
 		}
+
 		pIID++;
 	}
 
-	if (LoaderParams->NtHeaders->OptionalHeader.AddressOfEntryPoint != 0u)
+	if (ManualInject->NtHeaders->OptionalHeader.AddressOfEntryPoint)
 	{
-		auto EntryPoint = reinterpret_cast<dllMain>(static_cast<LPBYTE>(LoaderParams->ImageBase) + LoaderParams->
-			NtHeaders->
-			OptionalHeader.AddressOfEntryPoint);
-
-		return EntryPoint(static_cast<HMODULE>(LoaderParams->ImageBase), DLL_PROCESS_ATTACH, nullptr);
-		// Call the entry point
+		EntryPoint = (PDLL_MAIN)((LPBYTE)ManualInject->ImageBase + ManualInject->NtHeaders->OptionalHeader.AddressOfEntryPoint);
+		return EntryPoint((HMODULE)ManualInject->ImageBase, DLL_PROCESS_ATTACH, NULL); // Call the entry point
 	}
-	VM_END
+
 	return TRUE;
 }
 
-DWORD __stdcall stub()
+DWORD WINAPI LoadDllEnd()
 {
 	return 0;
 }
 
+inline std::vector<MemoryRegion> memoryRegions;
+
+void cacheMemoryRegions(HANDLE hProcess)
+{
+	memoryRegions.clear();
+
+	MEMORY_BASIC_INFORMATION32 mbi;
+	LPCVOID address = nullptr;
+
+	while (VirtualQueryEx(hProcess, address, reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mbi),
+		sizeof mbi) != 0)
+	{
+		if (mbi.State == MEM_COMMIT && mbi.Protect >= 0x10 && mbi.Protect <= 0x80)
+		{
+			memoryRegions.push_back(*new MemoryRegion(mbi));
+		}
+		address = reinterpret_cast<LPCVOID>(mbi.BaseAddress + mbi.RegionSize);
+	}
+}
+
 auto main() -> int
 {
-	VM_START
-	STR_ENCRYPTW_START
-	unsigned char azukiMagic[] = {0x61, 0x7a, 0x75, 0x6b, 0x69, 0x5f, 0x6d, 0x61, 0x67, 0x69, 0x63};
+	TOKEN_PRIVILEGES tp;
+	MANUAL_INJECT ManualInject;
+	//VM_START
+	//	STR_ENCRYPTW_START
+		unsigned char azukiMagic[] = { 0x61, 0x7a, 0x75, 0x6b, 0x69, 0x5f, 0x6d, 0x61, 0x67, 0x69, 0x63 };
 	unsigned char azukiMagicRev[] = { 0x63, 0x69, 0x67, 0x61, 0x6d, 0x5f, 0x69, 0x6b, 0x75, 0x7a, 0x61 };
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
-	auto* mapleBinary = static_cast<char*>(malloc(100000000)); // 100 mb
-	auto* userData = static_cast<char*>(malloc(256 * 2)); // we don't need this whole address space, but better safe than sorry
+	auto* mapleBinary = new char[150000000];
+	auto* userData = new char[256 * 5 * 10];
+	
+	//auto* mapleBinary = static_cast<char*>(malloc(100000000)); // 100 mb
+	//auto* userData = static_cast<char*>(malloc(256 * 5 * 10)); // we don't need this whole address space, but better safe than sorry
 
-	memset(mapleBinary, 0xFF, 100000000); // set entire memory space to 0xFF
-	memset(userData, 0xFF, 256*2); // set entire memory space to 0xFF
+	memset(mapleBinary, 0xFF, 150000000); // set entire memory space to 0xFF
+	memset(userData, 0xFF, 256 * 5 * 10); // set entire memory space to 0xFF
 
 	memcpy(mapleBinary, azukiMagic, sizeof azukiMagic); // copy "azuki_magic" into mapleBinary region
 	memcpy(userData, azukiMagicRev, sizeof azukiMagicRev); // copy "cigam_ikuza" into mapleBinary region
+
+	mapleBinary[sizeof(azukiMagic) + 0x01] = 0xAD;
+	mapleBinary[sizeof(azukiMagic) + 0x02] = 0xFD;
+	mapleBinary[sizeof(azukiMagic) + 0x03] = 0xAA;
+	mapleBinary[sizeof(azukiMagic) + 0x04] = 0xFF;
+
+	userData[sizeof(azukiMagicRev) + 0x01] = 0xAD;
+	userData[sizeof(azukiMagicRev) + 0x02] = 0xFD;
+	userData[sizeof(azukiMagicRev) + 0x03] = 0xAA;
+	userData[sizeof(azukiMagicRev) + 0x04] = 0xFF;
 
 	// first the binary has to be written
 	while (memcmp(mapleBinary, azukiMagic, sizeof azukiMagic) == 0)
@@ -182,101 +233,109 @@ auto main() -> int
 	{
 		Sleep(1500);
 	}
-	
-	DWORD ProcessId = FindProcessId(L"osu!.exe");
 
-	lData LoaderParams{};
+	DWORD ProcessId = FindProcessId(L"osu!.exe");
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
+	HMODULE modules[250];
+	DWORD cbNeeded = 0;
+	EnumProcessModules(hProcess, modules, sizeof(modules), &cbNeeded);
+
+	TCHAR path[MAX_PATH];
+	HMODULE moduleOsu = modules[0];
+
+	cacheMemoryRegions(hProcess);
+	MODULEINFO mi;
+	GetModuleInformation(hProcess, moduleOsu, &mi, sizeof MODULEINFO);
+
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+	GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)& pmc, sizeof pmc);
 
 	auto* pDosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(mapleBinary);
-	auto* pNtHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<LPBYTE>(mapleBinary) + pDosHeader->
-		e_lfanew);
+	auto* pNtHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<LPBYTE>(mapleBinary + pDosHeader->
+		e_lfanew));
+	PIMAGE_SECTION_HEADER pISH;
 
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
+	LPVOID image = VirtualAllocEx(hProcess, NULL, pNtHeaders->OptionalHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Allocate memory for the DLL
 
-	auto* pDosHeaderOsu = reinterpret_cast<PIMAGE_DOS_HEADER>(hProcess);
-	auto* pNtHeadersOsu = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<LPBYTE>(hProcess) + pDosHeaderOsu->
-		e_lfanew);
-	
-	PVOID ExecutableImage = VirtualAllocEx(hProcess, nullptr, pNtHeaders->OptionalHeader.SizeOfImage,
-	                                       MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	WriteProcessMemory(hProcess, image, mapleBinary, pNtHeaders->OptionalHeader.SizeOfHeaders, NULL);
 
-	WriteProcessMemory(hProcess, ExecutableImage, mapleBinary,
-	                   pNtHeaders->OptionalHeader.SizeOfHeaders, nullptr);
+	pISH = (PIMAGE_SECTION_HEADER)(pNtHeaders + 1);
 
-	auto* pSectHeader = reinterpret_cast<PIMAGE_SECTION_HEADER>(pNtHeaders + 1);
-	for (int i = 0; i < pNtHeaders->FileHeader.NumberOfSections; i++)
+	// Copy the DLL to target process
+
+	printf("\nCopying sections to target process.\n");
+
+	for (int i = 0;i < pNtHeaders->FileHeader.NumberOfSections;i++)
 	{
-		WriteProcessMemory(hProcess, static_cast<LPBYTE>(ExecutableImage) + pSectHeader[i].VirtualAddress,
-		                   reinterpret_cast<LPBYTE>(mapleBinary) + pSectHeader[i].PointerToRawData,
-		                   pSectHeader[i].SizeOfRawData,
-		                   nullptr);
+		WriteProcessMemory(hProcess, (PVOID)((LPBYTE)image + pISH[i].VirtualAddress), (PVOID)((LPBYTE)mapleBinary + pISH[i].PointerToRawData), pISH[i].SizeOfRawData, NULL);
 	}
 
-	PVOID LoaderMemory = VirtualAllocEx(hProcess, nullptr, 4096, MEM_COMMIT | MEM_RESERVE,
-	                                    PAGE_EXECUTE_READWRITE);
+	printf("\nAllocating memory for the loader code.\n");
+	LPVOID mem = VirtualAllocEx(hProcess, NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Allocate memory for the loader code
 
-	LoaderParams.ImageBase = ExecutableImage;
-	LoaderParams.NtHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(static_cast<LPBYTE>(ExecutableImage) + pDosHeader->
-		e_lfanew);
 
-	LoaderParams.BaseReloc = reinterpret_cast<PIMAGE_BASE_RELOCATION>(static_cast<LPBYTE>(ExecutableImage)
-		+ pNtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
-	LoaderParams.ImportDirectory = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(static_cast<LPBYTE>(ExecutableImage)
-		+ pNtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+	printf("\nLoader code allocated at %#x\n", mem);
+	memset(&ManualInject, 0, sizeof(MANUAL_INJECT));
 
-	LoaderParams.fnLoadLibraryA = LoadLibraryA;
-	LoaderParams.fnGetProcAddress = GetProcAddress;
+	ManualInject.ImageBase = image;
+	ManualInject.NtHeaders = (PIMAGE_NT_HEADERS)((LPBYTE)image + pDosHeader->e_lfanew);
+	ManualInject.BaseRelocation = (PIMAGE_BASE_RELOCATION)((LPBYTE)image + pNtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
+	ManualInject.ImportDirectory = (PIMAGE_IMPORT_DESCRIPTOR)((LPBYTE)image + pNtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+	ManualInject.fnLoadLibraryA = LoadLibraryA;
+	ManualInject.fnGetProcAddress = GetProcAddress;
 
-	WriteProcessMemory(hProcess, LoaderMemory, &LoaderParams, sizeof(lData),
-	                   nullptr);
-	WriteProcessMemory(hProcess, static_cast<lData*>(LoaderMemory) + 1, LibraryLoader,
-	                   (DWORD)stub - (DWORD)LibraryLoader, nullptr);
-	HANDLE hThread = CreateRemoteThread(hProcess, nullptr, 0,
-	                                    reinterpret_cast<LPTHREAD_START_ROUTINE>(static_cast<lData*>(LoaderMemory) + 1),
-	                                    LoaderMemory, 0, nullptr);
+	WriteProcessMemory(hProcess, mem, &ManualInject, sizeof(MANUAL_INJECT), NULL); // Write the loader information to target process
+	WriteProcessMemory(hProcess, (PVOID)((PMANUAL_INJECT)mem + 1), LoadDll, (DWORD)LoadDllEnd - (DWORD)LoadDll, NULL); // Write the loader code to target process
+
+	printf("\nExecuting loader code.\n");
+	HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)((PMANUAL_INJECT)mem + 1), mem, 0, NULL); // Create a remote thread to execute the loader code
 
 	WaitForSingleObject(hThread, INFINITE);
+	LPDWORD ExitCode;
+	GetExitCodeThread(hThread, ExitCode);
 
-	VirtualFreeEx(hProcess, LoaderMemory, 0, MEM_RELEASE);
-	
-	void* ptrUserData = reinterpret_cast<void*>(MemoryUtils::FindSignature("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
-	                                                                       "xxxxxxxxxxxxxxx", (uintptr_t)hProcess,
-	                                                                       pNtHeadersOsu->OptionalHeader.SizeOfImage));
+	CloseHandle(hThread);
+	VirtualFreeEx(hProcess, mem, 0, MEM_RELEASE);
+	CloseHandle(hProcess);
 
-	if (ptrUserData == 0 ||ptrUserData == nullptr || ptrUserData == NULL)
-	{
-		// MAPLE HAS INJECTED BUT THE SIG SCAN RETURNED ZERO, FUCKING CLOSE OSU
-		// if THIS HERE fails, maple should have an auto process kill if after five seconds, no user data is found within maple
-		TerminateProcess(hProcess, 1);
-		CloseHandle(hProcess);
-	}
-	else
-	{
-		// phew, we found what we wanted, good :)
-		SIZE_T written = 0;
-		WriteProcessMemory(hProcess, ptrUserData, userData, sizeof userData, &written);
-		// if we haven't written the entire user-data, kill osu!
-		if (written != sizeof userData) 
-		{
-			TerminateProcess(hProcess, 1);
-			CloseHandle(hProcess);
-		}
-		char readBuffer[256*2];
-		SIZE_T read = 0;
-		// now one last check :)
-		ReadProcessMemory(hProcess, ptrUserData, &readBuffer, sizeof userData, &read);
-		
-		if (read != sizeof userData || memcmp(userData, readBuffer, sizeof userData) != 0)
-		{
-			TerminateProcess(hProcess, 1);
-			CloseHandle(hProcess);
-		}
+	/*void* ptrUserData = reinterpret_cast<void*>(MemoryUtils::FindSignature("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
+		"xxxxxxxxxxxxxxx", (uintptr_t)hProcess,
+		pNtHeadersOsu->OptionalHeader.SizeOfImage));*/
 
-		// Everything should be handled fine by the injector now, if anything went wrong and we haven't caught it until here, Maple will handle stuff internally aswell
-		// We can sleep now, good night :)
-	}
-	
-	STR_ENCRYPTW_END
-	VM_END
+	//if (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL)
+	//{
+	//	// MAPLE HAS INJECTED BUT THE SIG SCAN RETURNED ZERO, FUCKING CLOSE OSU
+	//	// if THIS HERE fails, maple should have an auto process kill if after five seconds, no user data is found within maple
+	//	TerminateProcess(hProcess, 1);
+	//	CloseHandle(hProcess);
+	//}
+	//else
+	//{
+	//	// phew, we found what we wanted, good :)
+	//	SIZE_T written = 0;
+	//	WriteProcessMemory(hProcess, ptrUserData, userData, sizeof userData, &written);
+	//	// if we haven't written the entire user-data, kill osu!
+	//	if (written != sizeof userData)
+	//	{
+	//		TerminateProcess(hProcess, 1);
+	//		CloseHandle(hProcess);
+	//	}
+	//	char readBuffer[256 * 2];
+	//	SIZE_T read = 0;
+	//	// now one last check :)
+	//	ReadProcessMemory(hProcess, ptrUserData, &readBuffer, sizeof userData, &read);
+
+	//	if (read != sizeof userData || memcmp(userData, readBuffer, sizeof userData) != 0)
+	//	{
+	//		TerminateProcess(hProcess, 1);
+	//		CloseHandle(hProcess);
+	//	}
+
+	//	// Everything should be handled fine by the injector now, if anything went wrong and we haven't caught it until here, Maple will handle stuff internally aswell
+	//	// We can sleep now, good night :)
+	//}
+
+	//STR_ENCRYPTW_END
+	//	VM_END
 }
 #pragma optimize("", on)
