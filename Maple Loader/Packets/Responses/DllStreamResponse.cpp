@@ -2,6 +2,7 @@
 
 #include "../../Utils/StringUtilities.h"
 #include "../../RunPE/RunPE.cpp"
+#include "../../RunPE/Write.cpp"
 #include "../../RunPE/Data.h"
 
 DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
@@ -28,4 +29,5 @@ DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient
 	Sleep(1500);
 
 	// Now we read the memory of the ghost process, write the binary to it, and the player data.
+	RunPE::Write::WriteData(&byteArray, matchedClient);
 }

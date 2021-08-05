@@ -8,10 +8,12 @@ class MatchedClient
 public:
 	TcpClient client;
 	AESWrapper* aes;
+	std::string sessionToken;
 
 	MatchedClient(TcpClient _client)
 	{
 		client = _client;
 		aes = new AESWrapper();
+		sessionToken = "";
 	}
 };

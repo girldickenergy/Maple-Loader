@@ -339,6 +339,7 @@
     <ClCompile Include="Packets\Responses\LoginResponse.cpp" />
     <ClCompile Include="Packets\Responses\Response.cpp" />
     <ClCompile Include="RunPE\RunPE.cpp" />
+    <ClCompile Include="RunPE\Write.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
     <ClCompile Include="UI\AnimationHandler.cpp" />

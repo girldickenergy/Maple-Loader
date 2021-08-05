@@ -18,6 +18,7 @@ LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matche
 
 	decryptedLoginResultSplit[1].erase(decryptedLoginResultSplit[1].begin());
 	SessionToken = decryptedLoginResultSplit[1];
+	matchedClient->sessionToken = SessionToken;
 	//login result
 
 	//games list
