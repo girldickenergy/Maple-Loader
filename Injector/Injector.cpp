@@ -80,6 +80,90 @@ void cacheMemoryRegions(HANDLE hProcess)
 	}
 }
 
+/**
+*Scan the process space for an Array of bytes
+*
+* @param pattern The signature / Array of bytes in string form
+* @param mask The mask of the signature. ? ->wildcard | x -> static byte
+* @param begin The address from where to begin searching
+* @param size Total size to search in
+* @return Address of Array of bytes
+*/
+static auto ScanIn(const char* pattern, const char* mask, char* begin, unsigned int size) -> char*
+{
+	const unsigned int patternLength = strlen(mask);
+
+	for (unsigned int i = 0; i < size - patternLength; i++)
+	{
+		bool found = true;
+		for (unsigned int j = 0; j < patternLength; j++)
+		{
+			if (mask[j] != '?' && pattern[j] != *(begin + i + j))
+			{
+				found = false;
+				break;
+			}
+		}
+		if (found)
+		{
+			return (begin + i);
+		}
+	}
+	return nullptr;
+}
+
+/**
+ * External wrapper for the 'ScanIn' function
+ *
+ * @param pattern The signature/Array of bytes in string form
+ * @param mask The mask of the signature. ? -> wildcard | x -> static byte
+ * @param begin The address from where to begin searching
+ * @param end The address where searching will end
+ * @param hProc Handle to the process
+ * @return Address of Array of bytes
+ */
+static auto ScanEx(const char* pattern, const char* mask, char* begin, char* end, HANDLE hProc) -> char*
+{
+	char* currentChunk = begin;
+	char* match = nullptr;
+	SIZE_T bytesRead;
+
+	while (currentChunk < end)
+	{
+		MEMORY_BASIC_INFORMATION mbi;
+
+		if (!VirtualQueryEx(hProc, currentChunk, &mbi, sizeof(mbi)))
+		{
+			int err = GetLastError();
+			return nullptr;
+		}
+
+		char* buffer = new char[mbi.RegionSize];
+
+		if (mbi.State == MEM_COMMIT && mbi.Protect != PAGE_NOACCESS)
+		{
+			DWORD previousProtect;
+			if (VirtualProtectEx(hProc, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE, &previousProtect))
+			{
+				ReadProcessMemory(hProc, mbi.BaseAddress, buffer, mbi.RegionSize, &bytesRead);
+				VirtualProtectEx(hProc, mbi.BaseAddress, mbi.RegionSize, previousProtect, &previousProtect);
+
+				if (char* internalAddress = ScanIn(pattern, mask, buffer, bytesRead); internalAddress != nullptr)
+				{
+					const uintptr_t offsetFromBuffer = internalAddress - buffer;
+					match = currentChunk + offsetFromBuffer;
+					delete[] buffer;
+					break;
+				}
+			}
+		}
+
+		currentChunk = currentChunk + mbi.RegionSize;
+		delete[] buffer;
+	}
+	return match;
+}
+
 auto main() -> int
 {
 	//VM_START
@@ -117,55 +201,65 @@ auto main() -> int
 		Sleep(1500);
 	}
 
-
 	const auto oldNtHeader{ reinterpret_cast<IMAGE_NT_HEADERS*>(mapleBinary + reinterpret_cast<IMAGE_DOS_HEADER*>(mapleBinary)->e_lfanew) };
 
 	adjustPrivileges();
 	DWORD osu = FindProcessId(L"osu!.exe");
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, osu);
 
 	blackbone::Process proc;
 	proc.Attach(osu);
 
 	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false, blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad);
 
-	Sleep(15000);
+	Sleep(20000);
 
-	/*void* ptrUserData = reinterpret_cast<void*>(MemoryUtils::FindSignature("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
-		"xxxxxxxxxxxxxxx", (uintptr_t)hProcess,
-		pNtHeadersOsu->OptionalHeader.SizeOfImage));*/
+	HMODULE modules[250];
+	DWORD cbNeeded;
+	EnumProcessModules(hProcess, modules, sizeof(modules), &cbNeeded);
 
-	//if (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL)
-	//{
-	//	// MAPLE HAS INJECTED BUT THE SIG SCAN RETURNED ZERO, FUCKING CLOSE OSU
-	//	// if THIS HERE fails, maple should have an auto process kill if after five seconds, no user data is found within maple
-	//	TerminateProcess(hProcess, 1);
-	//	CloseHandle(hProcess);
-	//}
-	//else
-	//{
-	//	// phew, we found what we wanted, good :)
-	//	SIZE_T written = 0;
-	//	WriteProcessMemory(hProcess, ptrUserData, userData, sizeof userData, &written);
-	//	// if we haven't written the entire user-data, kill osu!
-	//	if (written != sizeof userData)
-	//	{
-	//		TerminateProcess(hProcess, 1);
-	//		CloseHandle(hProcess);
-	//	}
-	//	char readBuffer[256 * 2];
-	//	SIZE_T read = 0;
-	//	// now one last check :)
-	//	ReadProcessMemory(hProcess, ptrUserData, &readBuffer, sizeof userData, &read);
+	MODULEINFO mi;
+	GetModuleInformation(hProcess, modules[0], &mi, sizeof MODULEINFO);
 
-	//	if (read != sizeof userData || memcmp(userData, readBuffer, sizeof userData) != 0)
-	//	{
-	//		TerminateProcess(hProcess, 1);
-	//		CloseHandle(hProcess);
-	//	}
+	PROCESS_MEMORY_COUNTERS_EX pmc;
+	GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)& pmc, sizeof pmc);
 
-	//	// Everything should be handled fine by the injector now, if anything went wrong and we haven't caught it until here, Maple will handle stuff internally aswell
-	//	// We can sleep now, good night :)
-	//}
+	void* ptrUserData = reinterpret_cast<void*>(ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
+		"xxxxxxxxxxxxxxx", reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
+		reinterpret_cast<char*>(static_cast<uintptr_t>(memoryRegions[0].BaseAddress)+ static_cast<uintptr_t>(pmc.PeakWorkingSetSize)), hProcess));
+
+	if (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL)
+	{
+		// MAPLE HAS INJECTED BUT THE SIG SCAN RETURNED ZERO, FUCKING CLOSE OSU
+		// if THIS HERE fails, maple should have an auto process kill if after five seconds, no user data is found within maple
+		TerminateProcess(hProcess, 1);
+		CloseHandle(hProcess);
+	}
+	else
+	{
+		// phew, we found what we wanted, good :)
+		SIZE_T written = 0;
+		WriteProcessMemory(hProcess, ptrUserData, userData, sizeof userData, &written);
+		// if we haven't written the entire user-data, kill osu!
+		if (written != sizeof userData)
+		{
+			TerminateProcess(hProcess, 1);
+			CloseHandle(hProcess);
+		}
+		char readBuffer[256 * 2];
+		SIZE_T read = 0;
+		// now one last check :)
+		ReadProcessMemory(hProcess, ptrUserData, &readBuffer, sizeof userData, &read);
+
+		if (read != sizeof userData || memcmp(userData, readBuffer, sizeof userData) != 0)
+		{
+			TerminateProcess(hProcess, 1);
+			CloseHandle(hProcess);
+		}
+
+		// Everything should be handled fine by the injector now, if anything went wrong and we haven't caught it until here, Maple will handle stuff internally aswell
+		// We can sleep now, good night :)
+	}
 
 	//STR_ENCRYPTW_END
 	//	VM_END

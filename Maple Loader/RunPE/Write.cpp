@@ -221,15 +221,13 @@ namespace RunPE
 			WriteProcessMemory(hProcess, mapleBinaryPointer, binary->data(), binary->size(), &mapleBinaryBytesWritten);
 
 			if (mapleBinaryBytesWritten != binary->size())
-				throw std::runtime_error(xor ("Data was unable to be fully written!"));
+				throw std::runtime_error(xor ("Data was unable to be fully written!")); 
 
 			std::vector<unsigned char> userDataBytes = std::vector<unsigned char>();
 			//TODO: Make this prettier :)
-			for (const auto& b : mc->aes->DumpIV()) // IV has a fixed length of 16, so no need for a delimiter
-				userDataBytes.push_back(b);
-			for (const auto& b : mc->aes->DumpKey()) // Key has a fixed length of 32, so same thing here
-				userDataBytes.push_back(b);
-			for (const auto& c : "0xdeadbeef")
+			for (const auto& c : mc->username)
+				userDataBytes.push_back(c);
+			for (const auto& c : "0xdeadbeef") 
 				userDataBytes.push_back(c);
 			for (const auto& c : mc->sessionToken)
 				userDataBytes.push_back(c);

@@ -13,8 +13,10 @@ LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matche
 
 	std::vector<std::string> decryptedLoginResultSplit = StringUtilities::Split(decryptedLoginResult);
 	Result = static_cast<LoginResult>(decryptedLoginResultSplit[0][0]);
-	if (Result != LoginResult::Success)
+	if (Result != LoginResult::Success)  {
+		matchedClient->username = "";
 		return;
+	}
 
 	decryptedLoginResultSplit[1].erase(decryptedLoginResultSplit[1].begin());
 	SessionToken = decryptedLoginResultSplit[1];

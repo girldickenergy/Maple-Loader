@@ -9,4 +9,5 @@ LoginRequest::LoginRequest(std::string hwid, std::string username, std::string p
 	AddString(password, &data);
 
 	AddString(matchedClient->aes->Encrypt(data));
+	matchedClient->username = username;
 }

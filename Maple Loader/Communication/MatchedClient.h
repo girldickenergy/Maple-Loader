@@ -9,11 +9,13 @@ public:
 	TcpClient client;
 	AESWrapper* aes;
 	std::string sessionToken;
+	std::string username;
 
 	MatchedClient(TcpClient _client)
 	{
 		client = _client;
 		aes = new AESWrapper();
 		sessionToken = "";
+		username = "";
 	}
 };
