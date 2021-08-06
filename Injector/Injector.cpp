@@ -9,11 +9,58 @@
 #include <filesystem>
 
 #include "MemoryUtils.h"
-#include "MMap.h"
-#include "Utils.h"
 #include "../ThemidaSDK.h"
+#include "blackbone/BlackBone/Process/Process.h"
 
 inline std::vector<MemoryRegion> memoryRegions;
+
+
+auto FindProcessId(const std::wstring& processName) -> DWORD
+{
+	PROCESSENTRY32 processInfo;
+	processInfo.dwSize = sizeof processInfo;
+
+	HANDLE processSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+	if (processSnapshot == INVALID_HANDLE_VALUE)
+	{
+		return 0;
+	}
+
+	Process32First(processSnapshot, &processInfo);
+	if (processName.compare(processInfo.szExeFile) == 0)
+	{
+		CloseHandle(processSnapshot);
+		return processInfo.th32ProcessID;
+	}
+
+	while (Process32Next(processSnapshot, &processInfo))
+	{
+		if (processName.compare(processInfo.szExeFile) == 0)
+		{
+			CloseHandle(processSnapshot);
+			return processInfo.th32ProcessID;
+		}
+	}
+
+	CloseHandle(processSnapshot);
+	return 0;
+}
+
+const inline void adjustPrivileges()
+{
+	HANDLE token;
+	TOKEN_PRIVILEGES tp;
+	tp.PrivilegeCount = 1;
+	tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+	tp.Privileges[0].Luid.LowPart = 20; // 20 = SeDebugPrivilege
+	tp.Privileges[0].Luid.HighPart = 0;
+
+	if (OpenProcessToken((HANDLE)-1, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
+	{
+		AdjustTokenPrivileges(token, FALSE, &tp, 0, NULL, 0);
+		CloseHandle(token);
+	}
+}
 
 void cacheMemoryRegions(HANDLE hProcess)
 {
@@ -49,6 +96,16 @@ auto main() -> int
 	memcpy(mapleBinary, azukiMagic, sizeof azukiMagic); // copy "azuki_magic" into mapleBinary region
 	memcpy(userData, azukiMagicRev, sizeof azukiMagicRev); // copy "cigam_ikuza" into userData region
 
+	mapleBinary[sizeof(azukiMagic) + 0x01] = 0xAD;
+	mapleBinary[sizeof(azukiMagic) + 0x02] = 0xFD;
+	mapleBinary[sizeof(azukiMagic) + 0x03] = 0xAA;
+	mapleBinary[sizeof(azukiMagic) + 0x04] = 0xFF;
+
+	userData[sizeof(azukiMagicRev) + 0x01] = 0xAD;
+	userData[sizeof(azukiMagicRev) + 0x02] = 0xFD;
+	userData[sizeof(azukiMagicRev) + 0x03] = 0xAA;
+	userData[sizeof(azukiMagicRev) + 0x04] = 0xFF;
+
 	// first the binary has to be written
 	while (memcmp(mapleBinary, azukiMagic, sizeof azukiMagic) == 0)
 	{
@@ -60,9 +117,19 @@ auto main() -> int
 		Sleep(1500);
 	}
 
-	Process Process = Utils::GetProcess(L"osu!.exe");
-	auto mmap = MMap(Process, std::vector<unsigned char>(mapleBinary, mapleBinary + 150000000));
-	mmap.run();
+
+	const auto oldNtHeader{ reinterpret_cast<IMAGE_NT_HEADERS*>(mapleBinary + reinterpret_cast<IMAGE_DOS_HEADER*>(mapleBinary)->e_lfanew) };
+
+	adjustPrivileges();
+	DWORD osu = FindProcessId(L"osu!.exe");
+
+	blackbone::Process proc;
+	proc.Attach(osu);
+
+	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false, blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad);
+
+	Sleep(15000);
+
 	/*void* ptrUserData = reinterpret_cast<void*>(MemoryUtils::FindSignature("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
 		"xxxxxxxxxxxxxxx", (uintptr_t)hProcess,
 		pNtHeadersOsu->OptionalHeader.SizeOfImage));*/
