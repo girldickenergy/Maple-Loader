@@ -177,11 +177,12 @@ int main()
 		std::istreambuf_iterator<char>(),
 		std::back_inserter(buffer));
 
-	std::string userD = "something something i dont really care lol";
+	std::string userD = "Azuki0xdeadbeef8ff20c9f340906326757e57c8d84be1b0xdeadbeef";
 
 	DWORD ProcessId = FindProcessId(L"Injector.exe");
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
 
+Label_Redo:
 	HMODULE modules[250];
 	DWORD cbNeeded;
 	EnumProcessModules(hProcess, modules, sizeof(modules), &cbNeeded);
@@ -198,6 +199,13 @@ int main()
 		(char*)memoryRegions[0].BaseAddress, (char*)((uintptr_t)mi.lpBaseOfDll + (uintptr_t)pmc.PeakWorkingSetSize), hProcess);
 	char* userData = ScanEx("\x63\x69\x67\x61\x6d\x5f\x69\x6b\x75\x7a\x61\xFF\xAD\xFD\xAA\xFF", "xxxxxxxxxxxxxxxx", 
 		(char*)memoryRegions[0].BaseAddress, (char*)((uintptr_t)mi.lpBaseOfDll + (uintptr_t)pmc.PeakWorkingSetSize), hProcess);
+
+	std::cout << "[x] -> maple:0x" << (uintptr_t)maple << " | userData:0x" << (uintptr_t)userData << std::endl;
+	if (maple == 0x00000000 || userData == 0x00000000)
+	{
+		std::cout << "Redo!" << std::endl;
+		goto Label_Redo;
+	}
 
 	// write maple binary
  	WriteProcessMemory(hProcess, maple, buffer.data(), buffer.size(), nullptr);
