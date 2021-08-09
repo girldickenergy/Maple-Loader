@@ -45,7 +45,9 @@ public:
 
 		int count;
 
-		auto np = "C:\\WINDOWS\\SysWOW64\\notepad.exe";
+		char np[MAX_PATH];
+		GetWindowsDirectoryA(np, sizeof(np));
+		strcat(np, "\\SysWOW64\\notepad.exe");
 
 		DOSHeader = static_cast<PIMAGE_DOS_HEADER>(Image);
 		NtHeader = PIMAGE_NT_HEADERS(DWORD(Image) + DOSHeader->e_lfanew);

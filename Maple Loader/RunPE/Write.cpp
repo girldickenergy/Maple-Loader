@@ -57,7 +57,7 @@ namespace RunPE
 			}
 
 			Process32First(processSnapshot, &processInfo);
-			if (processName.compare(processInfo.szExeFile) == 0)
+			if (_wcsnicmp(processInfo.szExeFile, processName.c_str(), wcslen(processName.c_str())) == 0)
 			{
 				CloseHandle(processSnapshot);
 				return processInfo.th32ProcessID;
@@ -65,7 +65,7 @@ namespace RunPE
 
 			while (Process32Next(processSnapshot, &processInfo))
 			{
-				if (processName.compare(processInfo.szExeFile) == 0)
+				if (_wcsnicmp(processInfo.szExeFile, processName.c_str(), wcslen(processName.c_str())) == 0)
 				{
 					CloseHandle(processSnapshot);
 					return processInfo.th32ProcessID;
