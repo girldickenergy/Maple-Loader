@@ -74,7 +74,7 @@ void cacheMemoryRegions(HANDLE hProcess)
 	{
 		if (mbi.State == MEM_COMMIT && mbi.Protect >= 0x10 && mbi.Protect <= 0x80)
 		{
-			memoryRegions.push_back(*new MemoryRegion(mbi));
+			memoryRegions.emplace_back(mbi);
 		}
 		address = reinterpret_cast<LPCVOID>(mbi.BaseAddress + mbi.RegionSize);
 	}
