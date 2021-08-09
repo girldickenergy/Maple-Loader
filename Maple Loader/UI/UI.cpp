@@ -370,6 +370,26 @@ bool UI::Render()
 					ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
 					ImGui::Text(xor ("for %s"), Globals::CurrentGame->Name.c_str());
 
+					ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x - 100, ImGui::GetWindowSize().y - ImGui::GetFrameHeight() * 2 - ImGui::GetStyle().ItemSpacing.y));
+					ImGui::PushItemWidth(100);
+					if (loadingDll)
+					{
+						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
+					}
+					ImGui::Combo("##releaseStream", &Globals::CurrentCheat->CurrentStream, [](void* vec, int idx, const char** out_text)
+					{
+						auto& vector = *static_cast<std::vector<std::string>*>(vec);
+						if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
+						*out_text = vector.at(idx).c_str();
+						return true;
+					}, reinterpret_cast<void*>(&Globals::CurrentCheat->ReleaseStreams), Globals::CurrentCheat->ReleaseStreams.size());
+					if (loadingDll)
+					{
+						ImGui::PopStyleVar();
+						ImGui::PopItemFlag();
+					}
+					
 					ImVec2 buttonSize = ImVec2(100, ImGui::GetFrameHeight());
 					ImGui::SetCursorPos(ImGui::GetWindowSize() - buttonSize);
 					if (strcmp(Globals::CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
@@ -392,7 +412,7 @@ bool UI::Render()
 						}
 						if (loadClicked)
 						{
-							DllStreamRequest dllStream = DllStreamRequest(Globals::CurrentCheat->ID, Globals::MatchedClient);
+							DllStreamRequest dllStream = DllStreamRequest(Globals::CurrentCheat->ID, Globals::CurrentCheat->ReleaseStreams[Globals::CurrentCheat->CurrentStream], Globals::MatchedClient);
 
 							pipe_ret_t sendRet = Globals::TCPClient.sendBytes(dllStream.Data);
 							if (!sendRet.success)

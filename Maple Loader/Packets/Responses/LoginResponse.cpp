@@ -59,7 +59,7 @@ LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matche
 		for (int j = 1; j < cheatSplit.size(); j++)
 			cheatSplit[j].erase(cheatSplit[j].begin());
 
-		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), cheatSplit[2], std::stoi(cheatSplit[3]), static_cast<CheatStatus>(std::stoi(cheatSplit[4])), cheatSplit[5], cheatSplit[6]));
+		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), StringUtilities::Split(cheatSplit[2], ','), cheatSplit[3], std::stoi(cheatSplit[4]), static_cast<CheatStatus>(std::stoi(cheatSplit[5])), cheatSplit[6], cheatSplit[7]));
 	}
 	//cheats list
 }

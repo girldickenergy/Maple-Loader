@@ -6,5 +6,5 @@
 class DllStreamRequest : public Request
 {
 public:
-	DllStreamRequest(int cheatID, MatchedClient* matchedClient);
+	DllStreamRequest(int cheatID, std::string releaseStream, MatchedClient* matchedClient);
 };
