@@ -1,6 +1,6 @@
 #include "DllStreamResponse.h"
 
-
+#include "../../Globals.h"
 #include "../../ProcessHollowing/ProcessHollowing.h"
 #include "../../ProcessHollowing/Write.h"
 #include "../../Utils/StringUtilities.h"
@@ -29,11 +29,12 @@ DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient
 	if (hProcess == INVALID_HANDLE_VALUE)
 	{
 		MessageBoxA(UI::Window, xor ("Process handle is invalid"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+		Globals::LoaderState = LoaderStates::LoggedIn;
 		return;
 	}
 	
 	// Amazing, now we wait for the PE to load fully because Themida can take a while...
-	Sleep(3000);
+	Sleep(1500);
 	
 	// Now we read the memory of the ghost process, write the binary to it, and the player data.
 	Write::WriteData(hProcess, &byteArray, matchedClient);

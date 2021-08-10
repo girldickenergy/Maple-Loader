@@ -596,9 +596,6 @@
     <ClCompile Include="UI\AnimationHandler.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessHollowing\PE.cpp">
-      <Filter>ProcessHollowing</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -1363,12 +1360,6 @@
     </ClInclude>
     <ClInclude Include="UI\AnimatedLogin.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessHollowing\PE.h">
-      <Filter>ProcessHollowing</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessHollowing\Internals.h">
-      <Filter>ProcessHollowing</Filter>
     </ClInclude>
     <ClInclude Include="ProcessHollowing\ProcessHollowing.h">
       <Filter>ProcessHollowing</Filter>

