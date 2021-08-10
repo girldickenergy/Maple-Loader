@@ -1,9 +1,11 @@
 #include "DllStreamResponse.h"
 
+
+#include "../../ProcessHollowing/ProcessHollowing.h"
+#include "../../ProcessHollowing/Write.h"
 #include "../../Utils/StringUtilities.h"
-#include "../../RunPE/RunPE.cpp"
-#include "../../RunPE/Write.cpp"
-#include "../../RunPE/Data.h"
+#include "../../ProcessHollowing/Data.h"
+#include "../../UI/UI.h"
 
 DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
 {
@@ -23,11 +25,16 @@ DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient
 	std::vector<unsigned char> byteArray = StringUtilities::StringToByteArray(decryptedSplit[1]);
 
 	// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
-	RunPE::RunPE::RunPortableExecutable(RunPE::Injector_protected_exe);
-
+	HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
+	if (hProcess == INVALID_HANDLE_VALUE)
+	{
+		MessageBoxA(UI::Window, xor ("Process handle is invalid"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+		return;
+	}
+	
 	// Amazing, now we wait for the PE to load fully because Themida can take a while...
-	Sleep(1500);
-
+	Sleep(3000);
+	
 	// Now we read the memory of the ghost process, write the binary to it, and the player data.
-	RunPE::Write::WriteData(&byteArray, matchedClient);
+	Write::WriteData(hProcess, &byteArray, matchedClient);
 }

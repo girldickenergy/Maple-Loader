@@ -1,8 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <windows.h>
-
 struct MemoryRegion
 {
 	DWORD BaseAddress;
@@ -23,97 +20,112 @@ struct MemoryRegion
 
 class MemoryUtils
 {
-	static inline std::vector<MemoryRegion> memoryRegions;
-
-	static void cacheMemoryRegions()
+public:
+	/**
+	 * Returns all the memory regions
+	 *
+	 * @param hProcess Handle to the process
+	 */
+	static std::vector<MemoryRegion> GetMemoryRegions(HANDLE hProcess)
 	{
-		memoryRegions.clear();
+		std::vector<MemoryRegion> regions;
 
 		MEMORY_BASIC_INFORMATION32 mbi;
 		LPCVOID address = nullptr;
 
-		while (VirtualQueryEx(GetCurrentProcess(), address, reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mbi),
-		                      sizeof mbi) != 0)
+		while (VirtualQueryEx(hProcess, address, reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mbi), sizeof mbi) != 0)
 		{
 			if (mbi.State == MEM_COMMIT && mbi.Protect >= 0x10 && mbi.Protect <= 0x80)
 			{
-				memoryRegions.emplace_back(mbi);
+				regions.emplace_back(mbi);
 			}
 			address = reinterpret_cast<LPCVOID>(mbi.BaseAddress + mbi.RegionSize);
 		}
+
+		return regions;
 	}
 
-public:
-	static auto FindSignature(const char* pattern, const char* mask) -> uintptr_t
+	/**
+	*Scan the process space for an Array of bytes
+	*
+	* @param pattern The signature / Array of bytes in string form
+	* @param mask The mask of the signature. ? ->wildcard | x -> static byte
+	* @param begin The address from where to begin searching
+	* @param size Total size to search in
+	* @return Address of Array of bytes
+	*/
+	static auto ScanIn(const char* pattern, const char* mask, char* begin, unsigned int size) -> char*
 	{
-		if (memoryRegions.empty())
-		{
-			cacheMemoryRegions();
-		}
+		const unsigned int patternLength = strlen(mask);
 
-		for (const auto& region : memoryRegions)
-		{
-			const size_t patternLength = strlen(mask);
-
-			for (uintptr_t i = 0; i < region.RegionSize - patternLength; i++)
-			{
-				bool found = true;
-				for (uintptr_t j = 0; j < patternLength; j++)
-				{
-					if (mask[j] != '?' && pattern[j] != *(char*)(region.BaseAddress + i + j))
-					{
-						found = false;
-						break;
-					}
-				}
-
-				if (found)
-				{
-					return region.BaseAddress + i;
-				}
-			}
-		}
-
-		return NULL;
-	}
-
-	static auto FindSignature(const char* signature, const char* mask, uintptr_t entryPoint, int size) -> uintptr_t
-	{
-		const size_t signatureLength = strlen(mask);
-
-		for (uintptr_t i = 0; i < size - signatureLength; i++)
+		for (unsigned int i = 0; i < size - patternLength; i++)
 		{
 			bool found = true;
-			for (uintptr_t j = 0; j < signatureLength; j++)
+			for (unsigned int j = 0; j < patternLength; j++)
 			{
-				if (mask[j] != '?' && signature[j] != *(char*)(entryPoint + i + j))
+				if (mask[j] != '?' && pattern[j] != *(begin + i + j))
 				{
 					found = false;
 					break;
 				}
 			}
-
 			if (found)
 			{
-				return entryPoint + i;
+				return (begin + i);
 			}
 		}
-
-		return NULL;
+		return nullptr;
 	}
 
-	static auto GetModuleSize(const char* moduleName) -> DWORD
+	/**
+	 * External wrapper for the 'ScanIn' function
+	 *
+	 * @param pattern The signature/Array of bytes in string form
+	 * @param mask The mask of the signature. ? -> wildcard | x -> static byte
+	 * @param begin The address from where to begin searching
+	 * @param end The address where searching will end
+	 * @param hProc Handle to the process
+	 * @return Address of Array of bytes
+	 */
+	static auto ScanEx(const char* pattern, const char* mask, char* begin, char* end, HANDLE hProc) -> char*
 	{
-		const HMODULE module = GetModuleHandleA(moduleName);
-		if (module == nullptr)
+		char* currentChunk = begin;
+		char* match = nullptr;
+		SIZE_T bytesRead;
+
+		while (currentChunk < end)
 		{
-			return 0;
+			MEMORY_BASIC_INFORMATION mbi;
+
+			if (!VirtualQueryEx(hProc, currentChunk, &mbi, sizeof(mbi)))
+			{
+				int err = GetLastError();
+				return nullptr;
+			}
+
+			char* buffer = new char[mbi.RegionSize];
+
+			if (mbi.State == MEM_COMMIT && mbi.Protect != PAGE_NOACCESS)
+			{
+				DWORD previousProtect;
+				if (VirtualProtectEx(hProc, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE, &previousProtect))
+				{
+					ReadProcessMemory(hProc, mbi.BaseAddress, buffer, mbi.RegionSize, &bytesRead);
+					VirtualProtectEx(hProc, mbi.BaseAddress, mbi.RegionSize, previousProtect, &previousProtect);
+
+					if (char* internalAddress = ScanIn(pattern, mask, buffer, bytesRead); internalAddress != nullptr)
+					{
+						const uintptr_t offsetFromBuffer = internalAddress - buffer;
+						match = currentChunk + offsetFromBuffer;
+						delete[] buffer;
+						break;
+					}
+				}
+			}
+
+			currentChunk = currentChunk + mbi.RegionSize;
+			delete[] buffer;
 		}
-
-		auto pDOSHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(module);
-		auto pNTHeaders = reinterpret_cast<IMAGE_NT_HEADERS*>(reinterpret_cast<BYTE*>(pDOSHeader) + pDOSHeader->
-			e_lfanew);
-
-		return pNTHeaders->OptionalHeader.SizeOfImage;
+		return match;
 	}
 };

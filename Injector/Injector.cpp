@@ -1,7 +1,4 @@
-// Injector.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <algorithm>
@@ -9,11 +6,26 @@
 #include <filesystem>
 
 #include "MemoryUtils.h"
-#include "../ThemidaSDK.h"
+
 #include "blackbone/BlackBone/Process/Process.h"
 
-inline std::vector<MemoryRegion> memoryRegions;
+static inline std::vector<MemoryRegion> memoryRegions;
 
+const inline void adjustPrivileges()
+{
+	HANDLE token;
+	TOKEN_PRIVILEGES tp;
+	tp.PrivilegeCount = 1;
+	tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+	tp.Privileges[0].Luid.LowPart = 20; // 20 = SeDebugPrivilege
+	tp.Privileges[0].Luid.HighPart = 0;
+
+	if (OpenProcessToken((HANDLE)-1, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
+	{
+		AdjustTokenPrivileges(token, FALSE, &tp, 0, NULL, 0);
+		CloseHandle(token);
+	}
+}
 
 auto FindProcessId(const std::wstring& processName) -> DWORD
 {
@@ -46,128 +58,10 @@ auto FindProcessId(const std::wstring& processName) -> DWORD
 	return 0;
 }
 
-const inline void adjustPrivileges()
-{
-	HANDLE token;
-	TOKEN_PRIVILEGES tp;
-	tp.PrivilegeCount = 1;
-	tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-	tp.Privileges[0].Luid.LowPart = 20; // 20 = SeDebugPrivilege
-	tp.Privileges[0].Luid.HighPart = 0;
-
-	if (OpenProcessToken((HANDLE)-1, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
-	{
-		AdjustTokenPrivileges(token, FALSE, &tp, 0, NULL, 0);
-		CloseHandle(token);
-	}
-}
-
-void cacheMemoryRegions(HANDLE hProcess)
-{
-	memoryRegions.clear();
-
-	MEMORY_BASIC_INFORMATION32 mbi;
-	LPCVOID address = nullptr;
-
-	while (VirtualQueryEx(hProcess, address, reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mbi),
-		sizeof mbi) != 0)
-	{
-		if (mbi.State == MEM_COMMIT && mbi.Protect >= 0x10 && mbi.Protect <= 0x80)
-		{
-			memoryRegions.emplace_back(mbi);
-		}
-		address = reinterpret_cast<LPCVOID>(mbi.BaseAddress + mbi.RegionSize);
-	}
-}
-
-/**
-*Scan the process space for an Array of bytes
-*
-* @param pattern The signature / Array of bytes in string form
-* @param mask The mask of the signature. ? ->wildcard | x -> static byte
-* @param begin The address from where to begin searching
-* @param size Total size to search in
-* @return Address of Array of bytes
-*/
-static auto ScanIn(const char* pattern, const char* mask, char* begin, unsigned int size) -> char*
-{
-	const unsigned int patternLength = strlen(mask);
-
-	for (unsigned int i = 0; i < size - patternLength; i++)
-	{
-		bool found = true;
-		for (unsigned int j = 0; j < patternLength; j++)
-		{
-			if (mask[j] != '?' && pattern[j] != *(begin + i + j))
-			{
-				found = false;
-				break;
-			}
-		}
-		if (found)
-		{
-			return (begin + i);
-		}
-	}
-	return nullptr;
-}
-
-/**
- * External wrapper for the 'ScanIn' function
- *
- * @param pattern The signature/Array of bytes in string form
- * @param mask The mask of the signature. ? -> wildcard | x -> static byte
- * @param begin The address from where to begin searching
- * @param end The address where searching will end
- * @param hProc Handle to the process
- * @return Address of Array of bytes
- */
-static auto ScanEx(const char* pattern, const char* mask, char* begin, char* end, HANDLE hProc) -> char*
-{
-	char* currentChunk = begin;
-	char* match = nullptr;
-	SIZE_T bytesRead;
-
-	while (currentChunk < end)
-	{
-		MEMORY_BASIC_INFORMATION mbi;
-
-		if (!VirtualQueryEx(hProc, currentChunk, &mbi, sizeof(mbi)))
-		{
-			int err = GetLastError();
-			return nullptr;
-		}
-
-		char* buffer = new char[mbi.RegionSize];
-
-		if (mbi.State == MEM_COMMIT && mbi.Protect != PAGE_NOACCESS)
-		{
-			DWORD previousProtect;
-			if (VirtualProtectEx(hProc, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE, &previousProtect))
-			{
-				ReadProcessMemory(hProc, mbi.BaseAddress, buffer, mbi.RegionSize, &bytesRead);
-				VirtualProtectEx(hProc, mbi.BaseAddress, mbi.RegionSize, previousProtect, &previousProtect);
-
-				if (char* internalAddress = ScanIn(pattern, mask, buffer, bytesRead); internalAddress != nullptr)
-				{
-					const uintptr_t offsetFromBuffer = internalAddress - buffer;
-					match = currentChunk + offsetFromBuffer;
-					delete[] buffer;
-					break;
-				}
-			}
-		}
-
-		currentChunk = currentChunk + mbi.RegionSize;
-		delete[] buffer;
-	}
-	return match;
-}
-
-auto main() -> int
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	//VM_START
-	//	STR_ENCRYPTW_START
+//	STR_ENCRYPTW_START
 
 	unsigned char azukiMagic[] = { 0x61, 0x7a, 0x75, 0x6b, 0x69, 0x5f, 0x6d, 0x61, 0x67, 0x69, 0x63 };
 	unsigned char azukiMagicRev[] = { 0x63, 0x69, 0x67, 0x61, 0x6d, 0x5f, 0x69, 0x6b, 0x75, 0x7a, 0x61 };
@@ -214,7 +108,7 @@ auto main() -> int
 	proc.Attach(osu);
 
 	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false, blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad);
-	cacheMemoryRegions(hProcess);
+	memoryRegions = MemoryUtils::GetMemoryRegions(hProcess);
 
 	Sleep(10000);
 
@@ -229,11 +123,11 @@ Label_Redo:
 	GetModuleInformation(hProcess, modules[0], &mi, sizeof MODULEINFO);
 
 	PROCESS_MEMORY_COUNTERS_EX pmc;
-	GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)& pmc, sizeof pmc);
+	GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof pmc);
 
-	void* ptrUserData = reinterpret_cast<void*>(ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
+	void* ptrUserData = reinterpret_cast<void*>(MemoryUtils::ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
 		"xxxxxxxxxxxxxxx", reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
-		reinterpret_cast<char*>(static_cast<uintptr_t>(memoryRegions[0].BaseAddress)+ static_cast<uintptr_t>(pmc.PeakWorkingSetSize)), hProcess));
+		reinterpret_cast<char*>(static_cast<uintptr_t>(memoryRegions[0].BaseAddress) + static_cast<uintptr_t>(pmc.PeakWorkingSetSize)), hProcess));
 
 	if (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL)
 	{
@@ -278,5 +172,6 @@ Label_Redo:
 
 	//STR_ENCRYPTW_END
 	//	VM_END
+	
+    return 0;
 }
-#pragma optimize("", on)

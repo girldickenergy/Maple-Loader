@@ -596,11 +596,8 @@
     <ClCompile Include="UI\AnimationHandler.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="RunPE\RunPE.cpp">
-      <Filter>RunPE</Filter>
-    </ClCompile>
-    <ClCompile Include="RunPE\Write.cpp">
-      <Filter>RunPE</Filter>
+    <ClCompile Include="ProcessHollowing\PE.cpp">
+      <Filter>ProcessHollowing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -640,8 +637,8 @@
     <Filter Include="UI\DirectX">
       <UniqueIdentifier>{996b5e0a-1fbe-448c-b673-ad38ebfbb011}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RunPE">
-      <UniqueIdentifier>{be4ec332-d8c2-4f4a-a177-2c627b37e1b9}</UniqueIdentifier>
+    <Filter Include="ProcessHollowing">
+      <UniqueIdentifier>{cccbdc9a-f20d-4e0f-baf8-eb035e2d0d99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1367,8 +1364,23 @@
     <ClInclude Include="UI\AnimatedLogin.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="RunPE\Data.h">
-      <Filter>RunPE</Filter>
+    <ClInclude Include="ProcessHollowing\PE.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\Internals.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\ProcessHollowing.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\Write.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\MemoryUtils.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\Data.h">
+      <Filter>ProcessHollowing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

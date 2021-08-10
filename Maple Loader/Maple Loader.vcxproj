@@ -338,8 +338,7 @@
     <ClCompile Include="Packets\Responses\HandshakeResponse.cpp" />
     <ClCompile Include="Packets\Responses\LoginResponse.cpp" />
     <ClCompile Include="Packets\Responses\Response.cpp" />
-    <ClCompile Include="RunPE\RunPE.cpp" />
-    <ClCompile Include="RunPE\Write.cpp" />
+    <ClCompile Include="ProcessHollowing\PE.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
     <ClCompile Include="UI\AnimationHandler.cpp" />
@@ -561,8 +560,13 @@
     <ClInclude Include="Packets\Responses\LoginResponse.h" />
     <ClInclude Include="Packets\Responses\Response.h" />
     <ClInclude Include="Packets\Responses\ResponseType.h" />
+    <ClInclude Include="ProcessHollowing\Data.h" />
+    <ClInclude Include="ProcessHollowing\Internals.h" />
+    <ClInclude Include="ProcessHollowing\MemoryUtils.h" />
+    <ClInclude Include="ProcessHollowing\PE.h" />
+    <ClInclude Include="ProcessHollowing\ProcessHollowing.h" />
+    <ClInclude Include="ProcessHollowing\Write.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="RunPE\Data.h" />
     <ClInclude Include="TCP\Client.h" />
     <ClInclude Include="TCP\Client_Observer.h" />
     <ClInclude Include="TCP\Pipe_Ret_T.h" />

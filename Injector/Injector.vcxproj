@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{F174BB9A-98A9-4E79-9802-7973A2E484D7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{F174BB9A-98A9-4E79-9802-7973A2E484D7}</ProjectGuid>
     <RootNamespace>Injector</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -70,11 +70,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\blackbone</IncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x86);</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\blackbone</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -82,73 +86,63 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <FixedBaseAddress>false</FixedBaseAddress>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -185,6 +179,7 @@
     <ClCompile Include="blackbone\BlackBone\Asm\AsmHelper64.cpp" />
     <ClCompile Include="blackbone\BlackBone\Asm\LDasm.c" />
     <ClCompile Include="blackbone\BlackBone\DriverControl\DriverControl.cpp" />
+    <ClCompile Include="blackbone\BlackBone\LocalHook\LocalHookBase.cpp" />
     <ClCompile Include="blackbone\BlackBone\ManualMap\MExcept.cpp" />
     <ClCompile Include="blackbone\BlackBone\ManualMap\MMap.cpp" />
     <ClCompile Include="blackbone\BlackBone\ManualMap\Native\NtLoader.cpp" />
@@ -249,10 +244,27 @@
     <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86inst.h" />
     <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86operand.h" />
     <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86scheduler_p.h" />
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\BeaEngine.h" />
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\Includes\basic_types.h" />
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\Includes\export.h" />
+    <ClInclude Include="blackbone\3rd_party\cor.h" />
+    <ClInclude Include="blackbone\3rd_party\CorError.h" />
+    <ClInclude Include="blackbone\3rd_party\corhdr.h" />
+    <ClInclude Include="blackbone\3rd_party\DIA\cvconst.h" />
+    <ClInclude Include="blackbone\3rd_party\DIA\dia2.h" />
+    <ClInclude Include="blackbone\3rd_party\DIA\diacreate.h" />
+    <ClInclude Include="blackbone\3rd_party\gchost.h" />
+    <ClInclude Include="blackbone\3rd_party\ivalidator.h" />
+    <ClInclude Include="blackbone\3rd_party\ivehandler.h" />
+    <ClInclude Include="blackbone\3rd_party\metahost.h" />
+    <ClInclude Include="blackbone\3rd_party\mscoree.h" />
     <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\CMemPtr.h" />
     <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\internal.h" />
     <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\resource.h" />
     <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\wow64ext.h" />
+    <ClInclude Include="blackbone\3rd_party\VersionApi.h" />
+    <ClInclude Include="blackbone\3rd_party\winapifamily.h" />
+    <ClInclude Include="blackbone\3rd_party\winpackagefamily.h" />
     <ClInclude Include="blackbone\BlackBone\Asm\AsmFactory.h" />
     <ClInclude Include="blackbone\BlackBone\Asm\AsmHelper32.h" />
     <ClInclude Include="blackbone\BlackBone\Asm\AsmHelper64.h" />
@@ -260,7 +272,28 @@
     <ClInclude Include="blackbone\BlackBone\Asm\AsmVariant.hpp" />
     <ClInclude Include="blackbone\BlackBone\Asm\IAsmHelper.h" />
     <ClInclude Include="blackbone\BlackBone\Asm\LDasm.h" />
+    <ClInclude Include="blackbone\BlackBone\Config.h" />
     <ClInclude Include="blackbone\BlackBone\DriverControl\DriverControl.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\ApiSet.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\CallResult.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\FunctionTypes.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\HandleGuard.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Macro.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\NativeEnums.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\NativeStructures.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Types.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Win7Specific.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Win8Specific.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Winheaders.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\WinXPSpecific.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerCdecl.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerFastcall.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlers.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerStdcall.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerThiscall.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\LocalHook.hpp" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\LocalHookBase.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\VTableHook.hpp" />
     <ClInclude Include="blackbone\BlackBone\ManualMap\MExcept.h" />
     <ClInclude Include="blackbone\BlackBone\ManualMap\MMap.h" />
     <ClInclude Include="blackbone\BlackBone\ManualMap\Native\NtLoader.h" />
@@ -294,11 +327,8 @@
     <ClInclude Include="blackbone\BlackBone\Symbols\PDBHelper.h" />
     <ClInclude Include="blackbone\BlackBone\Symbols\SymbolData.h" />
     <ClInclude Include="blackbone\BlackBone\Symbols\SymbolLoader.h" />
+    <ClInclude Include="blackbone\BlackBone\Syscalls\Syscall.h" />
     <ClInclude Include="MemoryUtils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="blackbone\3rd_party\AsmJit\LICENSE.md" />
-    <None Include="blackbone\3rd_party\AsmJit\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
