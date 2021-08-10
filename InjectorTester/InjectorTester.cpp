@@ -163,7 +163,7 @@ void cacheMemoryRegions(HANDLE hProcess)
 
 int main()
 {
-	std::string file = "C:\\Cheats\\0_Stable.dll";
+	std::string file = "C:\\Cheats\\0.dll";
 
 	std::ifstream inFile(file, std::ios_base::binary);
 
@@ -177,9 +177,10 @@ int main()
 		std::istreambuf_iterator<char>(),
 		std::back_inserter(buffer));
 
-	std::string userD = "Maple Syrup0xdeadbeef8ff20c9f340906326757e57c8d84be1b0xdeadbeef";
+	std::string userD = "Azuki0xdeadbeef8ff20c9f340906326757e57c8d84be1b0xdeadbeef";
 
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, 26268);
+	DWORD ProcessId = FindProcessId(L"Injector.exe");
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
 
 Label_Redo:
 	HMODULE modules[250];
