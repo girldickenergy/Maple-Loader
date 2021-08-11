@@ -16,6 +16,39 @@
 #include "ProcessHollowing/ProcessHollowing.h"
 #include "ProcessHollowing/Write.h"
 
+#include <TlHelp32.h>
+
+auto FindProcessId(const std::wstring& processName) -> DWORD
+{
+	PROCESSENTRY32 processInfo;
+	processInfo.dwSize = sizeof processInfo;
+
+	HANDLE processSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+	if (processSnapshot == INVALID_HANDLE_VALUE)
+	{
+		return 0;
+	}
+
+	Process32First(processSnapshot, &processInfo);
+	if (processName.compare(processInfo.szExeFile) == 0)
+	{
+		CloseHandle(processSnapshot);
+		return processInfo.th32ProcessID;
+	}
+
+	while (Process32Next(processSnapshot, &processInfo))
+	{
+		if (processName.compare(processInfo.szExeFile) == 0)
+		{
+			CloseHandle(processSnapshot);
+			return processInfo.th32ProcessID;
+		}
+	}
+
+	CloseHandle(processSnapshot);
+	return 0;
+}
+
 void OnIncomingMessage(const char* msg, size_t size)
 {
 	auto* const response = static_cast<Response*>(Response::ConstructResponse(msg, size, Globals::MatchedClient));
@@ -111,6 +144,12 @@ void OnIncomingMessage(const char* msg, size_t size)
 			{
 				case DllStreamResult::Success:
 				{
+					if (FindProcessId(L"osu!.exe") == 0)
+					{
+						MessageBoxA(UI::Window, xor ("Please launch osu! first!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						Globals::LoaderState = LoaderStates::LoggedIn;
+						break;
+					}
 					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
 					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
 					if (hProcess == INVALID_HANDLE_VALUE)
@@ -133,7 +172,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 
 					Globals::TCPClient.finish();
 						
-					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
+					MessageBoxA(UI::Window, xor ("Maple is now loading, this process can take a while.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
 
 					Globals::ShutdownAndExit();
 

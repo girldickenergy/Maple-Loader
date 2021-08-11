@@ -97,12 +97,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	adjustPrivileges();
 	DWORD osu = FindProcessId(L"osu!.exe");
-	while (osu == 0)
-	{
-		osu = FindProcessId(L"osu!.exe");
-		Sleep(1500);
-	}
-	Sleep(10000);
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, osu);
 
 	blackbone::Process proc;
