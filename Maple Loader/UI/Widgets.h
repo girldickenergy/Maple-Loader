@@ -8,6 +8,13 @@
 
 class Widgets
 {
+	inline static auto vector_getter = [](void* vec, int idx, const char** out_text)
+	{
+		auto& vector = *static_cast<std::vector<std::string>*>(vec);
+		if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
+		*out_text = vector.at(idx).c_str();
+		return true;
+	};
 public:
 	static void LinkEx(const char* label, const char* url, ImVec4 vColor, ImVec4 vHoveredColor, ImVec4 vClickColor)
 	{
@@ -119,5 +126,12 @@ public:
 			ImGui::TreePush(label);
 		
 		return opened;
+	}
+
+	static bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
+	{
+		if (values.empty()) { return false; }
+		return ImGui::Combo(label, currIndex, vector_getter,
+			static_cast<void*>(&values), values.size());
 	}
 };

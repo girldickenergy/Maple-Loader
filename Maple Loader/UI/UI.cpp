@@ -377,13 +377,7 @@ bool UI::Render()
 						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
 					}
-					ImGui::Combo("##releaseStream", &Globals::CurrentCheat->CurrentStream, [](void* vec, int idx, const char** out_text)
-					{
-						auto& vector = *static_cast<std::vector<std::string>*>(vec);
-						if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
-						*out_text = vector.at(idx).c_str();
-						return true;
-					}, reinterpret_cast<void*>(&Globals::CurrentCheat->ReleaseStreams), Globals::CurrentCheat->ReleaseStreams.size());
+					Widgets::Combo("##releaseStream", &Globals::CurrentCheat->CurrentStream, Globals::CurrentCheat->ReleaseStreams);
 					if (loadingDll)
 					{
 						ImGui::PopStyleVar();
