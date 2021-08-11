@@ -12,6 +12,10 @@
 #include "Packets/Responses/LoginResponse.h"
 #include "Packets/Responses/Response.h"
 
+#include "ProcessHollowing/Data.h"
+#include "ProcessHollowing/ProcessHollowing.h"
+#include "ProcessHollowing/Write.h"
+
 void OnIncomingMessage(const char* msg, size_t size)
 {
 	auto* const response = static_cast<Response*>(Response::ConstructResponse(msg, size, Globals::MatchedClient));
@@ -106,9 +110,35 @@ void OnIncomingMessage(const char* msg, size_t size)
 			switch (dllStreamResponse->Result)
 			{
 				case DllStreamResult::Success:
-					MessageBoxA(UI::Window, xor ("Received DLL Stream"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+				{
+					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
+					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
+					if (hProcess == INVALID_HANDLE_VALUE)
+					{
+						MessageBoxA(UI::Window, xor ("Injection failed."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						Globals::LoaderState = LoaderStates::LoggedIn;
+						break;
+					}
+
+					// Amazing, now we wait for the PE to load fully because Themida can take a while...
+					Sleep(1500);
+
+					// Now we read the memory of the ghost process, write the binary to it, and the player data.
+					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient))
+					{
+						MessageBoxA(UI::Window, xor ("Injection failed."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						Globals::LoaderState = LoaderStates::LoggedIn;
+						break;
+					}
+
+					Globals::TCPClient.finish();
+						
+					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
+
+					Globals::ShutdownAndExit();
 
 					break;
+				}
 				case DllStreamResult::NotSubscribed:
 					MessageBoxA(UI::Window, xor ("Sorry, you're not subscribed to the Maple membership."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 					Globals::LoaderState = LoaderStates::LoggedIn;

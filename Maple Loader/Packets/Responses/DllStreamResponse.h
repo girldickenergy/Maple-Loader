@@ -14,6 +14,7 @@ class DllStreamResponse : public Response
 {
 public:
 	DllStreamResult Result;
+	std::vector<unsigned char> ByteArray;
 	
 	DllStreamResponse(const char* msg, size_t size, MatchedClient* matchedClient);
 };
