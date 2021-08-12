@@ -80,6 +80,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 					Globals::MatchedClient = new MatchedClient(Globals::TCPClient);
 					Globals::MatchedClient->aes->SetIV(handshakeResponse->IV);
 					Globals::MatchedClient->aes->SetKey(handshakeResponse->Key);
+					break;
 				}
 				case HandshakeResult::EpochTimedOut:
 				case HandshakeResult::InternalError:
