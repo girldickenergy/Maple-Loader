@@ -352,3 +352,5 @@ MigrationBackup/
 Maple Loader/private.key
 
 Maple Loader/public.key
+
+*.rar

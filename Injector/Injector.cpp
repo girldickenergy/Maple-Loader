@@ -92,32 +92,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		Sleep(1500);
 	}
+	Sleep(1500);
 
 	const auto oldNtHeader{ reinterpret_cast<IMAGE_NT_HEADERS*>(mapleBinary + reinterpret_cast<IMAGE_DOS_HEADER*>(mapleBinary)->e_lfanew) };
 
 	adjustPrivileges();
 	DWORD osu = FindProcessId(L"osu!.exe");
+	while (osu == 0)
+	{
+		osu = FindProcessId(L"osu!.exe");
+		Sleep(1500);
+	}
+	Sleep(5000);
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, osu);
 
 	blackbone::Process proc;
 	proc.Attach(osu);
 
 	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false, blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad | blackbone::WipeHeader);
-	memoryRegions = MemoryUtils::GetMemoryRegions(hProcess);
-
+	
 	Sleep(10000);
-
-	PROCESS_MEMORY_COUNTERS_EX pmc;
-	GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof pmc);
 
 	int timesRedone = 0;
 	void* ptrUserData = nullptr;
-	while (timesRedone < 10 && (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL))
+	while (timesRedone < 100 && (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL))
 	{
-		ptrUserData = ptrUserData = reinterpret_cast<void*>(MemoryUtils::ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
-			"xxxxxxxxxxxxxxx", reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
-			reinterpret_cast<char*>(static_cast<uintptr_t>(memoryRegions[0].BaseAddress) + static_cast<uintptr_t>(pmc.PeakWorkingSetSize)), hProcess));
+		PROCESS_MEMORY_COUNTERS_EX pmc;
+		GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof pmc);
 
+		memoryRegions = MemoryUtils::GetMemoryRegions(hProcess);
+		if (memoryRegions.size() > 1) {
+			ptrUserData = ptrUserData = reinterpret_cast<void*>(MemoryUtils::ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
+				"xxxxxxxxxxxxxxx", reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
+				reinterpret_cast<char*>(static_cast<uintptr_t>(memoryRegions[0].BaseAddress) + static_cast<uintptr_t>(pmc.PeakWorkingSetSize)), hProcess));
+		}
 		timesRedone++;
 	}
 

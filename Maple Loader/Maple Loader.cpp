@@ -73,9 +73,24 @@ void OnIncomingMessage(const char* msg, size_t size)
 		{
 			auto* const handshakeResponse = static_cast<HandshakeResponse*>(response);
 
-			Globals::MatchedClient = new MatchedClient(Globals::TCPClient);
-			Globals::MatchedClient->aes->SetIV(handshakeResponse->IV);
-			Globals::MatchedClient->aes->SetKey(handshakeResponse->Key);
+			switch (handshakeResponse->Result)
+			{
+				case HandshakeResult::Success:
+				{
+					Globals::MatchedClient = new MatchedClient(Globals::TCPClient);
+					Globals::MatchedClient->aes->SetIV(handshakeResponse->IV);
+					Globals::MatchedClient->aes->SetKey(handshakeResponse->Key);
+				}
+				case HandshakeResult::EpochTimedOut:
+				case HandshakeResult::InternalError:
+				{
+					// Have both in a switch case, let's not tell anybody trying to crack that the epoch is wrong.
+					MessageBoxA(UI::Window, xor ("Fatal error occured\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::ShutdownAndExit();
+
+					break;
+				}
+			}
 			
 			break;
 		}

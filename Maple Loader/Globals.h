@@ -47,6 +47,6 @@ public:
 		TCPClient.finish();
 		UI::Shutdown();
 
-		exit(exitCode);
+		ExitProcess(exitCode);
 	}
 };
