@@ -7,6 +7,7 @@
 #include "MemoryUtils.h"
 
 #include "blackbone/BlackBone/Process/Process.h"
+#include "../ThemidaSDK.h"
 
 static inline std::vector<MemoryRegion> memoryRegions;
 
@@ -59,7 +60,8 @@ auto FindProcessId(const std::wstring& processName) -> DWORD
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	unsigned char azukiMagic[] = { 0x61, 0x7a, 0x75, 0x6b, 0x69, 0x5f, 0x6d, 0x61, 0x67, 0x69, 0x63 };
+	VM_EAGLE_BLACK_START
+		unsigned char azukiMagic[] = { 0x61, 0x7a, 0x75, 0x6b, 0x69, 0x5f, 0x6d, 0x61, 0x67, 0x69, 0x63 };
 	unsigned char azukiMagicRev[] = { 0x63, 0x69, 0x67, 0x61, 0x6d, 0x5f, 0x69, 0x6b, 0x75, 0x7a, 0x61 };
 
 	// TODO: allocate MemoryRegion for pointer safety
@@ -82,17 +84,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	userData[sizeof(azukiMagicRev) + 0x03] = 0xAA;
 	userData[sizeof(azukiMagicRev) + 0x04] = 0xFF;
 
-	// first the binary has to be written
-	while (memcmp(mapleBinary, azukiMagic, sizeof azukiMagic) == 0)
-	{
-		Sleep(1500); // don't know how fast memory writes will happen so ye
-	}
-	// then user data has to be written
-	while (memcmp(userData, azukiMagicRev, sizeof azukiMagicRev) == 0)
-	{
-		Sleep(1500);
-	}
-	Sleep(1500);
+	HANDLE mtx = CreateMutexA(NULL, FALSE, "QVPj0LSOL81Lko4d");
+
+	// Synchronize with loader
+	while (*((DWORD*)mapleBinary) != 0x13371337)
+		Sleep(50);
+
+	CloseHandle(mtx);
+
+	// Skip over synchronization primitive
+	mapleBinary += 4;
 
 	const auto oldNtHeader{ reinterpret_cast<IMAGE_NT_HEADERS*>(mapleBinary + reinterpret_cast<IMAGE_DOS_HEADER*>(mapleBinary)->e_lfanew) };
 
@@ -101,67 +102,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	while (osu == 0)
 	{
 		osu = FindProcessId(L"osu!.exe");
-		Sleep(1500);
+		Sleep(1000);
 	}
-	Sleep(5000);
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, osu);
 
 	blackbone::Process proc;
 	proc.Attach(osu);
 
-	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false, blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad | blackbone::WipeHeader);
-	
-	Sleep(10000);
-
-	int timesRedone = 0;
-	void* ptrUserData = nullptr;
-	while (timesRedone < 100 && (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL))
+	// Create a structure to hold our loader data
+	struct DllArgs
 	{
-		PROCESS_MEMORY_COUNTERS_EX pmc;
-		GetProcessMemoryInfo(hProcess, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof pmc);
+		char user_data[256 * 5 * 10];
+	} dll_args;
 
-		memoryRegions = MemoryUtils::GetMemoryRegions(hProcess);
-		if (memoryRegions.size() > 1) {
-			ptrUserData = ptrUserData = reinterpret_cast<void*>(MemoryUtils::ScanEx("\x61\x7A\x75\x6B\x69\x5F\x6D\x61\x67\x69\x63\xFF\xFF\xFF\xFF",
-				"xxxxxxxxxxxxxxx", reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
-				reinterpret_cast<char*>(static_cast<uintptr_t>(memoryRegions[0].BaseAddress) + static_cast<uintptr_t>(pmc.PeakWorkingSetSize)), hProcess));
-		}
-		timesRedone++;
-	}
+	// Initialize loader data.
+	memset(dll_args.user_data, 0x00, 256 * 5 * 10);
+	std::string userDataString(userData);
+	memcpy(dll_args.user_data, userDataString.c_str(), userDataString.size());
 
-	if (ptrUserData == 0 || ptrUserData == nullptr || ptrUserData == NULL)
-	{
-		// MAPLE HAS INJECTED BUT THE SIG SCAN RETURNED ZERO, FUCKING CLOSE OSU
-		// if THIS HERE fails, maple should have an auto process kill if after five seconds, no user data is found within maple
-		TerminateProcess(hProcess, 1);
-		CloseHandle(hProcess);
-	}
-	else
-	{
-		// phew, we found what we wanted, good :)
-		std::string userDataString(userData);
-		SIZE_T written = 0;
-		WriteProcessMemory(hProcess, ptrUserData, userDataString.c_str(), userDataString.size(), &written);
-		// if we haven't written the entire user-data, kill osu!
-		if (written != userDataString.size())
-		{
-			TerminateProcess(hProcess, 1);
-			CloseHandle(hProcess);
-		}
-		//char readBuffer[256 * 2];
-		//SIZE_T read = 0;
-		//// now one last check :)
-		//ReadProcessMemory(hProcess, ptrUserData, &readBuffer, sizeof userData, &read);
+	// Setup custom args structure for blackbone
+	blackbone::CustomArgs_t args;
+	args.push_back(&dll_args);
 
-		//if (read != sizeof userData || memcmp(userData, readBuffer, sizeof userData) != 0)
-		//{
-		//	TerminateProcess(hProcess, 1);
-		//	CloseHandle(hProcess);
-		//}
-
-		// Everything should be handled fine by the injector now, if anything went wrong and we haven't caught it until here, Maple will handle stuff internally aswell
-		// We can sleep now, good night :)
-	}
-	
-    return 0;
+	// Finally, inject the dll.
+	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false,
+		blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad | blackbone::WipeHeader,
+		nullptr, nullptr, &args);
+	VM_EAGLE_BLACK_END
+		return 0;
 }
