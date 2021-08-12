@@ -23,6 +23,7 @@
 #include "pch.h"
 #include "config.h"
 #include "misc.h"
+#include "../../ThemidaSDK.h"
 
 #if (CRYPTOPP_AESNI_AVAILABLE)
 # include "adv_simd.h"

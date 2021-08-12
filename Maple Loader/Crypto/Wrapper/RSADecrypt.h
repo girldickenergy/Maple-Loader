@@ -6,6 +6,7 @@
 #include "../hex.h"
 #include "../files.h"
 #include "../pssr.h"
+#include "../../ThemidaSDK.h"
 
 class RSADecrypt {
 
