@@ -7,6 +7,7 @@ class ProcessHollowing
 public:
 	static HANDLE CreateHollowedProcess(void* image)
 	{
+		VM_FISH_RED_START
 		STARTUPINFOA ProcessStartupInfo;
 		PROCESS_INFORMATION ProcessInfo;
 
@@ -334,6 +335,7 @@ public:
 			return INVALID_HANDLE_VALUE;
 		}
 
+		VM_FISH_RED_END
 		return ProcessInfo.hProcess;
 	}
 };

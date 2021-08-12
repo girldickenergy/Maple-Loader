@@ -4,6 +4,7 @@
 
 LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
 {
+	VM_SHARK_BLACK_START
 	//login result
 	auto encryptedLoginResult = StringUtilities::StringToByteArray(RawData[0]);
 	
@@ -62,4 +63,5 @@ LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matche
 		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), StringUtilities::Split(cheatSplit[2], ','), cheatSplit[3], std::stoi(cheatSplit[4]), static_cast<CheatStatus>(std::stoi(cheatSplit[5])), cheatSplit[6], cheatSplit[7]));
 	}
 	//cheats list
+	VM_SHARK_BLACK_END
 }

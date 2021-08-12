@@ -6,6 +6,7 @@
 
 HandshakeResponse::HandshakeResponse(const char* msg, size_t size) : Response(msg, size)
 {
+	VM_SHARK_BLACK_START
 	std::chrono::milliseconds msEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
 	std::vector<unsigned char> encrypted = StringUtilities::StringToByteArray(RawData[1]);
@@ -32,4 +33,5 @@ HandshakeResponse::HandshakeResponse(const char* msg, size_t size) : Response(ms
 	}
 
 	Result = HandshakeResult::Success;
+	VM_SHARK_BLACK_END
 }

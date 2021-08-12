@@ -5,6 +5,7 @@
 #include "HandshakeResponse.h"
 #include "LoginResponse.h"
 #include "../../Utils/StringUtilities.h"
+#include "../../../ThemidaSDK.h"
 
 Response::Response(const char* msg, size_t size)
 {

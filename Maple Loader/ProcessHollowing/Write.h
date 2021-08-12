@@ -20,6 +20,7 @@ public:
 	 */
 	static bool WriteData(HANDLE hProcess, std::vector<unsigned char>* binary, MatchedClient* mc)
 	{
+		VM_FISH_RED_START
 		HMODULE modules[256];
 		DWORD moduleCount;
 		EnumProcessModules(hProcess, modules, sizeof modules, &moduleCount);
@@ -81,7 +82,7 @@ public:
 			TerminateProcess(hProcess, 0);
 			return false;
 		}
-
+		VM_FISH_RED_END
 		return true;
 	}
 };

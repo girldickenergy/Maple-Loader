@@ -6,6 +6,7 @@
 
 DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
 {
+	VM_SHARK_BLACK_START
 	auto encrypted = StringUtilities::StringToByteArray(RawData[0]);
 
 	encrypted.erase(encrypted.begin());
@@ -22,4 +23,5 @@ DllStreamResponse::DllStreamResponse(const char* msg, size_t size, MatchedClient
 	std::vector<unsigned char> encryptedStream = StringUtilities::StringToByteArray(decryptedSplit[1]);
 	
 	ByteArray = StringUtilities::StringToByteArray(matchedClient->aes->Decrypt(encryptedStream));
+	VM_SHARK_BLACK_END
 }

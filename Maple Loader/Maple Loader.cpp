@@ -16,8 +16,9 @@
 #include "ProcessHollowing/ProcessHollowing.h"
 #include "ProcessHollowing/Write.h"
 
+#include "../ThemidaSDK.h"
 #include <TlHelp32.h>
-
+#pragma optimize("", off)
 auto FindProcessId(const std::wstring& processName) -> DWORD
 {
 	PROCESSENTRY32 processInfo;
@@ -66,7 +67,6 @@ void OnIncomingMessage(const char* msg, size_t size)
 			MessageBoxA(UI::Window, xor (str.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
 			Globals::ShutdownAndExit();
-
 			break;
 		}
 		case ResponseType::Handshake:
@@ -77,16 +77,20 @@ void OnIncomingMessage(const char* msg, size_t size)
 			{
 				case HandshakeResult::Success:
 				{
+					VM_SHARK_BLACK_START
 					Globals::MatchedClient = new MatchedClient(Globals::TCPClient);
 					Globals::MatchedClient->aes->SetIV(handshakeResponse->IV);
 					Globals::MatchedClient->aes->SetKey(handshakeResponse->Key);
+					VM_SHARK_BLACK_END
 					break;
 				}
 				case HandshakeResult::EpochTimedOut:
 				case HandshakeResult::InternalError:
 				{
+					VM_SHARK_BLACK_START
 					// Have both in a switch case, let's not tell anybody trying to crack that the epoch is wrong.
 					MessageBoxA(UI::Window, xor ("Fatal error occured\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					VM_SHARK_BLACK_END
 					Globals::ShutdownAndExit();
 
 					break;
@@ -105,6 +109,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 			{
 				case LoginResult::Success:
 				{
+					VM_SHARK_BLACK_START
 					Globals::CurrentUser.Session = loginResponse->SessionToken;
 
 					Globals::Games = loginResponse->Games;
@@ -116,6 +121,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 					Globals::CurrentUser.ResetSensitiveFields();
 						
 					Globals::LoaderState = LoaderStates::LoggedIn;
+					VM_SHARK_BLACK_END
 
 					break;
 				}
@@ -166,6 +172,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 			{
 				case DllStreamResult::Success:
 				{
+					VM_SHARK_BLACK_START
 					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
 					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
 					if (hProcess == INVALID_HANDLE_VALUE)
@@ -199,6 +206,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 						
 					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
 
+					VM_SHARK_BLACK_END
 					Globals::ShutdownAndExit();
 
 					break;
@@ -241,13 +249,15 @@ void OnDisconnection(const pipe_ret_t& ret)
 
 bool ConnectToServer()
 {
+	VM_FISH_RED_START
+	STR_ENCRYPT_START
 	client_observer_t observer;
 	observer.wantedIp = "127.0.0.1";
 	observer.incoming_packet_func = OnIncomingMessage;
 	observer.disconnected_func = OnDisconnection;
 	Globals::TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = Globals::TCPClient.connectTo("127.0.0.1", 9999);
+	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("195.133.47.11"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
@@ -264,6 +274,8 @@ bool ConnectToServer()
 	}
 
 	return false;
+	STR_ENCRYPT_END
+	VM_FISH_RED_END
 }
 
 int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int show_cmd)
@@ -311,3 +323,4 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 
 	Globals::ShutdownAndExit();
 }
+#pragma optimize("", on)
