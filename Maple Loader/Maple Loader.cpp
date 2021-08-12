@@ -159,12 +159,6 @@ void OnIncomingMessage(const char* msg, size_t size)
 			{
 				case DllStreamResult::Success:
 				{
-					if (FindProcessId(L"osu!.exe") == 0)
-					{
-						MessageBoxA(UI::Window, xor ("Please launch osu! first!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-						Globals::LoaderState = LoaderStates::LoggedIn;
-						break;
-					}
 					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
 					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
 					if (hProcess == INVALID_HANDLE_VALUE)
@@ -175,7 +169,16 @@ void OnIncomingMessage(const char* msg, size_t size)
 					}
 
 					// Amazing, now we wait for the PE to load fully because Themida can take a while...
-					Sleep(1500);
+					while (true)
+					{
+						HANDLE mtx = OpenMutexA(SYNCHRONIZE, FALSE, "QVPj0LSOL81Lko4d");
+						if (mtx != NULL)
+						{
+							CloseHandle(mtx);
+							break;
+						}
+						Sleep(100);
+					}
 
 					// Now we read the memory of the ghost process, write the binary to it, and the player data.
 					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient))
@@ -187,7 +190,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 
 					Globals::TCPClient.finish();
 						
-					MessageBoxA(UI::Window, xor ("Maple is now loading, this process can take a while.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
+					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
 
 					Globals::ShutdownAndExit();
 

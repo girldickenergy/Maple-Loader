@@ -43,7 +43,7 @@ public:
 				PeakWorkingSetSize)), hProcess);
 
 		SIZE_T mapleBinaryBytesWritten = 0;
-		WriteProcessMemory(hProcess, mapleBinaryPointer, binary->data(), binary->size(), &mapleBinaryBytesWritten);
+		WriteProcessMemory(hProcess, mapleBinaryPointer + 0x04, binary->data(), binary->size(), &mapleBinaryBytesWritten);
 
 		if (mapleBinaryBytesWritten != binary->size())
 		{
@@ -67,6 +67,16 @@ public:
 		WriteProcessMemory(hProcess, userDataPointer, userDataBytes.data(), userDataBytes.size(), &userDataBytesWritten);
 
 		if (userDataBytesWritten != userDataBytes.size())
+		{
+			TerminateProcess(hProcess, 0);
+			return false;
+		}
+
+		userDataBytesWritten = 0;
+		DWORD synch_to_write = 0x13371337;
+		WriteProcessMemory(hProcess, mapleBinaryPointer, &synch_to_write, 0x4, &userDataBytesWritten);
+
+		if (userDataBytesWritten != 0x4)
 		{
 			TerminateProcess(hProcess, 0);
 			return false;
