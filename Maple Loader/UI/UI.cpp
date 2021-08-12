@@ -228,8 +228,14 @@ bool UI::Render()
 
 							Globals::ShutdownAndExit();
 						}
+
+						std::string hash;
+						CryptoPP::SHA256 algo;
+						char szModule[MAX_PATH];
+						GetModuleFileNameA(NULL, szModule, MAX_PATH);
+						CryptoPP::FileSource fs(szModule, true, new CryptoPP::HashFilter(algo, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
 						
-						LoginRequest loginPacket = LoginRequest(hwid, Globals::CurrentUser.Username, Globals::CurrentUser.Password, Globals::MatchedClient);
+						LoginRequest loginPacket = LoginRequest(hwid, hash, Globals::CurrentUser.Username, Globals::CurrentUser.Password, Globals::MatchedClient);
 
 						pipe_ret_t sendRet = Globals::TCPClient.sendBytes(loginPacket.Data);
 						if (!sendRet.success)

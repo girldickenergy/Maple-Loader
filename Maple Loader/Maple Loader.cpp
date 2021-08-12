@@ -125,6 +125,12 @@ void OnIncomingMessage(const char* msg, size_t size)
 						
 					break;
 				}
+				case LoginResult::HashMismatch:
+				{
+					MessageBoxA(UI::Window, xor ("A newer version of the loader is available.\nPlease download it from https://maple.software/dashboard"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+					break;
+				}
 				case LoginResult::HWIDMismatch:
 				{
 					MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);

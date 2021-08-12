@@ -6,5 +6,5 @@
 class LoginRequest : public Request
 {
 public:
-	LoginRequest(std::string hwid, std::string username, std::string password, MatchedClient* matchedClient);
+	LoginRequest(std::string hwid, std::string hash, std::string username, std::string password, MatchedClient* matchedClient);
 };
