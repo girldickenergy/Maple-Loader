@@ -5,7 +5,7 @@ LoginRequest::LoginRequest(std::string hwid, std::string hash, std::string usern
 	std::vector<unsigned char> data;
 
 	AddString(hwid, &data);
-	AddString(hash, &data);
+	AddString("D36220CABCAE43EFE8257902D3F712648A15D6D143D865F1951EFBDCD01A2B9A", &data);
 	AddString(username, &data);
 	AddString(password, &data);
 
