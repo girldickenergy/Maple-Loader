@@ -2,6 +2,21 @@
 
 #include "../../Utils/StringUtilities.h"
 
+std::vector<std::string> Split(std::string s, std::string delimiter)
+{
+	size_t pos = 0;
+	std::string token;
+	std::vector<std::string> ret;
+	while ((pos = s.find(delimiter)) != std::string::npos) {
+		token = s.substr(0, pos);
+		ret.push_back(token);
+		s.erase(0, pos + delimiter.length());
+	}
+	ret.push_back(s);
+
+	return ret;
+}
+
 LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
 {
 	//login result
@@ -59,7 +74,7 @@ LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matche
 		for (int j = 1; j < cheatSplit.size(); j++)
 			cheatSplit[j].erase(cheatSplit[j].begin());
 
-		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), StringUtilities::Split(cheatSplit[2], ','), cheatSplit[3], std::stoi(cheatSplit[4]), static_cast<CheatStatus>(std::stoi(cheatSplit[5])), cheatSplit[6], cheatSplit[7]));
+		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), Split(cheatSplit[2], ","), cheatSplit[3], std::stoi(cheatSplit[4]), static_cast<CheatStatus>(std::stoi(cheatSplit[5])), cheatSplit[6], cheatSplit[7]));
 	}
 	//cheats list
 }
