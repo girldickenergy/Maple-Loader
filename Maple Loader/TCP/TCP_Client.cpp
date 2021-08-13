@@ -117,9 +117,12 @@ void TcpClient::publishServerDisconnected(const pipe_ret_t& ret)
 void TcpClient::ReceiveTask()
 {
 	char* msg = static_cast<char*>(malloc(12000000));
+	char* msg_orig = msg;
 	while (!stop) {
 		memset(msg, 0, sizeof msg);
-		int numOfBytesReceived = recv(m_sockfd, msg, 12000000, 0);
+		int size;
+		int numOfBytesReceived = recv(m_sockfd, (char*)&size, 4, 0);
+		int orig_size = size;
 		if (numOfBytesReceived < 1) {
 			pipe_ret_t ret;
 			ret.success = false;
@@ -133,8 +136,35 @@ void TcpClient::ReceiveTask()
 			publishServerDisconnected(ret);
 			finish();
 			break;
-		} else {
-			publishServerMsg(msg, numOfBytesReceived);
+		}
+		else {
+			while (true)
+			{
+				numOfBytesReceived = recv(m_sockfd, msg, size, 0);
+				if (numOfBytesReceived < 1) {
+					pipe_ret_t ret;
+					ret.success = false;
+					stop = true;
+					if (numOfBytesReceived == 0) { //server closed connection
+						ret.msg = "Server closed connection";
+					}
+					else {
+						ret.msg = strerror(errno);
+					}
+					publishServerDisconnected(ret);
+					finish();
+					break;
+				}
+				else {
+					size -= numOfBytesReceived;
+					msg += numOfBytesReceived;
+					if (size == 0) {
+						publishServerMsg(msg_orig, orig_size);
+						msg = msg_orig;
+						break;
+					}
+				}
+			}
 		}
 	}
 }
