@@ -280,6 +280,7 @@ bool ConnectToServer()
 
 int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int show_cmd)
 {
+	std::setlocale(LC_NUMERIC, "en_US");
 	#ifdef _DEBUG
 		AllocConsole();
 		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
