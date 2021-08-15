@@ -597,6 +597,7 @@
     <ClInclude Include="User.h" />
     <ClInclude Include="Utils\HWID.h" />
     <ClInclude Include="Utils\RSAKeygen.hpp" />
+    <ClInclude Include="Utils\smbios.h" />
     <ClInclude Include="Utils\StringUtilities.h" />
     <ClInclude Include="Utils\TextureUtils.h" />
   </ItemGroup>

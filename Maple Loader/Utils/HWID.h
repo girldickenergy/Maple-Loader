@@ -1,12 +1,13 @@
 #pragma once
 
-#include <intrin.h>
-#include <memory>
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include "../Crypto/md5.h"
+
 #include <string>
 #include <sstream>
 
-#include <Iphlpapi.h>
-#pragma comment(lib, "iphlpapi.lib")
+#include "smbios.h"
+#include "../UI/UI.h"
 
 class HWID
 {
@@ -67,63 +68,83 @@ class HWID
 		return std::string(vendor);
 	}
 
-	static std::string getMacAddress()
+	static std::string getMotherboardInfo()
 	{
-		PIP_ADAPTER_INFO AdapterInfo;
-		DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);
-		char* mac_addr = (char*)malloc(18);
+		std::string manufacturer;
+		std::string product;
+		
+		const DWORD smbios_data_size = GetSystemFirmwareTable('RSMB', 0, nullptr, 0);
 
-		AdapterInfo = (IP_ADAPTER_INFO*)malloc(sizeof(IP_ADAPTER_INFO));
-		if (AdapterInfo == NULL)
+		auto* const heap_handle = GetProcessHeap();
+		auto* const smbios_data = static_cast<smbios::raw_smbios_data*>(HeapAlloc(heap_handle, 0, static_cast<size_t>(smbios_data_size)));
+		if (!smbios_data)
 		{
-			free(mac_addr);
 			return { };
 		}
 
-		if (GetAdaptersInfo(AdapterInfo, &dwBufLen) == ERROR_BUFFER_OVERFLOW)
+		const DWORD bytes_written = GetSystemFirmwareTable('RSMB', 0, smbios_data, smbios_data_size);
+		if (bytes_written != smbios_data_size)
 		{
-			free(AdapterInfo);
-			AdapterInfo = (IP_ADAPTER_INFO*)malloc(dwBufLen);
-			if (AdapterInfo == NULL)
+			return { };
+		}
+
+		smbios::parser meta;
+		const BYTE* buff = smbios_data->smbios_table_data;
+		const auto buff_size = static_cast<size_t>(smbios_data_size);
+
+		meta.feed(buff, buff_size);
+		for (auto& header : meta.headers)
+		{
+			smbios::string_array_t strings;
+			smbios::parser::extract_strings(header, strings);
+
+			if (header->type ==  smbios::types::baseboard_info)
 			{
-				free(mac_addr);
-				return { };
+				auto* const x = reinterpret_cast<smbios::baseboard_info*>(header);
+
+				if (x->length == 0)
+					break;
+
+				manufacturer = strings[x->manufacturer_name];
+				product = strings[x->product_name];
 			}
 		}
 
-		if (GetAdaptersInfo(AdapterInfo, &dwBufLen) == NO_ERROR)
-		{
-			PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;
-			do
-			{
-				sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
-					pAdapterInfo->Address[0], pAdapterInfo->Address[1],
-					pAdapterInfo->Address[2], pAdapterInfo->Address[3],
-					pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
+		HeapFree(heap_handle, 0, smbios_data);
 
-				pAdapterInfo = pAdapterInfo->Next;
-			} while (pAdapterInfo);
-		}
-		
-		free(AdapterInfo);
-		std::string addr(mac_addr);
-		free(mac_addr);
+		if (manufacturer.empty() || product.empty())
+			return { };
 
-		return addr;
+		return manufacturer + '-' + product;
 	}
 public:
 	static std::string GetHWID()
 	{
 		std::string diskSerial = getDiskSerial();
 		std::string cpuVendor = getCPUVendor();
-		std::string macAddress = getMacAddress();
+		std::string motherboardInfo = getMotherboardInfo();
 		
-		if (diskSerial.empty() || cpuVendor.empty() || macAddress.empty())
+		if (diskSerial.empty() || cpuVendor.empty() || motherboardInfo.empty())
 			return { };
 
 		std::stringstream hwid;
-		hwid << diskSerial << "|" << cpuVendor << "|" << macAddress;
+		hwid << diskSerial << "|" << cpuVendor << "|" << motherboardInfo;
 
-		return hwid.str();
+		std::cout << hwid.str() << std::endl;
+
+		CryptoPP::Weak1::MD5 hash;
+		byte digest[CryptoPP::Weak1::MD5::DIGESTSIZE];
+
+		hash.CalculateDigest(digest, (byte*)hwid.str().c_str(), hwid.str().length());
+
+		CryptoPP::HexEncoder encoder;
+		std::string hwidHashed;
+		encoder.Attach(new CryptoPP::StringSink(hwidHashed));
+		encoder.Put(digest, sizeof(digest));
+		encoder.MessageEnd();
+
+		std::cout << hwidHashed << std::endl;
+		
+		return hwidHashed;
 	}
 };
