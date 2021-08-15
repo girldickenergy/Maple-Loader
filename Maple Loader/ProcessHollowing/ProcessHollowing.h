@@ -20,9 +20,12 @@ public:
 
 		ProcessStartupInfo.cb = sizeof(ProcessStartupInfo);
 
+		BOOL isWOW64;
+		IsWow64Process(GetCurrentProcess(), &isWOW64);
+
 		char filepath[MAX_PATH];
 		GetWindowsDirectoryA(filepath, sizeof(filepath));
-		strcat(filepath, "\\SysWOW64\\svchost.exe");
+		strcat(filepath, isWOW64 ? "\\SysWOW64\\svchost.exe" : "\\System32\\svchost.exe");
 
 		if (!CreateProcessA(
 			filepath,
