@@ -1376,6 +1376,9 @@
     <ClInclude Include="Utils\smbios.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\RegistryUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Maple Loader.rc" />

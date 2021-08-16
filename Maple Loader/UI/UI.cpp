@@ -212,8 +212,6 @@ bool UI::Render()
 					}
 					Widgets::Link(xor ("Forgot your password?"), xor ("https://maple.software/auth/forgotPassword"));
 
-					ImGui::Spacing();
-
 					if (loggingIn)
 					{
 						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);

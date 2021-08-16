@@ -7,9 +7,9 @@
 class StringUtilities
 {
 public:
-	static std::vector<std::string> Split(const std::string str)
+	static std::vector<std::string> Split(const std::string str, const std::string rgx_str = "(0xdeadbeef)")
 	{
-		const std::regex re(R"(0xdeadbeef)");
+		const std::regex re(rgx_str);
 		const std::sregex_token_iterator it{
 			str.begin(),
 			str.end(), re, -1

@@ -18,6 +18,8 @@
 #include "ProcessHollowing/ProcessHollowing.h"
 #include "ProcessHollowing/Write.h"
 
+#include "Utils/RegistryUtils.h"
+
 #include "../ThemidaSDK.h"
 #include <TlHelp32.h>
 #pragma optimize("", off)
@@ -83,6 +85,14 @@ void OnIncomingMessage(const char* msg, size_t size)
 					Globals::MatchedClient = new MatchedClient(Globals::TCPClient);
 					Globals::MatchedClient->aes->SetIV(handshakeResponse->IV);
 					Globals::MatchedClient->aes->SetKey(handshakeResponse->Key);
+
+					std::string data = RegistryUtils::GetValueFromKey(xor("SOFTWARE\\mplaudioservice\\dat"));
+					if (data != xor ("error: key not found") && data != xor ("error: unexpected error"))
+					{
+						std::vector<std::string> splitData = StringUtilities::Split(data, xor("(industrybaby)"));
+						memcpy(Globals::CurrentUser.Username, splitData[0].c_str(), strlen(splitData[0].c_str()));
+						memcpy(Globals::CurrentUser.Password, splitData[1].c_str(), strlen(splitData[1].c_str()));
+					}
 					VM_SHARK_BLACK_END
 					break;
 				}
@@ -119,10 +129,15 @@ void OnIncomingMessage(const char* msg, size_t size)
 
 					Globals::CurrentGame = Globals::Games[0];
 					Globals::CurrentCheat = Globals::Cheats[0];
-
-					Globals::CurrentUser.ResetSensitiveFields();
 						
 					Globals::LoaderState = LoaderStates::LoggedIn;
+
+					// Write data to registry
+					std::string data = Globals::CurrentUser.Username + std::string(xor("industrybaby")) + Globals::CurrentUser.Password;
+					RegistryUtils::WriteValueToKey(xor("SOFTWARE\\mplaudioservice\\dat"), data);
+
+					Globals::CurrentUser.ResetSensitiveFields();
+
 					VM_SHARK_BLACK_END
 
 					break;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -596,6 +596,7 @@
     <ClInclude Include="UI\Widgets.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Utils\HWID.h" />
+    <ClInclude Include="Utils\RegistryUtils.h" />
     <ClInclude Include="Utils\RSAKeygen.hpp" />
     <ClInclude Include="Utils\smbios.h" />
     <ClInclude Include="Utils\StringUtilities.h" />
