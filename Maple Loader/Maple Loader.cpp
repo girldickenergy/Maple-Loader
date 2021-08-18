@@ -297,6 +297,7 @@ bool ConnectToServer()
 
 int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int show_cmd)
 {
+	STR_ENCRYPT_START
 	std::setlocale(LC_NUMERIC, "en_US");
 	
 	#ifdef _DEBUG
@@ -304,6 +305,9 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 	#endif
 	
+	// Hopefully this fixes the time out of sync problems
+	system(xor("w32tm /resync /nowait"));
+
 	if (!ConnectToServer())
 	{
 		MessageBoxA(UI::Window, xor ("Failed to connect to server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
@@ -323,7 +327,7 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 	
 	MSG msg;
 	memset(&msg, 0, sizeof(msg));
-
+	STR_ENCRYPT_END
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
