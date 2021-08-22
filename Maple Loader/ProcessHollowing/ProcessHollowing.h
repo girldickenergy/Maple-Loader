@@ -5,7 +5,7 @@
 class ProcessHollowing
 {
 public:
-	static HANDLE CreateHollowedProcess(void* image)
+	static HANDLE CreateHollowedProcess(void* image, int* code)
 	{
 		VM_FISH_RED_START
 		STARTUPINFOA ProcessStartupInfo;
@@ -41,6 +41,7 @@ public:
 		))
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 1;
 			return INVALID_HANDLE_VALUE;
 		};
 
@@ -63,6 +64,7 @@ public:
 		))
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 2;
 			return INVALID_HANDLE_VALUE;
 		}
 
@@ -82,6 +84,7 @@ public:
 		))
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 3;
 			return INVALID_HANDLE_VALUE;
 		}
 		
@@ -98,6 +101,7 @@ public:
 				))
 			{
 				TerminateProcess(ProcessInfo.hProcess, 0);
+				*code = 4;
 				return INVALID_HANDLE_VALUE;
 			}
 		}
@@ -122,12 +126,14 @@ public:
 				)))
 				{
 					TerminateProcess(ProcessInfo.hProcess, 0);
+					*code = 5;
 					return INVALID_HANDLE_VALUE;
 				}
 			}
 			else
 			{
 				TerminateProcess(ProcessInfo.hProcess, 0);
+				*code = 6;
 				return INVALID_HANDLE_VALUE;
 			}
 		}
@@ -144,6 +150,7 @@ public:
 			))
 			{
 				TerminateProcess(ProcessInfo.hProcess, 0);
+				*code = 7;
 				return INVALID_HANDLE_VALUE;
 			}
 		}
@@ -155,6 +162,7 @@ public:
 			if (lpNtHeader->FileHeader.Characteristics & IMAGE_FILE_RELOCS_STRIPPED)
 			{
 				TerminateProcess(ProcessInfo.hProcess, 0);
+				*code = 8;
 				return INVALID_HANDLE_VALUE;
 			}
 			lpNtHeader->OptionalHeader.ImageBase = (ULONG)lpAllocatedBase;
@@ -223,6 +231,7 @@ public:
 		))
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 9;
 			return INVALID_HANDLE_VALUE;
 		}
 
@@ -236,6 +245,7 @@ public:
 		))
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 10;
 			return INVALID_HANDLE_VALUE;
 		}
 
@@ -249,6 +259,7 @@ public:
 		))
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 11;
 			return INVALID_HANDLE_VALUE;
 		}
 
@@ -265,6 +276,7 @@ public:
 			))
 			{
 				TerminateProcess(ProcessInfo.hProcess, 0);
+				*code = 12;
 				return INVALID_HANDLE_VALUE;
 			}
 
@@ -326,6 +338,7 @@ public:
 			))
 			{
 				TerminateProcess(ProcessInfo.hProcess, 0);
+				*code = 13;
 				return INVALID_HANDLE_VALUE;
 			}
 		}
@@ -335,6 +348,7 @@ public:
 		) == -1)
 		{
 			TerminateProcess(ProcessInfo.hProcess, 0);
+			*code = 14;
 			return INVALID_HANDLE_VALUE;
 		}
 

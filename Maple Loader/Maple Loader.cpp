@@ -190,11 +190,13 @@ void OnIncomingMessage(const char* msg, size_t size)
 				case DllStreamResult::Success:
 				{
 					VM_SHARK_BLACK_START
+						int code = 0;
 					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
-					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe);
+					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe, &code);
 					if (hProcess == INVALID_HANDLE_VALUE)
 					{
-						MessageBoxA(UI::Window, xor ("Injection failed."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
+						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 						Globals::LoaderState = LoaderStates::LoggedIn;
 						break;
 					}
@@ -212,9 +214,10 @@ void OnIncomingMessage(const char* msg, size_t size)
 					}
 
 					// Now we read the memory of the ghost process, write the binary to it, and the player data.
-					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient))
+					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient, &code))
 					{
-						MessageBoxA(UI::Window, xor ("Injection failed."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
+						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 						Globals::LoaderState = LoaderStates::LoggedIn;
 						break;
 					}
@@ -274,7 +277,7 @@ bool ConnectToServer()
 	observer.disconnected_func = OnDisconnection;
 	Globals::TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("195.133.47.11"), 9999);
+	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("198.251.89.179"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV

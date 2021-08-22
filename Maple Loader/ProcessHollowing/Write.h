@@ -18,7 +18,7 @@ public:
 	 * @param binary Binary data which will be written to the process.
 	 * @param mc MatchedClient instance which houses user-data.
 	 */
-	static bool WriteData(HANDLE hProcess, std::vector<unsigned char>* binary, MatchedClient* mc)
+	static bool WriteData(HANDLE hProcess, std::vector<unsigned char>* binary, MatchedClient* mc, int* code)
 	{
 		VM_FISH_RED_START
 		HMODULE modules[256];
@@ -49,6 +49,7 @@ public:
 		if (mapleBinaryBytesWritten != binary->size())
 		{
 			TerminateProcess(hProcess, 0);
+			*code = 15;
 			return false;
 		}
 
@@ -70,6 +71,7 @@ public:
 		if (userDataBytesWritten != userDataBytes.size())
 		{
 			TerminateProcess(hProcess, 0);
+			*code = 16;
 			return false;
 		}
 
@@ -80,6 +82,7 @@ public:
 		if (userDataBytesWritten != 0x4)
 		{
 			TerminateProcess(hProcess, 0);
+			*code = 17;
 			return false;
 		}
 		VM_FISH_RED_END
