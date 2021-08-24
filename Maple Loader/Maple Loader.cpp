@@ -277,7 +277,7 @@ bool ConnectToServer()
 	observer.disconnected_func = OnDisconnection;
 	Globals::TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("198.251.89.179"), 9999);
+	pipe_ret_t connectRet = Globals::TCPClient.connectTo(/*xor("195.133.47.11")*/"127.0.0.1", 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
@@ -309,7 +309,8 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 	#endif
 	
 	// Hopefully this fixes the time out of sync problems
-	system(xor("w32tm /resync /nowait"));
+	// issue
+	// system(xor("w32tm /resync /nowait"));
 
 	if (!ConnectToServer())
 	{
