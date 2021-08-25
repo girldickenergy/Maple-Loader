@@ -272,12 +272,12 @@ bool ConnectToServer()
 	VM_FISH_RED_START
 	STR_ENCRYPT_START
 	client_observer_t observer;
-	observer.wantedIp = "127.0.0.1";
+	observer.wantedIp = xor ("198.251.89.179");
 	observer.incoming_packet_func = OnIncomingMessage;
 	observer.disconnected_func = OnDisconnection;
 	Globals::TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = Globals::TCPClient.connectTo(/*xor("195.133.47.11")*/"127.0.0.1", 9999);
+	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("198.251.89.179"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
