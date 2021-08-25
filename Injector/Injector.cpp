@@ -127,7 +127,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// Finally, inject the dll.
 	auto image = proc.mmap().MapImage(oldNtHeader->OptionalHeader.SizeOfImage, mapleBinary, false,
-		blackbone::CreateLdrRef | blackbone::RebaseProcess | blackbone::NoDelayLoad | blackbone::WipeHeader,
+		blackbone::RebaseProcess | blackbone::NoDelayLoad | blackbone::WipeHeader,
 		nullptr, nullptr, &args);
 	VM_EAGLE_BLACK_END
 		return 0;
