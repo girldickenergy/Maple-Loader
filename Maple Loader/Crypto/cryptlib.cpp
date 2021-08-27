@@ -977,13 +977,17 @@ DecodingResult PK_Verifier::Recover(byte *recoveredMessage, PK_MessageAccumulato
 	return RecoverAndRestart(recoveredMessage, *m);
 }
 
+#include "../../ThemidaSDK.h"
+
 DecodingResult PK_Verifier::RecoverMessage(byte *recoveredMessage,
 	const byte *nonrecoverableMessage, size_t nonrecoverableMessageLength,
 	const byte *signature, size_t signatureLength) const
 {
+	MUTATE_START
 	member_ptr<PK_MessageAccumulator> m(NewVerificationAccumulator());
 	InputSignature(*m, signature, signatureLength);
 	m->Update(nonrecoverableMessage, nonrecoverableMessageLength);
+	MUTATE_END
 	return RecoverAndRestart(recoveredMessage, *m);
 }
 

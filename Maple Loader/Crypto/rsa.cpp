@@ -10,6 +10,7 @@
 #include "algparam.h"
 #include "fips140.h"
 #include "pkcspad.h"
+#include "../../ThemidaSDK.h"
 
 #if defined(CRYPTOPP_DEBUG) && !defined(CRYPTOPP_DOXYGEN_PROCESSING) && !defined(CRYPTOPP_IS_DLL)
 #include "sha3.h"
@@ -161,7 +162,7 @@ void InvertibleRSAFunction::Initialize(const Integer &n, const Integer &e, const
 {
 	if (n.IsEven() || e.IsEven() | d.IsEven())
 		throw InvalidArgument("InvertibleRSAFunction: input is not a valid RSA private key");
-
+	MUTATE_START
 	m_n = n;
 	m_e = e;
 	m_d = d;
@@ -173,6 +174,7 @@ void InvertibleRSAFunction::Initialize(const Integer &n, const Integer &e, const
 		r >>= 1;
 		s++;
 	}
+	MUTATE_END
 
 	ModularArithmetic modn(n);
 	for (Integer i = 2; ; ++i)
@@ -187,11 +189,13 @@ void InvertibleRSAFunction::Initialize(const Integer &n, const Integer &e, const
 			b = modn.Square(a);
 			if (b == 1)
 			{
+				MUTATE_START
 				m_p = GCD(a-1, n);
 				m_q = n/m_p;
 				m_dp = m_d % (m_p-1);
 				m_dq = m_d % (m_q-1);
 				m_u = m_q.InverseMod(m_p);
+				MUTATE_END
 				return;
 			}
 			if (++j == s)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -72,9 +72,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(SolutionDir)Maple Loader\UI\DirectX;$(SolutionDir)\Maple Loader\curl\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Maple Loader\curl;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(SolutionDir)Maple Loader\UI\DirectX;$(SolutionDir)\Maple Loader\curl\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\Maple Loader\curl;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -86,13 +90,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -101,7 +107,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -111,6 +117,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcurl_a.lib;Ws2_32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,7 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AntiDebug\Security.cpp" />
-    <ClCompile Include="Communication\Client.cpp" />
     <ClCompile Include="Crypto\3way.cpp" />
     <ClCompile Include="Crypto\adler32.cpp" />
     <ClCompile Include="Crypto\algebra.cpp" />
@@ -323,10 +330,19 @@
     <ClCompile Include="Crypto\zdeflate.cpp" />
     <ClCompile Include="Crypto\zinflate.cpp" />
     <ClCompile Include="Crypto\zlib.cpp" />
-    <ClCompile Include="Macros.cpp" />
     <ClCompile Include="Maple Loader.cpp" />
+    <ClCompile Include="Packets\Requests\DllStreamRequest.cpp" />
+    <ClCompile Include="Packets\Requests\HandshakeRequest.cpp" />
+    <ClCompile Include="Packets\Requests\LoginRequest.cpp" />
+    <ClCompile Include="Packets\Requests\Request.cpp" />
+    <ClCompile Include="Packets\Responses\DllStreamResponse.cpp" />
+    <ClCompile Include="Packets\Responses\FatalErrorResponse.cpp" />
+    <ClCompile Include="Packets\Responses\HandshakeResponse.cpp" />
+    <ClCompile Include="Packets\Responses\LoginResponse.cpp" />
+    <ClCompile Include="Packets\Responses\Response.cpp" />
     <ClCompile Include="TCP\Client.cpp" />
     <ClCompile Include="TCP\TCP_Client.cpp" />
+    <ClCompile Include="UI\AnimationHandler.cpp" />
     <ClCompile Include="UI\ImGui\imgui.cpp" />
     <ClCompile Include="UI\ImGui\imgui_demo.cpp" />
     <ClCompile Include="UI\ImGui\imgui_draw.cpp" />
@@ -335,11 +351,12 @@
     <ClCompile Include="UI\ImGui\imgui_tables.cpp" />
     <ClCompile Include="UI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="UI\UI.cpp" />
-    <ClCompile Include="Utils\StringUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h" />
     <ClInclude Include="AntiDebug\xorstr.hpp" />
+    <ClInclude Include="Cheat.h" />
+    <ClInclude Include="Communication\MatchedClient.h" />
     <ClInclude Include="Crypto\3way.h" />
     <ClInclude Include="Crypto\adler32.h" />
     <ClInclude Include="Crypto\adv_simd.h" />
@@ -531,12 +548,41 @@
     <ClInclude Include="Crypto\zdeflate.h" />
     <ClInclude Include="Crypto\zinflate.h" />
     <ClInclude Include="Crypto\zlib.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="Packets\Requests\DllStreamRequest.h" />
+    <ClInclude Include="Packets\Requests\HandshakeRequest.h" />
+    <ClInclude Include="Packets\Requests\LoginRequest.h" />
+    <ClInclude Include="Packets\Requests\Request.h" />
+    <ClInclude Include="Packets\Requests\RequestType.h" />
+    <ClInclude Include="Packets\Responses\DllStreamResponse.h" />
+    <ClInclude Include="Packets\Responses\FatalErrorResponse.h" />
+    <ClInclude Include="Packets\Responses\HandshakeResponse.h" />
+    <ClInclude Include="Packets\Responses\LoginResponse.h" />
+    <ClInclude Include="Packets\Responses\Response.h" />
+    <ClInclude Include="Packets\Responses\ResponseType.h" />
+    <ClInclude Include="ProcessHollowing\Data.h" />
+    <ClInclude Include="ProcessHollowing\MemoryUtils.h" />
+    <ClInclude Include="ProcessHollowing\ProcessHollowing.h" />
+    <ClInclude Include="ProcessHollowing\Write.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TCP\Client.h" />
     <ClInclude Include="TCP\Client_Observer.h" />
     <ClInclude Include="TCP\Pipe_Ret_T.h" />
     <ClInclude Include="TCP\TCP_Client.h" />
-    <ClInclude Include="TCP\Utils\SendByteVector.hpp" />
+    <ClInclude Include="UI\AnimatedLogin.h" />
+    <ClInclude Include="UI\AnimatedTexture.h" />
+    <ClInclude Include="UI\AnimationHandler.h" />
+    <ClInclude Include="UI\DirectX\d3dx9.h" />
+    <ClInclude Include="UI\DirectX\d3dx9anim.h" />
+    <ClInclude Include="UI\DirectX\d3dx9core.h" />
+    <ClInclude Include="UI\DirectX\d3dx9effect.h" />
+    <ClInclude Include="UI\DirectX\d3dx9math.h" />
+    <ClInclude Include="UI\DirectX\d3dx9mesh.h" />
+    <ClInclude Include="UI\DirectX\d3dx9shader.h" />
+    <ClInclude Include="UI\DirectX\d3dx9shape.h" />
+    <ClInclude Include="UI\DirectX\d3dx9tex.h" />
+    <ClInclude Include="UI\DirectX\d3dx9xof.h" />
     <ClInclude Include="UI\Fonts.h" />
     <ClInclude Include="UI\ImGui\imconfig.h" />
     <ClInclude Include="UI\ImGui\imgui.h" />
@@ -547,9 +593,16 @@
     <ClInclude Include="UI\ImGui\imstb_textedit.h" />
     <ClInclude Include="UI\ImGui\imstb_truetype.h" />
     <ClInclude Include="UI\StyleProvider.h" />
+    <ClInclude Include="UI\Textures.h" />
     <ClInclude Include="UI\UI.h" />
+    <ClInclude Include="UI\Widgets.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="Utils\HWID.h" />
+    <ClInclude Include="Utils\RegistryUtils.h" />
     <ClInclude Include="Utils\RSAKeygen.hpp" />
+    <ClInclude Include="Utils\smbios.h" />
+    <ClInclude Include="Utils\StringUtilities.h" />
+    <ClInclude Include="Utils\TextureUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Maple Loader.rc" />
@@ -572,6 +625,7 @@
     <None Include="Crypto\vs2005.zip" />
     <None Include="Crypto\x64dll.asm" />
     <None Include="Crypto\x64masm.asm" />
+    <None Include="UI\DirectX\d3dx9math.inl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Crypto\Filelist.txt" />
@@ -579,6 +633,9 @@
     <Text Include="Crypto\Install.txt" />
     <Text Include="Crypto\License.txt" />
     <Text Include="Crypto\Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="UI\DirectX\d3dx9.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

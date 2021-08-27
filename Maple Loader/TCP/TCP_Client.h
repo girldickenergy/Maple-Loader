@@ -25,8 +25,6 @@ typedef unsigned int uint;
 #include "client_observer.h"
 #include "pipe_ret_t.h"
 
-#define MAX_PACKET_SIZE 4096
-
 class TcpClient
 {
 private:
@@ -45,6 +43,7 @@ public:
 	~TcpClient();
 	pipe_ret_t connectTo(const std::string& address, int port);
 	pipe_ret_t sendMsg(const char* msg, size_t size);
+	pipe_ret_t sendBytes(std::vector<unsigned char> bytes);
 
 	void subscribe(const client_observer_t& observer);
 	void unsubscribeAll();

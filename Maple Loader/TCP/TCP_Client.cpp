@@ -76,6 +76,16 @@ pipe_ret_t TcpClient::sendMsg(const char* msg, size_t size)
 	return ret;
 }
 
+pipe_ret_t TcpClient::sendBytes(std::vector<unsigned char> bytes)
+{
+	std::string msg;
+	for (int i = 0; i < bytes.size(); i++) {
+		byte b = bytes[i];
+		msg += (char)b;
+	}
+	return sendMsg(msg.c_str(), bytes.size());
+}
+
 void TcpClient::subscribe(const client_observer_t& observer)
 {
 	m_subscibers.push_back(observer);
@@ -106,10 +116,13 @@ void TcpClient::publishServerDisconnected(const pipe_ret_t& ret)
 
 void TcpClient::ReceiveTask()
 {
-	char msg[MAX_PACKET_SIZE];
+	char* msg = static_cast<char*>(malloc(12000000));
+	char* msg_orig = msg;
 	while (!stop) {
 		memset(msg, 0, sizeof msg);
-		int numOfBytesReceived = recv(m_sockfd, msg, MAX_PACKET_SIZE, 0);
+		int size;
+		int numOfBytesReceived = recv(m_sockfd, (char*)&size, 4, 0);
+		int orig_size = size;
 		if (numOfBytesReceived < 1) {
 			pipe_ret_t ret;
 			ret.success = false;
@@ -123,8 +136,35 @@ void TcpClient::ReceiveTask()
 			publishServerDisconnected(ret);
 			finish();
 			break;
-		} else {
-			publishServerMsg(msg, numOfBytesReceived);
+		}
+		else {
+			while (true)
+			{
+				numOfBytesReceived = recv(m_sockfd, msg, size, 0);
+				if (numOfBytesReceived < 1) {
+					pipe_ret_t ret;
+					ret.success = false;
+					stop = true;
+					if (numOfBytesReceived == 0) { //server closed connection
+						ret.msg = "Server closed connection";
+					}
+					else {
+						ret.msg = strerror(errno);
+					}
+					publishServerDisconnected(ret);
+					finish();
+					break;
+				}
+				else {
+					size -= numOfBytesReceived;
+					msg += numOfBytesReceived;
+					if (size == 0) {
+						publishServerMsg(msg_orig, orig_size);
+						msg = msg_orig;
+						break;
+					}
+				}
+			}
 		}
 	}
 }
@@ -132,7 +172,7 @@ void TcpClient::ReceiveTask()
 pipe_ret_t TcpClient::finish()
 {
 	stop = true;
-	terminateReceiveThread();
+	//terminateReceiveThread();
 	pipe_ret_t ret;
 #ifdef WIN32
 	if (closesocket(m_sockfd) == -1) { // close failed

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <utility>
-#include <windows.h>
-
 #pragma comment(lib,"d3d9.lib")
 #include <d3d9.h>
 
@@ -14,8 +11,14 @@ class UI
 
 	static LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
-	static HWND createWindow(HINSTANCE instance, std::pair<int, int> size);
+	static HWND createWindow(HINSTANCE instance);
 	static bool createDevice(HWND hwnd);
+
+	static inline int dragOffsetX = 0;
+	static inline int dragOffsetY = 0;
+	static void handleWindowDrag();
+
+	static inline bool shouldSelectFirstGame = true;
 public:
 	static inline HWND Window;
 	
@@ -23,5 +26,6 @@ public:
 	static inline D3DPRESENT_PARAMETERS D3DPresentParams;
 	
 	static bool Initialize(HINSTANCE instance, int showCmd);
+	static bool Render();
 	static void Shutdown();
 };

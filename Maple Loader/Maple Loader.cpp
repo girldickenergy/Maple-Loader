@@ -1,400 +1,317 @@
-#define _WINSOCKAPI_
-#include <windows.h>
+#include "Globals.h"
 
-#include "AntiDebug/xorstr.hpp"
-#include "TCP/TCP_Client.h"
-#include "Crypto/Wrapper/RSADecrypt.h"
-#include "TCP/Utils/SendByteVector.hpp"
+#include <clocale>
 
 #include "UI/UI.h"
-#include "UI/ImGui/imgui_impl_dx9.h"
-#include "UI/ImGui/imgui_impl_win32.h"
-#include "UI/StyleProvider.h"
-#include "Utils/HWID.h"
-#include "Utils/StringUtilities.cpp"
-#include "Communication/Client.cpp"
 
-TcpClient client;
-MatchedClient* mClient = new MatchedClient(TcpClient());
-static inline RSADecrypt* Rsa = new RSADecrypt();
+#include "AntiDebug/xorstr.hpp"
 
-enum LoaderState
+#include "Packets/Requests/HandshakeRequest.h"
+#include "Packets/Responses/DllStreamResponse.h"
+
+#include "Packets/Responses/FatalErrorResponse.h"
+#include "Packets/Responses/HandshakeResponse.h"
+#include "Packets/Responses/LoginResponse.h"
+#include "Packets/Responses/Response.h"
+
+#include "ProcessHollowing/Data.h"
+#include "ProcessHollowing/ProcessHollowing.h"
+#include "ProcessHollowing/Write.h"
+
+#include "Utils/RegistryUtils.h"
+
+#include "../ThemidaSDK.h"
+#include <TlHelp32.h>
+#pragma optimize("", off)
+auto FindProcessId(const std::wstring& processName) -> DWORD
 {
-	Idle,
-	LoggingIn,
-	LoggedIn
-};
+	PROCESSENTRY32 processInfo;
+	processInfo.dwSize = sizeof processInfo;
 
-LoaderState State = Idle;
-
-std::string sessionToken;
-std::string expiresAt;
-
-void ShutdownAndExit(int exitCode = 0)
-{
-	client.finish();
-	UI::Shutdown();
-
-	exit(exitCode);
-}
-
-static inline int dragOffsetX = 0;
-static inline int dragOffsetY = 0;
-void HandleWindowDrag()
-{
-	if (ImGui::IsMouseClicked(0))
+	HANDLE processSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+	if (processSnapshot == INVALID_HANDLE_VALUE)
 	{
-		POINT point;
-		RECT rect;
-
-		GetCursorPos(&point);
-		GetWindowRect(UI::Window, &rect);
-
-		dragOffsetX = point.x - rect.left;
-		dragOffsetY = point.y - rect.top;
+		return 0;
 	}
 
-	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !ImGui::GetIO().WantTextInput)
+	Process32First(processSnapshot, &processInfo);
+	if (processName.compare(processInfo.szExeFile) == 0)
 	{
-		POINT point;
-		GetCursorPos(&point);
-
-		SetWindowPos(UI::Window, nullptr, point.x - dragOffsetX, point.y - dragOffsetY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		CloseHandle(processSnapshot);
+		return processInfo.th32ProcessID;
 	}
-}
 
-char usernameBuf[24];
-char passwordBuf[256];
-int currItem = 0;
-bool DrawMenu()
-{
-	ImGui_ImplDX9_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
-	HandleWindowDrag();
-
-	ImGui::SetNextWindowSize(ImVec2{ 400, 250 }, ImGuiCond_Always);
-	ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiCond_Always);
-
-	ImGui::Begin(xor ("Loader"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar);
+	while (Process32Next(processSnapshot, &processInfo))
 	{
-		ImVec2 windowSize = ImGui::GetWindowSize();
-
-		//title bar
-		ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(0, 0), ImVec2(windowSize.x, StyleProvider::TitleBarHeight), ImColor(StyleProvider::TitleBarColour));
-
-		//window controls
-		ImGui::PushFont(StyleProvider::FontDefault);
-		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 100);
-		ImGui::PushStyleColor(ImGuiCol_Text, StyleProvider::TitleColour);
-		ImGui::PushStyleColor(ImGuiCol_Button, StyleProvider::WindowControl);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, StyleProvider::WindowControlHovered);
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, StyleProvider::WindowControlActive);
-		ImGui::SetCursorPos(ImVec2(5, 5));
-
-		if (ImGui::Button(xor ("x"), ImVec2(20, 20)))
-			ShutdownAndExit();
-
-		ImGui::SameLine();
-
-		if (ImGui::Button(xor ("-"), ImVec2(20, 20)))
-			ShowWindow(UI::Window, SW_MINIMIZE);
-
-		ImGui::PopStyleVar();
-		ImGui::PopStyleColor(3);
-		ImGui::PopFont();
-
-		//title
-		ImGui::PushFont(StyleProvider::FontTitle);
-
-		auto titleSize = ImGui::CalcTextSize(xor ("Maple Loader"));
-		ImGui::SetCursorPos(ImVec2(windowSize.x - titleSize.x - 5, (StyleProvider::TitleBarHeight / 2) - (titleSize.y / 2)));
-		ImGui::Text(xor ("Maple Loader"));
-
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-
-		ImGui::SetCursorPos(ImVec2(StyleProvider::WindowPadding.x, StyleProvider::TitleBarHeight + StyleProvider::WindowPadding.y));
-
-		if (State != LoggedIn)
+		if (processName.compare(processInfo.szExeFile) == 0)
 		{
-			ImGui::BeginChild(xor ("LoginArea"), ImVec2(340, 180));
-			{
-				ImVec2 loginAreaSize = ImGui::GetWindowSize();
-
-				ImGui::PushFont(StyleProvider::FontDefault);
-				auto usernameSize = ImGui::CalcTextSize(xor ("Username"));
-				ImGui::SetCursorPosX(loginAreaSize.x / 2 - usernameSize.x / 2);
-				ImGui::Text(xor ("Username"));
-
-				ImGui::PushItemWidth(loginAreaSize.x);
-				ImGui::PushStyleColor(ImGuiCol_FrameBg, StyleProvider::TextBoxColour);
-				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
-				ImGui::InputText(xor ("username"), usernameBuf, 24);
-				ImGui::PopStyleVar();
-				ImGui::PopStyleColor();
-
-				ImGui::Spacing();
-				ImGui::Spacing();
-
-				auto passwordSize = ImGui::CalcTextSize(xor ("Password"));
-				ImGui::SetCursorPosX(loginAreaSize.x / 2 - passwordSize.x / 2);
-				ImGui::Text(xor ("Password"));
-
-				ImGui::PushItemWidth(loginAreaSize.x);
-				ImGui::PushStyleColor(ImGuiCol_FrameBg, StyleProvider::TextBoxColour);
-				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
-				ImGui::InputText(xor ("password"), passwordBuf, 256, ImGuiInputTextFlags_Password);
-				ImGui::PopStyleVar();
-				ImGui::PopStyleColor();
-
-				ImGui::Spacing();
-				ImGui::Spacing();
-
-				ImGui::SetCursorPosX(loginAreaSize.x / 2 - 50);
-				if (ImGui::Button(xor (State == LoggingIn ? "Logging in..." : "Login"), ImVec2(100, ImGui::GetFrameHeight())))
-				{
-					//construct login packet here later =w=
-					std::string hwid = HWID::GetHWID();
-					if (hwid.empty())
-					{
-						MessageBoxA(UI::Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-
-						return 0;
-					}
-
-					MessageBoxA(UI::Window, xor (hwid.c_str()), xor ("Your HWID"), MB_OK);
-
-					// Construct Login Packet
-					std::vector<unsigned char> packet = std::vector<unsigned char>();
-					auto loginMsg = std::vector<unsigned char>();
-					loginMsg.push_back(0xF3); // 0xF3 -> Login identifier
-
-					for (const auto& c : "0xdeadbeef")
-						packet.push_back(c);
-					for(int i = 0; i < strlen(hwid.c_str()); i++)
-						packet.push_back(hwid[i]);
-					for (const auto& c : "0xdeadbeef")
-						packet.push_back(c);
-					for (const auto& c : std::string(usernameBuf))
-						packet.push_back(c);
-					for (const auto& c : "0xdeadbeef")
-						packet.push_back(c);
-					for (const auto& c : std::string(passwordBuf))
-						packet.push_back(c);
-
-					std::vector<unsigned char> encrypted = mClient->aes->Encrypt(packet);
-
-					for (const auto& c : "0xdeadbeef")
-						loginMsg.push_back(c);
-					for (const auto& c : std::to_string(encrypted.size()))
-						loginMsg.push_back(c);
-					for (const auto& c : "0xdeadbeef")
-						loginMsg.push_back(c);
-					for (const auto& c : encrypted)
-						loginMsg.push_back(c);
-					//loginMsg.push_back(0x00);
-					pipe_ret_t sendRet = sendBytes(&client, loginMsg);
-					if (!sendRet.success)
-					{
-						MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-
-						ShutdownAndExit();
-					}
-
-					State = LoggingIn;
-				}
-
-				ImGui::PopFont();
-			}
-			ImGui::EndChild();
-		}
-		else
-		{
-			ImGui::BeginChild(xor("LoaderArea"), ImVec2(340, 180));
-			{
-				ImVec2 loaderAreaSize = ImGui::GetWindowSize();
-
-				ImGui::PushFont(StyleProvider::FontDefault);
-				std::string usernameText(std::string(xor("Logged in as ")) + usernameBuf);
-				auto usernameSize = ImGui::CalcTextSize(usernameText.c_str());
-				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - usernameSize.x / 2);
-				ImGui::TextColored(StyleProvider::TitleColour, usernameText.c_str());
-
-				ImGui::Spacing();
-				ImGui::Spacing();
-
-				auto comboLabelSize = ImGui::CalcTextSize(xor("Select cheat"));
-				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - comboLabelSize.x / 2);
-				ImGui::Text(xor ("Select cheat"));
-
-				const char* combo[] = { xor ("Maple Lite") };
-				ImGui::PushItemWidth(loaderAreaSize.x);
-				ImGui::PushStyleColor(ImGuiCol_Button, StyleProvider::DropDownArrowColour);
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, StyleProvider::DropDownArrowHoveredColour);
-				ImGui::Combo("", &currItem, combo, IM_ARRAYSIZE(combo));
-				ImGui::PopStyleColor(2);
-
-				auto expiresAtSize = ImGui::CalcTextSize(expiresAt.c_str());
-				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - expiresAtSize.x / 2);
-				ImGui::TextColored(StyleProvider::ExpirationColour, xor (expiresAt.c_str()));
-
-				ImGui::Spacing();
-				ImGui::Spacing();
-
-				ImGui::SetCursorPosX(loaderAreaSize.x / 2 - 50);
-				ImGui::Button(xor ("Load"), ImVec2(100, ImGui::GetFrameHeight()));
-
-				ImGui::PopFont();
-			}
-			ImGui::EndChild();
+			CloseHandle(processSnapshot);
+			return processInfo.th32ProcessID;
 		}
 	}
-	ImGui::End();
 
-	ImGui::EndFrame();
-	if (UI::D3DDevice->BeginScene() == D3D_OK)
-	{
-		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-		UI::D3DDevice->EndScene();
-	}
-
-	HRESULT result = UI::D3DDevice->Present(0, 0, 0, 0);
-	if (result == D3DERR_DEVICELOST && UI::D3DDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
-	{
-		ImGui_ImplDX9_InvalidateDeviceObjects();
-		HRESULT hr = UI::D3DDevice->Reset(&UI::D3DPresentParams);
-		if (hr == D3DERR_INVALIDCALL)
-			return false;
-
-		ImGui_ImplDX9_CreateDeviceObjects();
-	}
-
-	return true;
+	CloseHandle(processSnapshot);
+	return 0;
 }
 
 void OnIncomingMessage(const char* msg, size_t size)
 {
-	if (strcmp(msg, xor("Unknown session")) == 0)
+	auto* const response = static_cast<Response*>(Response::ConstructResponse(msg, size, Globals::MatchedClient));
+	switch (response->Type)
 	{
-		MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-
-		ShutdownAndExit();
-	}
-	
-	//TODO: add filtering and handler
-	// IF HEARTBEAT
-	std::vector<std::string> splitString = Split(std::string(msg, size));
-	unsigned char type = splitString[0][0];
-
-	switch (type /*Packet Identifier*/)
-	{
-		case 0xA0 /*Heartbeat*/:
+		case ResponseType::FatalError:
 		{
-			auto encrypted = std::vector<unsigned char>();
-			for (const auto& byte : splitString[2] /*Encrypted Stream*/)
-				encrypted.push_back(byte);
+			auto* const fatalErrorResponse = static_cast<FatalErrorResponse*>(response);
 
-			encrypted.erase(encrypted.begin());
-			splitString[1].erase(splitString[1].begin()); // \0 at beginning after split
+			std::string str;
+			for (const auto& c : "Fatal error occurred: " + fatalErrorResponse->ErrorMessage + "\nThe application will now exit.")
+				if (c != '\0') //fuck fuck fuck null terminators
+					str.push_back(c);
 
-			std::vector<unsigned char> s = Rsa->Decode(encrypted, std::stoi(splitString[1]/*Encrypted Length*/));
+			MessageBoxA(UI::Window, xor (str.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
-			std::vector<unsigned char> iv = std::vector<unsigned char>(s.begin(), s.end() - 32);
-			std::vector<unsigned char> key = std::vector<unsigned char>(s.begin() + 16, s.end());
-
-			mClient = new MatchedClient(client);
-			mClient->aes->SetIV(iv);
-			mClient->aes->SetKey(key);
+			Globals::ShutdownAndExit();
 			break;
 		}
-		case 0xF3 /*Login*/:
+		case ResponseType::Handshake:
 		{
-			auto encrypted = std::vector<unsigned char>();
-			for (const auto& byte : splitString[1])
-				encrypted.push_back(byte);
+			auto* const handshakeResponse = static_cast<HandshakeResponse*>(response);
 
-			encrypted.erase(encrypted.begin());
-			splitString[1].erase(splitString[1].begin());
+			switch (handshakeResponse->Result)
+			{
+				case HandshakeResult::Success:
+				{
+					VM_SHARK_BLACK_START
+					Globals::MatchedClient = new MatchedClient(Globals::TCPClient);
+					Globals::MatchedClient->aes->SetIV(handshakeResponse->IV);
+					Globals::MatchedClient->aes->SetKey(handshakeResponse->Key);
 
-			std::string decryptedString;
-			for (const auto& c : mClient->aes->Decrypt(encrypted))
-				decryptedString += c;
+					std::string data = RegistryUtils::GetValueFromKey(xor("SOFTWARE\\mplaudioservice\\dat"));
+					if (data != xor ("error: key not found") && data != xor ("error: unexpected error"))
+					{
+						std::vector<std::string> splitData = StringUtilities::Split(data, xor("(industrybaby)"));
+						memcpy(Globals::CurrentUser.Username, splitData[0].c_str(), strlen(splitData[0].c_str()));
+						memcpy(Globals::CurrentUser.Password, splitData[1].c_str(), strlen(splitData[1].c_str()));
+					}
+					VM_SHARK_BLACK_END
+					break;
+				}
+				case HandshakeResult::EpochTimedOut:
+				case HandshakeResult::InternalError:
+				{
+					VM_SHARK_BLACK_START
+					// Have both in a switch case, let's not tell anybody trying to crack that the epoch is wrong.
+					MessageBoxA(UI::Window, xor ("Fatal error occured\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					VM_SHARK_BLACK_END
+					Globals::ShutdownAndExit();
 
-			std::vector<std::string> decryptedSplit = Split(decryptedString);
-			decryptedSplit[1].erase(decryptedSplit[1].begin());
-			decryptedSplit[2].erase(decryptedSplit[2].begin());
+					break;
+				}
+			}
+			
+			break;
+		}
+		case ResponseType::Login:
+		{
+			auto* const loginResponse = static_cast<LoginResponse*>(response);
+				
+			Globals::LoaderState = LoaderStates::Idle;
 
-			sessionToken = decryptedSplit[1];
-			expiresAt = std::string("Expires at: " + decryptedSplit[2]);
+			switch (loginResponse->Result)
+			{
+				case LoginResult::Success:
+				{
+					VM_SHARK_BLACK_START
+					Globals::CurrentUser.Session = loginResponse->SessionToken;
 
-			if (decryptedSplit[0][0] == 0x0)
-				State = LoggedIn;
-			else if (decryptedSplit[0][0] == 0x2)
-				MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
-			else
-				MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::Games = loginResponse->Games;
+					Globals::Cheats = loginResponse->Cheats;
+
+					Globals::CurrentGame = Globals::Games[0];
+					Globals::CurrentCheat = Globals::Cheats[0];
+						
+					Globals::LoaderState = LoaderStates::LoggedIn;
+
+					// Write data to registry
+					std::string data = Globals::CurrentUser.Username + std::string(xor("industrybaby")) + Globals::CurrentUser.Password;
+					RegistryUtils::WriteValueToKey(xor("SOFTWARE\\mplaudioservice\\dat"), data);
+
+					Globals::CurrentUser.ResetSensitiveFields();
+
+					VM_SHARK_BLACK_END
+
+					break;
+				}
+				case LoginResult::IncorrectCredentials:
+				{
+					MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						
+					break;
+				}
+				case LoginResult::HashMismatch:
+				{
+					MessageBoxA(UI::Window, xor ("A newer version of the loader is available.\nPlease download it from https://maple.software/dashboard"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+					break;
+				}
+				case LoginResult::HWIDMismatch:
+				{
+					MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						
+					break;
+				}
+				case LoginResult::Banned:
+				{
+					MessageBoxA(UI::Window, xor ("You're banned!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+					break;
+				}
+				case LoginResult::InternalError:
+				{
+					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+
+					break;
+				}
+				default:
+				{
+					MessageBoxA(UI::Window, xor ("An internal error occured: unknown login result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						
+					break;
+				}
+			}
 				
 			break;
 		}
-		default:
+		case ResponseType::DllStream:
+		{
+			auto* const dllStreamResponse = static_cast<DllStreamResponse*>(response);
+			switch (dllStreamResponse->Result)
+			{
+				case DllStreamResult::Success:
+				{
+					VM_SHARK_BLACK_START
+						int code = 0;
+					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
+					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe, &code);
+					if (hProcess == INVALID_HANDLE_VALUE)
+					{
+						std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
+						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						Globals::LoaderState = LoaderStates::LoggedIn;
+						break;
+					}
+
+					// Amazing, now we wait for the PE to load fully because Themida can take a while...
+					while (true)
+					{
+						HANDLE mtx = OpenMutexA(SYNCHRONIZE, FALSE, "QVPj0LSOL81Lko4d");
+						if (mtx != NULL)
+						{
+							CloseHandle(mtx);
+							break;
+						}
+						Sleep(100);
+					}
+
+					// Now we read the memory of the ghost process, write the binary to it, and the player data.
+					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient, &code))
+					{
+						std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
+						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						Globals::LoaderState = LoaderStates::LoggedIn;
+						break;
+					}
+
+					Globals::TCPClient.finish();
+						
+					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
+
+					VM_SHARK_BLACK_END
+					Globals::ShutdownAndExit();
+
+					break;
+				}
+				case DllStreamResult::NotSubscribed:
+					MessageBoxA(UI::Window, xor ("Sorry, you're not subscribed to the Maple membership."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::LoaderState = LoaderStates::LoggedIn;
+
+					break;
+				case DllStreamResult::InvalidSession:
+					MessageBoxA(UI::Window, xor ("Your session has expired.\n\nPlease log in again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::LoaderState = LoaderStates::Idle;
+
+					break;
+				case DllStreamResult::InternalError:
+					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::LoaderState = LoaderStates::LoggedIn;
+
+					break;
+				default:
+					MessageBoxA(UI::Window, xor ("An internal error occured: unknown dllstream result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					Globals::LoaderState = LoaderStates::LoggedIn;
+				
+					break;
+			}
+			
 			break;
+		}
 	}
+
+	delete response;
 }
 
 void OnDisconnection(const pipe_ret_t& ret)
 {
 	MessageBoxA(UI::Window, xor ("You have been disconnected from the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
-	ShutdownAndExit();
+	Globals::ShutdownAndExit();
 }
-
-//pipe_ret_t SendHeartbeat()
-//{
-//	auto constructOne = message();
-//	constructOne.push_back(0xF3); // request type -> heartbeat
-//
-//	pipe_ret_t sendRet = sendBytes(&client, constructOne);
-//	if (!sendRet.success)
-//		std::cout << "Failed to send msg: " << sendRet.msg << std::endl;
-//}
 
 bool ConnectToServer()
 {
+	VM_FISH_RED_START
+	STR_ENCRYPT_START
 	client_observer_t observer;
-	observer.wantedIp = "127.0.0.1";
+	observer.wantedIp = xor ("198.251.89.179");
 	observer.incoming_packet_func = OnIncomingMessage;
 	observer.disconnected_func = OnDisconnection;
-	client.subscribe(observer);
+	Globals::TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = client.connectTo("127.0.0.1", 9999);
+	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("198.251.89.179"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
-		auto initMsg = message();
-		initMsg.push_back(0xA0); // 0xA0 -> Handshake identifier
+		HandshakeRequest handshakePacket = HandshakeRequest();
 
-		if (const pipe_ret_t sendRet = sendBytes(&client, initMsg); !sendRet.success)
+		if (const pipe_ret_t sendRet = Globals::TCPClient.sendBytes(handshakePacket.Data); !sendRet.success)
 		{
 			MessageBoxA(UI::Window, xor ("Failed to communicate with the server!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 
 			return false;
 		}
+		
 		return true;
 	}
 
 	return false;
+	STR_ENCRYPT_END
+	VM_FISH_RED_END
 }
 
 int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int show_cmd)
 {
+	STR_ENCRYPT_START
+	std::setlocale(LC_NUMERIC, "en_US");
+	
 	#ifdef _DEBUG
 		AllocConsole();
 		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 	#endif
 	
+	// Hopefully this fixes the time out of sync problems
+	// issue
+	// system(xor("w32tm /resync /nowait"));
+
 	if (!ConnectToServer())
 	{
 		MessageBoxA(UI::Window, xor ("Failed to connect to server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
@@ -408,10 +325,13 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 
 		return 0;
 	}
+
+	// init curl
+	curl_global_init(CURL_GLOBAL_ALL);
 	
 	MSG msg;
 	memset(&msg, 0, sizeof(msg));
-
+	STR_ENCRYPT_END
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
@@ -420,7 +340,7 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 			DispatchMessage(&msg);
 		}
 		
-		if (!DrawMenu())
+		if (!UI::Render())
 		{
 			MessageBoxA(UI::Window, xor ("Internal graphics error occurred!\nPlease make sure your graphics card drivers are up to date."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 			
@@ -428,5 +348,6 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 		}
 	}
 
-	ShutdownAndExit();
+	Globals::ShutdownAndExit();
 }
+#pragma optimize("", on)

@@ -1,0 +1,542 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Injector.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\assembler.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\codegen.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\compiler.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\constpool.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\containers.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\context.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\cpuinfo.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\cputicks.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\error.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\globals.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\intutil.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\logger.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\operand.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\runtime.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\string.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\vmem.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\zone.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86assembler.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86compiler.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86context.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86cpuinfo.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86inst.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86operand.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86operand_regs.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86scheduler.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\3rd_party\rewolf-wow64ext\src\wow64ext.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Asm\AsmHelper32.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Asm\AsmHelper64.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Asm\LDasm.c">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\DriverControl\DriverControl.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\LocalHook\LocalHookBase.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\ManualMap\MExcept.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\ManualMap\MMap.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\ManualMap\Native\NtLoader.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Misc\InitOnce.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Misc\NameResolve.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Misc\Utils.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Patterns\PatternSearch.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\PE\ImageNET.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\PE\PEImage.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\MemBlock.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\Process.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\ProcessCore.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\ProcessMemory.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\ProcessModules.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteExec.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteHook.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteLocalHook.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteMemory.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\Threads\Thread.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Process\Threads\Threads.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Subsystem\NativeSubsystem.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Subsystem\Wow64Subsystem.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Subsystem\x86Subsystem.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Symbols\PatternLoader.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Symbols\PDBHelper.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Symbols\SymbolData.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+    <ClCompile Include="blackbone\BlackBone\Symbols\SymbolLoader.cpp">
+      <Filter>blackbone</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="blackbone">
+      <UniqueIdentifier>{4bcb50a6-d5da-4d7d-a3ab-f20df2512929}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\ApiBegin.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\ApiEnd.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\AsmJit.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\assembler.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\codegen.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\compiler.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\constpool.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\containers.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\context_p.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\cpuinfo.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\cputicks.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\error.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\globals.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\intutil.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\lock.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\logger.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\operand.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\runtime.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\string.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\vectypes.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\vmem.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\zone.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\Build.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\Config.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\host.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86assembler.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86compiler.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86context_p.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86cpuinfo.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86inst.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86operand.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86scheduler_p.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\BeaEngine.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\Includes\basic_types.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\Includes\export.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\cor.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\CorError.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\corhdr.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\DIA\cvconst.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\DIA\dia2.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\DIA\diacreate.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\gchost.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\ivalidator.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\ivehandler.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\metahost.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\mscoree.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\CMemPtr.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\internal.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\resource.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\wow64ext.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\VersionApi.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\winapifamily.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\3rd_party\winpackagefamily.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmFactory.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmHelper32.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmHelper64.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmStack.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmVariant.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\IAsmHelper.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Asm\LDasm.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Config.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\DriverControl\DriverControl.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\ApiSet.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\CallResult.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\FunctionTypes.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\HandleGuard.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\Macro.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\NativeEnums.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\NativeStructures.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\Types.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\Win7Specific.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\Win8Specific.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\Winheaders.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Include\WinXPSpecific.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerCdecl.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerFastcall.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlers.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerStdcall.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerThiscall.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\LocalHook.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\LocalHookBase.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\LocalHook\VTableHook.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\ManualMap\MExcept.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\ManualMap\MMap.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\ManualMap\Native\NtLoader.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Misc\DynImport.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Misc\InitOnce.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Misc\NameResolve.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Misc\Thunk.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Misc\Trace.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Misc\Utils.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Patterns\PatternSearch.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\PE\ImageNET.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\PE\PEImage.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\MemBlock.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\MultPtr.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\Process.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\ProcessCore.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\ProcessMemory.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\ProcessModules.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteContext.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteExec.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteFunction.hpp">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteHook.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteLocalHook.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteMemory.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\Threads\Thread.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Process\Threads\Threads.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Subsystem\NativeSubsystem.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Subsystem\Wow64Subsystem.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Subsystem\x86Subsystem.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Symbols\PatternLoader.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Symbols\PDBHelper.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Symbols\SymbolData.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Symbols\SymbolLoader.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="blackbone\BlackBone\Syscalls\Syscall.h">
+      <Filter>blackbone</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryUtils.h" />
+  </ItemGroup>
+</Project>

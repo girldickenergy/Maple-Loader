@@ -11,6 +11,7 @@
 #include "../files.h"
 #include "../pssr.h"
 #include "../modes.h"
+#include "../../ThemidaSDK.h"
 
 //using genBytes = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned char>;
 

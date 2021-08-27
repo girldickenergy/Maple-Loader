@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{F174BB9A-98A9-4E79-9802-7973A2E484D7}</ProjectGuid>
+    <RootNamespace>Injector</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\blackbone</IncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x86);</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\blackbone</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <FixedBaseAddress>false</FixedBaseAddress>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <FixedBaseAddress>false</FixedBaseAddress>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\assembler.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\codegen.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\compiler.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\constpool.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\containers.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\context.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\cpuinfo.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\cputicks.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\error.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\globals.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\intutil.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\logger.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\operand.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\runtime.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\string.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\vmem.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\base\zone.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86assembler.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86compiler.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86context.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86cpuinfo.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86inst.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86operand.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86operand_regs.cpp" />
+    <ClCompile Include="blackbone\3rd_party\AsmJit\x86\x86scheduler.cpp" />
+    <ClCompile Include="blackbone\3rd_party\rewolf-wow64ext\src\wow64ext.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Asm\AsmHelper32.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Asm\AsmHelper64.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Asm\LDasm.c" />
+    <ClCompile Include="blackbone\BlackBone\DriverControl\DriverControl.cpp" />
+    <ClCompile Include="blackbone\BlackBone\LocalHook\LocalHookBase.cpp" />
+    <ClCompile Include="blackbone\BlackBone\ManualMap\MExcept.cpp" />
+    <ClCompile Include="blackbone\BlackBone\ManualMap\MMap.cpp" />
+    <ClCompile Include="blackbone\BlackBone\ManualMap\Native\NtLoader.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Misc\InitOnce.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Misc\NameResolve.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Misc\Utils.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Patterns\PatternSearch.cpp" />
+    <ClCompile Include="blackbone\BlackBone\PE\ImageNET.cpp" />
+    <ClCompile Include="blackbone\BlackBone\PE\PEImage.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\MemBlock.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\Process.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\ProcessCore.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\ProcessMemory.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\ProcessModules.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteExec.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteHook.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteLocalHook.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\RPC\RemoteMemory.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\Threads\Thread.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Process\Threads\Threads.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Subsystem\NativeSubsystem.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Subsystem\Wow64Subsystem.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Subsystem\x86Subsystem.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Symbols\PatternLoader.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Symbols\PDBHelper.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Symbols\SymbolData.cpp" />
+    <ClCompile Include="blackbone\BlackBone\Symbols\SymbolLoader.cpp" />
+    <ClCompile Include="Injector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="blackbone\3rd_party\AsmJit\ApiBegin.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\ApiEnd.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\AsmJit.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\assembler.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\codegen.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\compiler.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\constpool.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\containers.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\context_p.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\cpuinfo.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\cputicks.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\error.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\globals.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\intutil.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\lock.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\logger.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\operand.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\runtime.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\string.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\vectypes.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\vmem.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\base\zone.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\Build.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\Config.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\host.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86assembler.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86compiler.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86context_p.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86cpuinfo.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86inst.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86operand.h" />
+    <ClInclude Include="blackbone\3rd_party\AsmJit\x86\x86scheduler_p.h" />
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\BeaEngine.h" />
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\Includes\basic_types.h" />
+    <ClInclude Include="blackbone\3rd_party\BeaEngine\headers\Includes\export.h" />
+    <ClInclude Include="blackbone\3rd_party\cor.h" />
+    <ClInclude Include="blackbone\3rd_party\CorError.h" />
+    <ClInclude Include="blackbone\3rd_party\corhdr.h" />
+    <ClInclude Include="blackbone\3rd_party\DIA\cvconst.h" />
+    <ClInclude Include="blackbone\3rd_party\DIA\dia2.h" />
+    <ClInclude Include="blackbone\3rd_party\DIA\diacreate.h" />
+    <ClInclude Include="blackbone\3rd_party\gchost.h" />
+    <ClInclude Include="blackbone\3rd_party\ivalidator.h" />
+    <ClInclude Include="blackbone\3rd_party\ivehandler.h" />
+    <ClInclude Include="blackbone\3rd_party\metahost.h" />
+    <ClInclude Include="blackbone\3rd_party\mscoree.h" />
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\CMemPtr.h" />
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\internal.h" />
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\resource.h" />
+    <ClInclude Include="blackbone\3rd_party\rewolf-wow64ext\src\wow64ext.h" />
+    <ClInclude Include="blackbone\3rd_party\VersionApi.h" />
+    <ClInclude Include="blackbone\3rd_party\winapifamily.h" />
+    <ClInclude Include="blackbone\3rd_party\winpackagefamily.h" />
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmFactory.h" />
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmHelper32.h" />
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmHelper64.h" />
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmStack.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Asm\AsmVariant.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Asm\IAsmHelper.h" />
+    <ClInclude Include="blackbone\BlackBone\Asm\LDasm.h" />
+    <ClInclude Include="blackbone\BlackBone\Config.h" />
+    <ClInclude Include="blackbone\BlackBone\DriverControl\DriverControl.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\ApiSet.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\CallResult.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\FunctionTypes.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\HandleGuard.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Macro.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\NativeEnums.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\NativeStructures.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Types.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Win7Specific.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Win8Specific.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\Winheaders.h" />
+    <ClInclude Include="blackbone\BlackBone\Include\WinXPSpecific.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerCdecl.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerFastcall.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlers.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerStdcall.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\HookHandlerThiscall.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\LocalHook.hpp" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\LocalHookBase.h" />
+    <ClInclude Include="blackbone\BlackBone\LocalHook\VTableHook.hpp" />
+    <ClInclude Include="blackbone\BlackBone\ManualMap\MExcept.h" />
+    <ClInclude Include="blackbone\BlackBone\ManualMap\MMap.h" />
+    <ClInclude Include="blackbone\BlackBone\ManualMap\Native\NtLoader.h" />
+    <ClInclude Include="blackbone\BlackBone\Misc\DynImport.h" />
+    <ClInclude Include="blackbone\BlackBone\Misc\InitOnce.h" />
+    <ClInclude Include="blackbone\BlackBone\Misc\NameResolve.h" />
+    <ClInclude Include="blackbone\BlackBone\Misc\Thunk.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Misc\Trace.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Misc\Utils.h" />
+    <ClInclude Include="blackbone\BlackBone\Patterns\PatternSearch.h" />
+    <ClInclude Include="blackbone\BlackBone\PE\ImageNET.h" />
+    <ClInclude Include="blackbone\BlackBone\PE\PEImage.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\MemBlock.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\MultPtr.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Process\Process.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\ProcessCore.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\ProcessMemory.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\ProcessModules.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteContext.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteExec.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteFunction.hpp" />
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteHook.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteLocalHook.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\RPC\RemoteMemory.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\Threads\Thread.h" />
+    <ClInclude Include="blackbone\BlackBone\Process\Threads\Threads.h" />
+    <ClInclude Include="blackbone\BlackBone\Subsystem\NativeSubsystem.h" />
+    <ClInclude Include="blackbone\BlackBone\Subsystem\Wow64Subsystem.h" />
+    <ClInclude Include="blackbone\BlackBone\Subsystem\x86Subsystem.h" />
+    <ClInclude Include="blackbone\BlackBone\Symbols\PatternLoader.h" />
+    <ClInclude Include="blackbone\BlackBone\Symbols\PDBHelper.h" />
+    <ClInclude Include="blackbone\BlackBone\Symbols\SymbolData.h" />
+    <ClInclude Include="blackbone\BlackBone\Symbols\SymbolLoader.h" />
+    <ClInclude Include="blackbone\BlackBone\Syscalls\Syscall.h" />
+    <ClInclude Include="MemoryUtils.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

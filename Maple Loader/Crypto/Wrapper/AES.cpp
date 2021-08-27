@@ -41,6 +41,7 @@ void AESWrapper::SetKey(std::vector<unsigned char> key)
 
 std::vector<unsigned char> AESWrapper::Encrypt(std::vector<unsigned char> input)
 {
+	VM_FISH_RED_START
 	using namespace CryptoPP;
 
 	if (IV.empty() || IV.size() <= 0)
@@ -79,11 +80,14 @@ std::vector<unsigned char> AESWrapper::Encrypt(std::vector<unsigned char> input)
 		return std::vector<unsigned char>();
 	}
 */
+	VM_FISH_RED_END
 	return cipher;
 }
 
 std::string AESWrapper::Decrypt(std::vector<unsigned char> input)
 {
+	VM_FISH_RED_START
+	STR_ENCRYPT_START
 	using namespace CryptoPP;
 	if (IV.empty() || IV.size() <= 0)
 		return "IV null";
@@ -96,9 +100,12 @@ std::string AESWrapper::Decrypt(std::vector<unsigned char> input)
 	SecByteBlock iv((&IV[0]), IV.size());
 
 	std::string recovered;
+	STR_ENCRYPT_END
+	VM_FISH_RED_END
 
 	try
 	{
+		VM_FISH_RED_START
 		CBC_Mode<AES>::Decryption d;
 		d.SetKeyWithIV(key, key.size(), iv);
 
@@ -107,11 +114,11 @@ std::string AESWrapper::Decrypt(std::vector<unsigned char> input)
 				new StringSink(recovered)
 			)
 		);
+		VM_FISH_RED_END
 	}
 	catch (Exception & e)
 	{
 		return e.what();
 	}
-
 	return recovered;
 }

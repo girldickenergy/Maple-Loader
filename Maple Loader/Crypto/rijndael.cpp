@@ -87,6 +87,7 @@ being unloaded from L1 cache, until that round is finished.
 #include "rijndael.h"
 #include "misc.h"
 #include "cpu.h"
+#include "../../ThemidaSDK.h"
 
 // VS2017 and global optimization bug. TODO, figure out when
 // we can re-enable full optimizations for VS2017. Also see
@@ -266,7 +267,8 @@ unsigned int Rijndael::Base::OptimalDataAlignment() const
 	if (HasAES())
 		return 16;  // load uint32x4_p
 #endif
-	return BlockTransformation::OptimalDataAlignment();
+	auto ret = BlockTransformation::OptimalDataAlignment();
+	return ret;
 }
 
 void Rijndael::Base::FillEncTable()
@@ -396,6 +398,7 @@ std::string Rijndael::Base::AlgorithmProvider() const
 
 void Rijndael::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLen, const NameValuePairs &)
 {
+	MUTATE_START
 	AssertValidKeyLength(keyLen);
 
 #if (CRYPTOGAMS_ARM_AES)
@@ -450,9 +453,11 @@ void Rijndael::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLen, c
 	GetUserKey(BIG_ENDIAN_ORDER, rk, keyLen/4, userKey, keyLen);
 	const word32 *rc = rcon;
 	word32 temp;
+	MUTATE_END
 
 	while (true)
 	{
+		MUTATE_START
 		temp  = rk[keyLen/4-1];
 		word32 x = (word32(Se[GETBYTE(temp, 2)]) << 24) ^ (word32(Se[GETBYTE(temp, 1)]) << 16) ^
 					(word32(Se[GETBYTE(temp, 0)]) << 8) ^ Se[GETBYTE(temp, 3)];
@@ -463,7 +468,7 @@ void Rijndael::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLen, c
 
 		if (rk + keyLen/4 + 4 == m_key.end())
 			break;
-
+		MUTATE_END
 		if (keyLen == 24)
 		{
 			rk[10] = rk[ 4] ^ rk[ 9];
@@ -637,6 +642,7 @@ void Rijndael::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock
 
 void Rijndael::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
+	MUTATE_START
 #if CRYPTOPP_AESNI_AVAILABLE
 	if (HasAESNI())
 	{
@@ -684,6 +690,7 @@ void Rijndael::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock
 	t2 = rk[6];
 	t3 = rk[7];
 	rk += 8;
+	MUTATE_END
 
 	// timing attack countermeasure. see comments at top for more details.
 	// also see http://github.com/weidai11/cryptopp/issues/146
@@ -1306,11 +1313,13 @@ size_t Rijndael::Enc::AdvancedProcessBlocks(const byte *inBlocks, const byte *xo
 	}
 #endif
 
-	return BlockTransformation::AdvancedProcessBlocks(inBlocks, xorBlocks, outBlocks, length, flags);
+	auto ret = BlockTransformation::AdvancedProcessBlocks(inBlocks, xorBlocks, outBlocks, length, flags);
+	return ret;
 }
 
 size_t Rijndael::Dec::AdvancedProcessBlocks(const byte *inBlocks, const byte *xorBlocks, byte *outBlocks, size_t length, word32 flags) const
 {
+	MUTATE_START
 #if CRYPTOPP_AESNI_AVAILABLE
 	if (HasAESNI())
 		return Rijndael_Dec_AdvancedProcessBlocks_AESNI(m_key, m_rounds, inBlocks, xorBlocks, outBlocks, length, flags);
@@ -1324,7 +1333,9 @@ size_t Rijndael::Dec::AdvancedProcessBlocks(const byte *inBlocks, const byte *xo
 		return Rijndael_Dec_AdvancedProcessBlocks128_6x1_ALTIVEC(m_key, m_rounds, inBlocks, xorBlocks, outBlocks, length, flags);
 #endif
 
-	return BlockTransformation::AdvancedProcessBlocks(inBlocks, xorBlocks, outBlocks, length, flags);
+	auto ret = BlockTransformation::AdvancedProcessBlocks(inBlocks, xorBlocks, outBlocks, length, flags);
+	MUTATE_END
+	return ret;
 }
 #endif	// CRYPTOPP_RIJNDAEL_ADVANCED_PROCESS_BLOCKS
 

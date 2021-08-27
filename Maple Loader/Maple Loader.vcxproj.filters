@@ -566,17 +566,35 @@
     <ClCompile Include="Crypto\adler32.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\StringUtilities.cpp">
-      <Filter>Utils</Filter>
+    <ClCompile Include="Packets\Responses\Response.cpp">
+      <Filter>Packets\Responses</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\StringUtilities.cpp">
-      <Filter>Utils</Filter>
+    <ClCompile Include="Packets\Responses\FatalErrorResponse.cpp">
+      <Filter>Packets\Responses</Filter>
     </ClCompile>
-    <ClCompile Include="Macros.cpp">
-      <Filter>Utils</Filter>
+    <ClCompile Include="Packets\Responses\HandshakeResponse.cpp">
+      <Filter>Packets\Responses</Filter>
     </ClCompile>
-    <ClCompile Include="Communication\Client.cpp">
-      <Filter>Communication</Filter>
+    <ClCompile Include="Packets\Responses\LoginResponse.cpp">
+      <Filter>Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="Packets\Requests\HandshakeRequest.cpp">
+      <Filter>Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Packets\Requests\LoginRequest.cpp">
+      <Filter>Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Packets\Requests\Request.cpp">
+      <Filter>Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Packets\Requests\DllStreamRequest.cpp">
+      <Filter>Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Packets\Responses\DllStreamResponse.cpp">
+      <Filter>Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\AnimationHandler.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,9 +610,6 @@
     <Filter Include="TCP">
       <UniqueIdentifier>{a9192820-5ba8-4a46-9e15-2fedc5b9ec12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TCP\Utils">
-      <UniqueIdentifier>{3f2196f1-ef0a-45a2-8acd-cced74250b64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{41fe62f5-5ac5-4718-bb91-9d75172b7600}</UniqueIdentifier>
     </Filter>
@@ -606,6 +621,21 @@
     </Filter>
     <Filter Include="Communication">
       <UniqueIdentifier>{cdb9f389-f41f-4d33-990b-f9ccbf3091d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Packets">
+      <UniqueIdentifier>{0feb910e-c9bf-4c7d-88df-5c03cbc81ec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Packets\Responses">
+      <UniqueIdentifier>{3f500505-9884-4627-9090-202e78efbc4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Packets\Requests">
+      <UniqueIdentifier>{48fae14b-3cf8-4054-a621-8364d0ceaf02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\DirectX">
+      <UniqueIdentifier>{996b5e0a-1fbe-448c-b673-ad38ebfbb011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ProcessHollowing">
+      <UniqueIdentifier>{cccbdc9a-f20d-4e0f-baf8-eb035e2d0d99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -645,9 +675,6 @@
     </ClInclude>
     <ClInclude Include="AntiDebug\xorstr.hpp">
       <Filter>AntiDebug</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\Utils\SendByteVector.hpp">
-      <Filter>TCP\Utils</Filter>
     </ClInclude>
     <ClInclude Include="TCP\Client_Observer.h">
       <Filter>TCP</Filter>
@@ -1243,6 +1270,115 @@
     <ClInclude Include="Utils\HWID.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Communication\MatchedClient.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\StringUtilities.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Responses\Response.h">
+      <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Responses\ResponseType.h">
+      <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Responses\FatalErrorResponse.h">
+      <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="Packets\Responses\HandshakeResponse.h">
+      <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Responses\LoginResponse.h">
+      <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Requests\HandshakeRequest.h">
+      <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Requests\LoginRequest.h">
+      <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Requests\Request.h">
+      <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Requests\RequestType.h">
+      <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Textures.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9core.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9effect.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9math.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9mesh.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9shader.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9shape.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9tex.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9xof.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DirectX\d3dx9anim.h">
+      <Filter>UI\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Widgets.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Cheat.h" />
+    <ClInclude Include="Utils\TextureUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Requests\DllStreamRequest.h">
+      <Filter>Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Packets\Responses\DllStreamResponse.h">
+      <Filter>Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\AnimatedTexture.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\AnimationHandler.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\AnimatedLogin.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\ProcessHollowing.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\Write.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\MemoryUtils.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHollowing\Data.h">
+      <Filter>ProcessHollowing</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\smbios.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\RegistryUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Maple Loader.rc" />
@@ -1293,6 +1429,9 @@
     <None Include="Crypto\adhoc.cpp.proto">
       <Filter>Crypto</Filter>
     </None>
+    <None Include="UI\DirectX\d3dx9math.inl">
+      <Filter>UI\DirectX</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Crypto\Filelist.txt">
@@ -1310,5 +1449,10 @@
     <Text Include="Crypto\Readme.txt">
       <Filter>Crypto</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="UI\DirectX\d3dx9.lib">
+      <Filter>UI\DirectX</Filter>
+    </Library>
   </ItemGroup>
 </Project>
