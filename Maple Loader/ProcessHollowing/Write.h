@@ -11,6 +11,23 @@ class Write
 	 * \brief Cached memory regions from the hollowed/RunPE'd process.
 	 */
 	static inline std::vector<MemoryRegion> memoryRegions;
+
+	/**
+	 * Scans memory to find the UserData pointer
+	 *
+	 * @param moduleInfo Pointer to the ModuleInfo from the Injector Stub
+	 * @param pmc Pointer to the ProcessMemoryInfo from the Injector Stub
+	 * @param hProcess Handle of the Injector Stub
+	 * 
+	 * @returns Pointer to the UserData array
+	 */
+	static char* GetUserDataPointer(MODULEINFO* moduleInfo, PROCESS_MEMORY_COUNTERS_EX* pmc, HANDLE hProcess)
+	{
+		return reinterpret_cast<char*>(MemoryUtils::ScanEx(xor ("\x63\x69\x67\x61\x6d\x5f\x69\x6b\x75\x7a\x61\xFF\xAD\xFD\xAA\xFF"), xor ("xxxxxxxxxxxxxxxx"),
+			reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
+			reinterpret_cast<char*>(reinterpret_cast<uintptr_t>(moduleInfo->lpBaseOfDll) + static_cast<uintptr_t>(pmc->
+				PeakWorkingSetSize)), hProcess));
+	}
 public:
 	/**
 	 * Writes all data to the hollowed/RunPE'd process.
@@ -21,6 +38,7 @@ public:
 	static bool WriteData(HANDLE hProcess, std::vector<unsigned char>* binary, MatchedClient* mc, int* code)
 	{
 		VM_FISH_RED_START
+		STR_ENCRYPT_START
 		HMODULE modules[256];
 		DWORD moduleCount;
 		EnumProcessModules(hProcess, modules, sizeof modules, &moduleCount);
@@ -38,10 +56,7 @@ public:
 			reinterpret_cast<char*>(reinterpret_cast<uintptr_t>(moduleInfo.lpBaseOfDll) + static_cast<uintptr_t>(pmc.
 				PeakWorkingSetSize)), hProcess);
 
-		char* userDataPointer = MemoryUtils::ScanEx(xor ("\x63\x69\x67\x61\x6d\x5f\x69\x6b\x75\x7a\x61\xFF\xAD\xFD\xAA\xFF"), xor ("xxxxxxxxxxxxxxxx"),
-			reinterpret_cast<char*>(memoryRegions[0].BaseAddress),
-			reinterpret_cast<char*>(reinterpret_cast<uintptr_t>(moduleInfo.lpBaseOfDll) + static_cast<uintptr_t>(pmc.
-				PeakWorkingSetSize)), hProcess);
+		char* userDataPointer = GetUserDataPointer(&moduleInfo, &pmc, hProcess);
 
 		SIZE_T mapleBinaryBytesWritten = 0;
 		WriteProcessMemory(hProcess, mapleBinaryPointer + 0x04, binary->data(), binary->size(), &mapleBinaryBytesWritten);
@@ -65,26 +80,38 @@ public:
 		for (const auto& c : "0xdeadbeef") // Keep this as an ending, so it's easier to work with later
 			userDataBytes.push_back(c);
 
+		int userDataAttempts = 0;
 		SIZE_T userDataBytesWritten = 0;
 		WriteProcessMemory(hProcess, userDataPointer, userDataBytes.data(), userDataBytes.size(), &userDataBytesWritten);
 
-		if (userDataBytesWritten != userDataBytes.size())
+		while (userDataBytesWritten != userDataBytes.size())
 		{
-			TerminateProcess(hProcess, 0);
-			*code = 16;
-			return false;
+			if (userDataAttempts < 3)
+			{
+				userDataPointer = GetUserDataPointer(&moduleInfo, &pmc, &hProcess);
+				userDataBytesWritten = 0;
+				WriteProcessMemory(hProcess, userDataPointer, userDataBytes.data(), userDataBytes.size(), &userDataBytesWritten);
+				userDataAttempts++;
+			}
+			else
+			{
+				TerminateProcess(hProcess, 0);
+				*code = 16;
+				return false;
+			}
 		}
 
-		userDataBytesWritten = 0;
+		SIZE_T synchBytesWritten = 0;
 		DWORD synch_to_write = 0x13371337;
-		WriteProcessMemory(hProcess, mapleBinaryPointer, &synch_to_write, 0x4, &userDataBytesWritten);
+		WriteProcessMemory(hProcess, mapleBinaryPointer, &synch_to_write, 0x4, &synchBytesWritten);
 
-		if (userDataBytesWritten != 0x4)
+		if (synchBytesWritten != 0x4)
 		{
 			TerminateProcess(hProcess, 0);
 			*code = 17;
 			return false;
 		}
+		STR_ENCRYPT_END
 		VM_FISH_RED_END
 		return true;
 	}

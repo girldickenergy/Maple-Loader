@@ -216,7 +216,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 					// Now we read the memory of the ghost process, write the binary to it, and the player data.
 					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient, &code))
 					{
-						std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
+						std::string err = "Injection failed after 3 retries. (code: " + std::to_string(code) + ")";
 						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 						Globals::LoaderState = LoaderStates::LoggedIn;
 						break;
