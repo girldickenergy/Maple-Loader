@@ -84,7 +84,7 @@ public:
 		SIZE_T userDataBytesWritten = 0;
 		WriteProcessMemory(hProcess, userDataPointer, userDataBytes.data(), userDataBytes.size(), &userDataBytesWritten);
 
-		while (userDataBytesWritten != userDataBytes.size())
+		while (userDataBytesWritten < userDataBytes.size() - 1)
 		{
 			if (userDataAttempts < 3)
 			{
