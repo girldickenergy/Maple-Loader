@@ -24,6 +24,8 @@ typedef unsigned int uint;
 #include <thread>
 #include "client_observer.h"
 #include "pipe_ret_t.h"
+#include "../Azuki/Azuki.h"
+#include "../../ThemidaSDK.h"
 
 class TcpClient
 {

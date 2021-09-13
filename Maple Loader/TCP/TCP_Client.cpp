@@ -45,7 +45,7 @@ pipe_ret_t TcpClient::connectTo(const std::string& address, int port)
 	m_server.sin_family = AF_INET;
 	m_server.sin_port = htons(port);
 
-	int connectRet = connect(m_sockfd, (struct sockaddr*) & m_server, sizeof(m_server));
+	int connectRet = connect(m_sockfd, (struct sockaddr*)&m_server, sizeof(m_server));
 	if (connectRet == -1) {
 		ret.success = false;
 		ret.msg = strerror(errno);
@@ -59,7 +59,7 @@ pipe_ret_t TcpClient::connectTo(const std::string& address, int port)
 pipe_ret_t TcpClient::sendMsg(const char* msg, size_t size)
 {
 	pipe_ret_t ret;
-	int numBytesSent = send(m_sockfd, msg, size , 0);
+	int numBytesSent = send(m_sockfd, msg, size, 0);
 	if (numBytesSent < 0) { // send failed
 		ret.success = false;
 		ret.msg = strerror(errno);

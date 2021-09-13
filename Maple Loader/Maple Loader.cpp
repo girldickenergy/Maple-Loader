@@ -21,6 +21,8 @@
 #include "Utils/RegistryUtils.h"
 
 #include "../ThemidaSDK.h"
+
+#include "Azuki/Azuki.h"
 #include <TlHelp32.h>
 #pragma optimize("", off)
 auto FindProcessId(const std::wstring& processName) -> DWORD
@@ -190,7 +192,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 				case DllStreamResult::Success:
 				{
 					VM_SHARK_BLACK_START
-						int code = 0;
+					int code = 0;
 					// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
 					HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe, &code);
 					if (hProcess == INVALID_HANDLE_VALUE)
@@ -272,12 +274,12 @@ bool ConnectToServer()
 	VM_FISH_RED_START
 	STR_ENCRYPT_START
 	client_observer_t observer;
-	observer.wantedIp = xor ("198.251.89.179");
+	observer.wantedIp = /*xor ("198.251.89.179")*/ "127.0.0.1";
 	observer.incoming_packet_func = OnIncomingMessage;
 	observer.disconnected_func = OnDisconnection;
 	Globals::TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("198.251.89.179"), 9999);
+	pipe_ret_t connectRet = Globals::TCPClient.connectTo(xor("127.0.0.1"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV
@@ -300,6 +302,7 @@ bool ConnectToServer()
 
 int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int show_cmd)
 {
+	VM_FISH_RED_START
 	STR_ENCRYPT_START
 	std::setlocale(LC_NUMERIC, "en_US");
 	
@@ -328,6 +331,7 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 	MSG msg;
 	memset(&msg, 0, sizeof(msg));
 	STR_ENCRYPT_END
+	VM_FISH_RED_END
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
