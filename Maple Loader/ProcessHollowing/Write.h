@@ -72,13 +72,14 @@ public:
 		//TODO: Make this prettier :)
 		for (const auto& c : mc->username)
 			userDataBytes.push_back(c);
-		for (const auto& c : "0xdeadbeef")
+		for (const auto& c : std::string("0xdeadbeef"))
 			if (c != 0)
 				userDataBytes.push_back(c);
 		for (const auto& c : mc->sessionToken)
 			userDataBytes.push_back(c);
-		for (const auto& c : "0xdeadbeef") // Keep this as an ending, so it's easier to work with later
+		for (const auto& c : std::string("0xdeadbeef")) // Keep this as an ending, so it's easier to work with later
 			userDataBytes.push_back(c);
+		userDataBytes.push_back('\0');
 
 		int userDataAttempts = 0;
 		SIZE_T userDataBytesWritten = 0;

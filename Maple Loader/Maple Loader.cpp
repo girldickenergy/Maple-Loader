@@ -101,7 +101,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 				{
 					VM_SHARK_BLACK_START
 					// Have both in a switch case, let's not tell anybody trying to crack that the epoch is wrong.
-					MessageBoxA(UI::Window, xor ("Fatal error occured\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("Fatal error occured: your time is out of sync!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
 					VM_SHARK_BLACK_END
 					Globals::ShutdownAndExit();
 
@@ -307,10 +307,6 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 		AllocConsole();
 		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 	#endif
-	
-	// Hopefully this fixes the time out of sync problems
-	// issue
-	// system(xor("w32tm /resync /nowait"));
 
 	if (!ConnectToServer())
 	{
