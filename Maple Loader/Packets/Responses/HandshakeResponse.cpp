@@ -20,8 +20,8 @@ HandshakeResponse::HandshakeResponse(const char* msg, size_t size) : Response(ms
 	Key = std::vector<unsigned char>(decoded.begin() + 16, decoded.end() - (decoded.size() - 32 - 16));
 	std::string epoch = std::string(decoded.begin() + 48, decoded.end());
 	long long realEpoch = std::stoll(epoch);
-	realEpoch ^= -5909373644027609361;
-	realEpoch += 234515;
+	//realEpoch ^= -5909373644027609361;
+	//realEpoch += 234515;
 
 	if (decoded.size() < 48 || decoded.size() > 100 || IV.size() != 16 || Key.size() != 32)
 	{
@@ -29,7 +29,7 @@ HandshakeResponse::HandshakeResponse(const char* msg, size_t size) : Response(ms
 		return;
 	}
 
-	if (std::abs(msEpoch.count() - realEpoch) > 5000)
+	if (std::abs(msEpoch.count() - (realEpoch*2)^0xDA) > 5000)
 	{
 		Result = HandshakeResult::EpochTimedOut;
 		return;
