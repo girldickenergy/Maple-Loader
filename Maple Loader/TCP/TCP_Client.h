@@ -30,6 +30,7 @@ typedef unsigned int uint;
 class TcpClient
 {
 private:
+	char* dataPagePointer = 0;
 	int m_sockfd = 0;
 	bool stop = false;
 	struct sockaddr_in m_server;

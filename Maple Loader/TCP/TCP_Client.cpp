@@ -9,6 +9,11 @@ pipe_ret_t TcpClient::connectTo(const std::string& address, int port)
 	pipe_ret_t ret;
 
 #ifdef WIN32
+	if (dataPagePointer == 0)
+		dataPagePointer = (char*)VirtualAlloc(NULL, 0x1800000, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Allocate a memory page of 24mb
+
+	memset(dataPagePointer, 0x00, 0x1800000); // Reset memory
+
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	int err;
@@ -116,7 +121,7 @@ void TcpClient::publishServerDisconnected(const pipe_ret_t& ret)
 
 void TcpClient::ReceiveTask()
 {
-	char* msg = static_cast<char*>(malloc(12000000));
+	char* msg = dataPagePointer;
 	char* msg_orig = msg;
 	while (!stop) {
 		memset(msg, 0, sizeof msg);
@@ -167,6 +172,8 @@ void TcpClient::ReceiveTask()
 			}
 		}
 	}
+
+	memset(dataPagePointer, 0x00, 0x1800000); // Reset memory
 }
 
 pipe_ret_t TcpClient::finish()
