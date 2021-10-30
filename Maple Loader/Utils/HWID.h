@@ -130,8 +130,6 @@ public:
 		std::stringstream hwid;
 		hwid << diskSerial << "|" << cpuVendor << "|" << motherboardInfo;
 
-		std::cout << hwid.str() << std::endl;
-
 		CryptoPP::Weak1::MD5 hash;
 		byte digest[CryptoPP::Weak1::MD5::DIGESTSIZE];
 
@@ -142,8 +140,6 @@ public:
 		encoder.Attach(new CryptoPP::StringSink(hwidHashed));
 		encoder.Put(digest, sizeof(digest));
 		encoder.MessageEnd();
-
-		std::cout << hwidHashed << std::endl;
 		
 		return hwidHashed;
 	}
