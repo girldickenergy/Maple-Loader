@@ -596,12 +596,6 @@
     <ClCompile Include="UI\AnimationHandler.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="Azuki\Azuki.cpp">
-      <Filter>Azuki</Filter>
-    </ClCompile>
-    <ClCompile Include="Azuki\hde32\hde32.c">
-      <Filter>Azuki\hde32</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="UI">
@@ -642,12 +636,6 @@
     </Filter>
     <Filter Include="ProcessHollowing">
       <UniqueIdentifier>{cccbdc9a-f20d-4e0f-baf8-eb035e2d0d99}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Azuki">
-      <UniqueIdentifier>{e0150745-9a2f-4812-976c-5c7ab6a024ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Azuki\hde32">
-      <UniqueIdentifier>{d7f9f3f4-54d9-4112-8420-d0dc94f2c0de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1390,18 +1378,6 @@
     </ClInclude>
     <ClInclude Include="Utils\RegistryUtils.h">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Azuki\Azuki.h">
-      <Filter>Azuki</Filter>
-    </ClInclude>
-    <ClInclude Include="Azuki\hde32\hde32.h">
-      <Filter>Azuki\hde32</Filter>
-    </ClInclude>
-    <ClInclude Include="Azuki\hde32\pstdint.h">
-      <Filter>Azuki\hde32</Filter>
-    </ClInclude>
-    <ClInclude Include="Azuki\hde32\table32.h">
-      <Filter>Azuki\hde32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

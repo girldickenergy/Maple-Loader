@@ -77,6 +77,16 @@ public:
 				userDataBytes.push_back(c);
 		for (const auto& c : mc->sessionToken)
 			userDataBytes.push_back(c);
+		for (const auto& c : std::string("0xdeadbeef"))
+			if (c != 0)
+				userDataBytes.push_back(c);
+		for (const auto& c : mc->discordID)
+			userDataBytes.push_back(c);
+		for (const auto& c : std::string("0xdeadbeef"))
+			if (c != 0)
+				userDataBytes.push_back(c);
+		for (const auto& c : mc->avatarHash)
+			userDataBytes.push_back(c);
 		for (const auto& c : std::string("0xdeadbeef")) // Keep this as an ending, so it's easier to work with later
 			userDataBytes.push_back(c);
 		userDataBytes.push_back('\0');

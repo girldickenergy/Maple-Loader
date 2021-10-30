@@ -20,6 +20,8 @@ class LoginResponse : public Response
 public:
 	LoginResult Result;
 	std::string SessionToken;
+	std::string DiscordID;
+	std::string AvatarHash;
 	std::vector<Game*> Games;
 	std::vector<Cheat*> Cheats;
 

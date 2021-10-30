@@ -10,6 +10,8 @@ public:
 	AESWrapper* aes;
 	std::string sessionToken;
 	std::string username;
+	std::string discordID;
+	std::string avatarHash;
 
 	MatchedClient(TcpClient _client)
 	{
@@ -17,5 +19,7 @@ public:
 		aes = new AESWrapper();
 		sessionToken = "";
 		username = "";
+		discordID = "";
+		avatarHash = "";
 	}
 };

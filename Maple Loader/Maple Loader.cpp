@@ -22,7 +22,6 @@
 
 #include "../ThemidaSDK.h"
 
-#include "Azuki/Azuki.h"
 #include <TlHelp32.h>
 #pragma optimize("", off)
 auto FindProcessId(const std::wstring& processName) -> DWORD

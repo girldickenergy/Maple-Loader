@@ -153,8 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AntiDebug\Security.cpp" />
-    <ClCompile Include="Azuki\Azuki.cpp" />
-    <ClCompile Include="Azuki\hde32\hde32.c" />
     <ClCompile Include="Crypto\3way.cpp" />
     <ClCompile Include="Crypto\adler32.cpp" />
     <ClCompile Include="Crypto\algebra.cpp" />
@@ -357,10 +355,6 @@
   <ItemGroup>
     <ClInclude Include="AntiDebug\Security.h" />
     <ClInclude Include="AntiDebug\xorstr.hpp" />
-    <ClInclude Include="Azuki\Azuki.h" />
-    <ClInclude Include="Azuki\hde32\hde32.h" />
-    <ClInclude Include="Azuki\hde32\pstdint.h" />
-    <ClInclude Include="Azuki\hde32\table32.h" />
     <ClInclude Include="Cheat.h" />
     <ClInclude Include="Communication\MatchedClient.h" />
     <ClInclude Include="Crypto\3way.h" />
