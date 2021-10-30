@@ -39,8 +39,8 @@ LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matche
 	decryptedLoginResultSplit[2].erase(decryptedLoginResultSplit[2].begin());
 	decryptedLoginResultSplit[3].erase(decryptedLoginResultSplit[3].begin());
 	SessionToken = decryptedLoginResultSplit[1];
-	DiscordID = decryptedLoginResultSplit[1];
-	AvatarHash = decryptedLoginResultSplit[1];
+	DiscordID = decryptedLoginResultSplit[2];
+	AvatarHash = decryptedLoginResultSplit[3];
 	matchedClient->sessionToken = SessionToken;
 	matchedClient->discordID = DiscordID;
 	matchedClient->avatarHash = AvatarHash;
