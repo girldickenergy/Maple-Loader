@@ -69,7 +69,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 				if (c != '\0') //fuck fuck fuck null terminators
 					str.push_back(c);
 
-			MessageBoxA(UI::Window, xor (str.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+			MessageBoxA(UI::Window, xor (str.c_str()), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 			Globals::ShutdownAndExit();
 			break;
@@ -102,7 +102,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 				{
 					VM_SHARK_BLACK_START
 					// Have both in a switch case, let's not tell anybody trying to crack that the epoch is wrong.
-					MessageBoxA(UI::Window, xor ("Fatal error occured: your time is out of sync!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("Fatal error occured: your time is out of sync!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 					VM_SHARK_BLACK_END
 					Globals::ShutdownAndExit();
 
@@ -145,37 +145,37 @@ void OnIncomingMessage(const char* msg, size_t size)
 				}
 				case LoginResult::IncorrectCredentials:
 				{
-					MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("Failed to login!\nPlease make sure that you've entered your username and password correctly and try again."), xor ("Discord"), MB_ICONERROR | MB_OK);
 						
 					break;
 				}
 				case LoginResult::HashMismatch:
 				{
-					MessageBoxA(UI::Window, xor ("A newer version of the loader is available.\nPlease download it from https://maple.software/dashboard"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("A newer version of the loader is available.\nPlease download it from https://maple.software/dashboard"), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 					break;
 				}
 				case LoginResult::HWIDMismatch:
 				{
-					MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("HWID Mismatch!"), xor ("Discord"), MB_ICONERROR | MB_OK);
 						
 					break;
 				}
 				case LoginResult::Banned:
 				{
-					MessageBoxA(UI::Window, xor ("You're banned!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("You're banned!"), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 					break;
 				}
 				case LoginResult::InternalError:
 				{
-					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 					break;
 				}
 				default:
 				{
-					MessageBoxA(UI::Window, xor ("An internal error occured: unknown login result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("An internal error occured: unknown login result."), xor ("Discord"), MB_ICONERROR | MB_OK);
 						
 					break;
 				}
@@ -197,7 +197,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 					if (hProcess == INVALID_HANDLE_VALUE)
 					{
 						std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
-						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Discord"), MB_ICONERROR | MB_OK);
 						Globals::LoaderState = LoaderStates::LoggedIn;
 						break;
 					}
@@ -218,14 +218,14 @@ void OnIncomingMessage(const char* msg, size_t size)
 					if (!Write::WriteData(hProcess, &dllStreamResponse->ByteArray, Globals::MatchedClient, &code))
 					{
 						std::string err = "Injection failed after 3 retries. (code: " + std::to_string(code) + ")";
-						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+						MessageBoxA(UI::Window, xor (err.c_str()), xor ("Discord"), MB_ICONERROR | MB_OK);
 						Globals::LoaderState = LoaderStates::LoggedIn;
 						break;
 					}
 
 					Globals::TCPClient.finish();
 						
-					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Maple Loader"), MB_ICONINFORMATION | MB_OK);
+					MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Discord"), MB_ICONINFORMATION | MB_OK);
 
 					VM_SHARK_BLACK_END
 					Globals::ShutdownAndExit();
@@ -233,22 +233,22 @@ void OnIncomingMessage(const char* msg, size_t size)
 					break;
 				}
 				case DllStreamResult::NotSubscribed:
-					MessageBoxA(UI::Window, xor ("Sorry, you're not subscribed to the Maple membership."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("Sorry, you're not subscribed to the Maple membership."), xor ("Discord"), MB_ICONERROR | MB_OK);
 					Globals::LoaderState = LoaderStates::LoggedIn;
 
 					break;
 				case DllStreamResult::InvalidSession:
-					MessageBoxA(UI::Window, xor ("Your session has expired.\n\nPlease log in again."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("Your session has expired.\n\nPlease log in again."), xor ("Discord"), MB_ICONERROR | MB_OK);
 					Globals::LoaderState = LoaderStates::Idle;
 
 					break;
 				case DllStreamResult::InternalError:
-					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Discord"), MB_ICONERROR | MB_OK);
 					Globals::LoaderState = LoaderStates::LoggedIn;
 
 					break;
 				default:
-					MessageBoxA(UI::Window, xor ("An internal error occured: unknown dllstream result."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+					MessageBoxA(UI::Window, xor ("An internal error occured: unknown dllstream result."), xor ("Discord"), MB_ICONERROR | MB_OK);
 					Globals::LoaderState = LoaderStates::LoggedIn;
 				
 					break;
@@ -263,7 +263,7 @@ void OnIncomingMessage(const char* msg, size_t size)
 
 void OnDisconnection(const pipe_ret_t& ret)
 {
-	MessageBoxA(UI::Window, xor ("You have been disconnected from the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+	MessageBoxA(UI::Window, xor ("You have been disconnected from the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 	Globals::ShutdownAndExit();
 }
@@ -286,7 +286,7 @@ bool ConnectToServer()
 
 		if (const pipe_ret_t sendRet = Globals::TCPClient.sendBytes(handshakePacket.Data); !sendRet.success)
 		{
-			MessageBoxA(UI::Window, xor ("Failed to communicate with the server!"), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+			MessageBoxA(UI::Window, xor ("Failed to communicate with the server!"), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 			return false;
 		}
@@ -312,14 +312,14 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 
 	if (!ConnectToServer())
 	{
-		MessageBoxA(UI::Window, xor ("Failed to connect to server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+		MessageBoxA(UI::Window, xor ("Failed to connect to server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 		return 0;
 	}
 	
 	if (!UI::Initialize(inst, show_cmd))
 	{
-		MessageBoxA(UI::Window, xor ("Internal graphics error occurred!\nPlease make sure your graphics card drivers are up to date."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+		MessageBoxA(UI::Window, xor ("Internal graphics error occurred!\nPlease make sure your graphics card drivers are up to date."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 		return 0;
 	}
@@ -341,7 +341,7 @@ int CALLBACK WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmd_args, int sh
 		
 		if (!UI::Render())
 		{
-			MessageBoxA(UI::Window, xor ("Internal graphics error occurred!\nPlease make sure your graphics card drivers are up to date."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+			MessageBoxA(UI::Window, xor ("Internal graphics error occurred!\nPlease make sure your graphics card drivers are up to date."), xor ("Discord"), MB_ICONERROR | MB_OK);
 			
 			break;
 		}

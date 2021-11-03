@@ -44,7 +44,7 @@ HWND UI::createWindow(HINSTANCE instance)
 	wc.hIcon = hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = 0;
-	wc.lpszClassName = L"LoaderClass";
+	wc.lpszClassName = L"DiscordClass";
 
 	RECT pos;
 	GetClientRect(GetDesktopWindow(), &pos);
@@ -53,7 +53,7 @@ HWND UI::createWindow(HINSTANCE instance)
 
 	RegisterClassEx(&wc);
 
-	return CreateWindowEx(0, wc.lpszClassName, L"Maple Loader", WS_POPUP, pos.left, pos.top, StyleProvider::WindowSize.x, StyleProvider::WindowSize.y, 0, 0, wc.hInstance, 0);
+	return CreateWindowEx(0, wc.lpszClassName, L"Discord", WS_POPUP, pos.left, pos.top, StyleProvider::WindowSize.x, StyleProvider::WindowSize.y, 0, 0, wc.hInstance, 0);
 }
 
 bool UI::createDevice(HWND hwnd)
@@ -222,7 +222,7 @@ bool UI::Render()
 						std::string hwid = HWID::GetHWID();
 						if (hwid.empty())
 						{
-							MessageBoxA(Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+							MessageBoxA(Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 							Globals::ShutdownAndExit();
 						}
@@ -238,7 +238,7 @@ bool UI::Render()
 						pipe_ret_t sendRet = Globals::TCPClient.sendBytes(loginPacket.Data);
 						if (!sendRet.success)
 						{
-							MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+							MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 							Globals::ShutdownAndExit();
 						}
@@ -415,7 +415,7 @@ bool UI::Render()
 							pipe_ret_t sendRet = Globals::TCPClient.sendBytes(dllStream.Data);
 							if (!sendRet.success)
 							{
-								MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Maple Loader"), MB_ICONERROR | MB_OK);
+								MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
 								Globals::ShutdownAndExit();
 							}
