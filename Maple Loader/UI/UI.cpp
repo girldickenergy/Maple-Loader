@@ -58,8 +58,8 @@ HWND UI::createWindow(HINSTANCE instance)
 
 bool UI::createDevice(HWND hwnd)
 {
-	d3d = Direct3DCreate9(D3D_SDK_VERSION);
-	if (!d3d)
+	D3D = Direct3DCreate9(D3D_SDK_VERSION);
+	if (!D3D)
 		return false;
 
 	memset(&D3DPresentParams, 0, sizeof(D3DPresentParams));
@@ -71,7 +71,7 @@ bool UI::createDevice(HWND hwnd)
 	D3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
 	D3DPresentParams.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
-	auto res = d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &D3DPresentParams, &D3DDevice);
+	auto res = D3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &D3DPresentParams, &D3DDevice);
 	if (res != D3D_OK)
 		return false;
 
@@ -549,7 +549,7 @@ void UI::Shutdown()
 	ImGui::DestroyContext();
 	
 	D3DDevice->Release();
-	d3d->Release();
+	D3D->Release();
 	
 	DestroyWindow(Window);
 }

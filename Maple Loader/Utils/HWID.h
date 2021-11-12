@@ -11,48 +11,25 @@
 
 class HWID
 {
-	static std::string getDiskSerial()
+	static std::string guidToString(GUID guid)
 	{
-		std::string m_sResult;
+		char guid_cstr[39];
+		snprintf(guid_cstr, sizeof(guid_cstr),
+			"{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
+			guid.Data1, guid.Data2, guid.Data3,
+			guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
+			guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
 
-		HANDLE m_hFile = CreateFileW(L"\\\\.\\PhysicalDrive0", 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
-		if (m_hFile == INVALID_HANDLE_VALUE)
+		return std::string(guid_cstr);
+	}
+	
+	static std::string getGPUID()
+	{
+		D3DADAPTER_IDENTIFIER9 id;
+		if (!SUCCEEDED(UI::D3D->GetAdapterIdentifier(0, 0, &id)))
 			return { };
 
-		std::unique_ptr< std::remove_pointer <HANDLE >::type, void(*)(HANDLE) > m_hDevice
-		{
-			m_hFile, [](HANDLE handle)
-			{
-				CloseHandle(handle);
-			}
-		};
-
-		STORAGE_PROPERTY_QUERY m_PropertyQuery;
-		m_PropertyQuery.PropertyId = StorageDeviceProperty;
-		m_PropertyQuery.QueryType = PropertyStandardQuery;
-
-		STORAGE_DESCRIPTOR_HEADER m_DescHeader;
-		DWORD m_dwBytesReturned = 0;
-		if (!DeviceIoControl(m_hDevice.get(), IOCTL_STORAGE_QUERY_PROPERTY, &m_PropertyQuery, sizeof(STORAGE_PROPERTY_QUERY),
-			&m_DescHeader, sizeof(STORAGE_DESCRIPTOR_HEADER), &m_dwBytesReturned, NULL))
-			return { };
-
-		const DWORD m_dwOutBufferSize = m_DescHeader.Size;
-		std::unique_ptr< BYTE[] > m_pOutBuffer{ new BYTE[m_dwOutBufferSize] { } };
-
-		if (!DeviceIoControl(m_hDevice.get(), IOCTL_STORAGE_QUERY_PROPERTY, &m_PropertyQuery, sizeof(STORAGE_PROPERTY_QUERY),
-			m_pOutBuffer.get(), m_dwOutBufferSize, &m_dwBytesReturned, NULL))
-			return { };
-
-		STORAGE_DEVICE_DESCRIPTOR* m_pDeviceDescriptor = reinterpret_cast<STORAGE_DEVICE_DESCRIPTOR*>(m_pOutBuffer.get());
-		const DWORD m_dwSerialNumberOffset = m_pDeviceDescriptor->SerialNumberOffset;
-		if (m_dwSerialNumberOffset == 0)
-			return { };
-
-		m_sResult = reinterpret_cast<const char*>(m_pOutBuffer.get() + m_dwSerialNumberOffset);
-		m_sResult.erase(std::remove_if(m_sResult.begin(), m_sResult.end(), [](unsigned char x) { return std::isspace(x); }), m_sResult.end());
-
-		return m_sResult;
+		return std::string(id.Description) + std::string("-") + std::to_string(id.VendorId) + std::string("-") + guidToString(id.DeviceIdentifier);
 	}
 
 	static std::string getCPUVendor()
@@ -120,15 +97,22 @@ class HWID
 public:
 	static std::string GetHWID()
 	{
-		std::string diskSerial = getDiskSerial();
+		std::string gpuID = getGPUID();
 		std::string cpuVendor = getCPUVendor();
 		std::string motherboardInfo = getMotherboardInfo();
+
+		if (gpuID.empty())
+			MessageBoxA(UI::Window, xor ("HWID Failure (0)"), xor ("Discord"), MB_ICONERROR | MB_OK);
+		if (cpuVendor.empty())
+			MessageBoxA(UI::Window, xor ("HWID Failure (1)"), xor ("Discord"), MB_ICONERROR | MB_OK);
+		if (motherboardInfo.empty())
+			MessageBoxA(UI::Window, xor ("HWID Failure (2)"), xor ("Discord"), MB_ICONERROR | MB_OK);
 		
-		if (diskSerial.empty() || cpuVendor.empty() || motherboardInfo.empty())
+		if (gpuID.empty() || cpuVendor.empty() || motherboardInfo.empty())
 			return { };
 
 		std::stringstream hwid;
-		hwid << diskSerial << "|" << cpuVendor << "|" << motherboardInfo;
+		hwid << gpuID << "|" << cpuVendor << "|" << motherboardInfo;
 
 		CryptoPP::Weak1::MD5 hash;
 		byte digest[CryptoPP::Weak1::MD5::DIGESTSIZE];

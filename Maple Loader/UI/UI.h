@@ -7,8 +7,6 @@
 
 class UI
 {
-	static inline IDirect3D9* d3d;
-
 	static LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 	static HWND createWindow(HINSTANCE instance);
@@ -21,7 +19,8 @@ class UI
 	static inline bool shouldSelectFirstGame = true;
 public:
 	static inline HWND Window;
-	
+
+	static inline IDirect3D9* D3D;
 	static inline IDirect3DDevice9* D3DDevice;
 	static inline D3DPRESENT_PARAMETERS D3DPresentParams;
 	
