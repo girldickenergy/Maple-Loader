@@ -10,26 +10,14 @@
 #include "../UI/UI.h"
 
 class HWID
-{
-	static std::string guidToString(GUID guid)
-	{
-		char guid_cstr[39];
-		snprintf(guid_cstr, sizeof(guid_cstr),
-			"{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
-			guid.Data1, guid.Data2, guid.Data3,
-			guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
-			guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
-
-		return std::string(guid_cstr);
-	}
-	
+{	
 	static std::string getGPUID()
 	{
 		D3DADAPTER_IDENTIFIER9 id;
 		if (!SUCCEEDED(UI::D3D->GetAdapterIdentifier(0, 0, &id)))
 			return { };
 
-		return std::string(id.Description) + std::string("-") + std::to_string(id.VendorId) + std::string("-") + guidToString(id.DeviceIdentifier);
+		return std::string(id.Description) + std::string("-") + std::to_string(id.VendorId) + std::string("-") + std::to_string(id.DeviceId);
 	}
 
 	static std::string getCPUVendor()
@@ -101,13 +89,6 @@ public:
 		std::string cpuVendor = getCPUVendor();
 		std::string motherboardInfo = getMotherboardInfo();
 
-		if (gpuID.empty())
-			MessageBoxA(UI::Window, xor ("HWID Failure (0)"), xor ("Discord"), MB_ICONERROR | MB_OK);
-		if (cpuVendor.empty())
-			MessageBoxA(UI::Window, xor ("HWID Failure (1)"), xor ("Discord"), MB_ICONERROR | MB_OK);
-		if (motherboardInfo.empty())
-			MessageBoxA(UI::Window, xor ("HWID Failure (2)"), xor ("Discord"), MB_ICONERROR | MB_OK);
-		
 		if (gpuID.empty() || cpuVendor.empty() || motherboardInfo.empty())
 			return { };
 
