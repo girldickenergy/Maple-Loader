@@ -89,7 +89,7 @@ public:
 		std::string cpuVendor = getCPUVendor();
 		std::string motherboardInfo = getMotherboardInfo();
 
-		if (gpuID.empty() || cpuVendor.empty() || motherboardInfo.empty())
+		if (gpuID.empty() && cpuVendor.empty() && motherboardInfo.empty())
 			return { };
 
 		std::stringstream hwid;
