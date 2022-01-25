@@ -1,1458 +1,1503 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Maple Loader.cpp" />
-    <ClCompile Include="UI\UI.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui_impl_win32.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui_tables.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui_widgets.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui_demo.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui_draw.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ImGui\imgui_impl_dx9.cpp">
-      <Filter>UI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="AntiDebug\Security.cpp">
-      <Filter>AntiDebug</Filter>
-    </ClCompile>
-    <ClCompile Include="TCP\TCP_Client.cpp">
-      <Filter>TCP</Filter>
-    </ClCompile>
-    <ClCompile Include="TCP\Client.cpp">
-      <Filter>TCP</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\Wrapper\RSADecrypt.cpp">
-      <Filter>Crypto\Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\Wrapper\AES.cpp">
-      <Filter>Crypto\Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\algebra.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\algparam.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\allocate.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\arc4.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\aria.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\aria_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ariatab.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\asn.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\authenc.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\base32.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\base64.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\basecode.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\bfinit.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\blake2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\blake2b_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\blake2s_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\blowfish.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\blumshub.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\camellia.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cast.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\casts.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cbcmac.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ccm.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\chacha.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\chacha_avx.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\chacha_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\chachapoly.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cham.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cham_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\channels.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cmac.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cpu.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\crc.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\crc_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\cryptlib.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\darn.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\default.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\des.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\dessp.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\dh.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\dh2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\dll.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\donna_32.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\donna_64.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\donna_sse.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\dsa.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\eax.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ec2n.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\eccrypto.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ecp.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\elgamal.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\emsa2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\eprecomp.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\esign.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\files.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\filters.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\fips140.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\fipsalgt.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\fipstest.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gcm.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gcm_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gf2_32.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gf2n.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gf2n_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gf256.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gfpcrypt.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gost.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\gzip.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\hc128.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\hc256.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\hex.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\hight.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\hmac.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\hrtimer.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ida.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\idea.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\integer.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\iterhash.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\kalyna.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\kalynatab.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\keccak.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\keccak_core.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\keccak_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\lea.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\lea_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\luc.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\mars.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\marss.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\md2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\md4.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\md5.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\misc.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\modes.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\mqueue.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\mqv.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\nbtheory.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\neon_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\oaep.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\osrng.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\padlkrng.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\panama.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\pch.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\pkcspad.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\poly1305.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\polynomi.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ppc_power7.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ppc_power8.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ppc_power9.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ppc_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\pssr.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\pubkey.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\queue.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rabbit.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rabin.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\randpool.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rc2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rc5.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rc6.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rdrand.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rdtables.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rijndael.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rijndael_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ripemd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rng.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rsa.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\rw.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\safer.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\salsa.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\scrypt.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\seal.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\seed.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\serpent.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sha.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sha_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sha3.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\shacal2.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\shacal2_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\shake.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\shark.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sharkbox.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\simeck.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\simon.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\simon128_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\simple.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\skipjack.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sm3.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sm4.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sm4_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sosemanuk.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\speck.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\speck128_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\square.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\squaretb.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\sse_simd.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\strciphr.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\tea.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\tftables.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\threefish.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\tiger.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\tigertab.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\ttmac.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\tweetnacl.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\twofish.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\vmac.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\wake.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\whrlpool.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\xed25519.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\xtr.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\xtrcrypt.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\xts.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\zdeflate.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\zinflate.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\zlib.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\3way.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Crypto\adler32.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Responses\Response.cpp">
-      <Filter>Packets\Responses</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Responses\FatalErrorResponse.cpp">
-      <Filter>Packets\Responses</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Responses\HandshakeResponse.cpp">
-      <Filter>Packets\Responses</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Responses\LoginResponse.cpp">
-      <Filter>Packets\Responses</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Requests\HandshakeRequest.cpp">
-      <Filter>Packets\Requests</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Requests\LoginRequest.cpp">
-      <Filter>Packets\Requests</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Requests\Request.cpp">
-      <Filter>Packets\Requests</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Requests\DllStreamRequest.cpp">
-      <Filter>Packets\Requests</Filter>
-    </ClCompile>
-    <ClCompile Include="Packets\Responses\DllStreamResponse.cpp">
-      <Filter>Packets\Responses</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\AnimationHandler.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{9fb93090-91d4-4466-a419-7be9f9426220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\ImGui">
+      <UniqueIdentifier>{ab432ca4-8dd1-4b13-9528-25119edd77b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\DirectX">
+      <UniqueIdentifier>{85ee7205-fac8-4ff4-915f-0394ccff86b1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="UI">
-      <UniqueIdentifier>{14a0aae5-7965-4e39-b54d-f012d6ccdd31}</UniqueIdentifier>
+      <UniqueIdentifier>{d58122df-2ab8-4021-94e4-885dc89afada}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\ImGui">
-      <UniqueIdentifier>{ddc22103-d61b-4bd3-96ca-4eea4dc42908}</UniqueIdentifier>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{b9cc85ea-aa14-4dbd-8ae4-c1a226dcb34a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AntiDebug">
-      <UniqueIdentifier>{81726de9-fa66-49ee-b1a2-0047d8d9de33}</UniqueIdentifier>
+    <Filter Include="Utilities\Textures">
+      <UniqueIdentifier>{01917906-763d-4d15-9a2e-729062b033f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TCP">
-      <UniqueIdentifier>{a9192820-5ba8-4a46-9e15-2fedc5b9ec12}</UniqueIdentifier>
+    <Filter Include="Utilities\Strings">
+      <UniqueIdentifier>{15a15446-6a21-482c-b8c9-33d17edf07e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{41fe62f5-5ac5-4718-bb91-9d75172b7600}</UniqueIdentifier>
+    <Filter Include="Dependencies\curl">
+      <UniqueIdentifier>{fd5e63d7-242d-4499-a72d-0ecf2ac57ec5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Crypto">
-      <UniqueIdentifier>{63eb04b0-a15c-416c-94bf-2cc8937dbf6b}</UniqueIdentifier>
+    <Filter Include="Dependencies\Crypto">
+      <UniqueIdentifier>{faa856c1-d5ed-4547-810c-1fb4bb787a36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Crypto\Wrapper">
-      <UniqueIdentifier>{0bc33171-ccbf-4807-915b-f9dcb890f100}</UniqueIdentifier>
+    <Filter Include="Dependencies\Crypto\Wrapper">
+      <UniqueIdentifier>{3ea08545-a92d-48fa-9806-5f9859aca03c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Communication">
-      <UniqueIdentifier>{cdb9f389-f41f-4d33-990b-f9ccbf3091d9}</UniqueIdentifier>
+      <UniqueIdentifier>{47dd3afd-ddff-4d4f-a79e-59e4b42707c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Packets">
-      <UniqueIdentifier>{0feb910e-c9bf-4c7d-88df-5c03cbc81ec4}</UniqueIdentifier>
+    <Filter Include="Communication\Packets">
+      <UniqueIdentifier>{e1371901-735d-4de1-9aba-4b352ff6e5ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Packets\Responses">
-      <UniqueIdentifier>{3f500505-9884-4627-9090-202e78efbc4c}</UniqueIdentifier>
+    <Filter Include="Communication\Packets\Requests">
+      <UniqueIdentifier>{7a2040eb-5a8f-476a-85a2-6f382b65f9d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Packets\Requests">
-      <UniqueIdentifier>{48fae14b-3cf8-4054-a621-8364d0ceaf02}</UniqueIdentifier>
+    <Filter Include="Communication\Packets\Responses">
+      <UniqueIdentifier>{f1e63b2c-35ae-4359-88ac-c6e7f245a461}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\DirectX">
-      <UniqueIdentifier>{996b5e0a-1fbe-448c-b673-ad38ebfbb011}</UniqueIdentifier>
+    <Filter Include="Communication\TCP">
+      <UniqueIdentifier>{3c14ff7f-657b-4da6-9da8-fc2e6e61cd36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ProcessHollowing">
-      <UniqueIdentifier>{cccbdc9a-f20d-4e0f-baf8-eb035e2d0d99}</UniqueIdentifier>
+    <Filter Include="Dependencies\ThemidaSDK">
+      <UniqueIdentifier>{c4de1e05-0ec8-4b29-8df6-c771a1394ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Security">
+      <UniqueIdentifier>{07a55ff3-8f38-4bda-aca2-61922c96a9c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Hardware">
+      <UniqueIdentifier>{82778e68-741f-4072-ac19-2a683fbcd34d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Crypto">
+      <UniqueIdentifier>{4ae05bc0-df5d-45e9-a483-a081b665c430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Injection">
+      <UniqueIdentifier>{504ffc5d-8e91-4b5b-969a-7f8769376315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Autofill">
+      <UniqueIdentifier>{cbb930cd-f71c-4033-af4e-bffb130112ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="Maple Loader.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="loaderIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx9.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_win32.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_internal.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_textedit.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imconfig.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9anim.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9core.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9effect.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9math.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9mesh.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9shader.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9shape.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9tex.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9xof.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\DirectX\d3dx9.h">
+      <Filter>Dependencies\DirectX</Filter>
+    </ClInclude>
     <ClInclude Include="UI\UI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\StyleProvider.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Textures\TextureHelper.h">
+      <Filter>Utilities\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Strings\StringUtilities.h">
+      <Filter>Utilities\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\curl.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\curlver.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\easy.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\mprintf.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\multi.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\options.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\stdcheaders.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\system.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\typecheck-gcc.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\curl\urlapi.h">
+      <Filter>Dependencies\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Textures.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\Fonts.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\ImGui\imgui_impl_win32.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imgui_internal.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imstb_rectpack.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imstb_textedit.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imstb_truetype.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imconfig.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imgui.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ImGui\imgui_impl_dx9.h">
-      <Filter>UI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="AntiDebug\Security.h">
-      <Filter>AntiDebug</Filter>
-    </ClInclude>
-    <ClInclude Include="AntiDebug\xorstr.hpp">
-      <Filter>AntiDebug</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\Client_Observer.h">
-      <Filter>TCP</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\Pipe_Ret_T.h">
-      <Filter>TCP</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\TCP_Client.h">
-      <Filter>TCP</Filter>
-    </ClInclude>
-    <ClInclude Include="TCP\Client.h">
-      <Filter>TCP</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\RSAKeygen.hpp">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\Wrapper\RSADecrypt.h">
-      <Filter>Crypto\Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\Wrapper\AES.h">
-      <Filter>Crypto\Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\aes_armv4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\algebra.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\algparam.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\allocate.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\arc4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\argnames.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\aria.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\arm_simd.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\asn.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\authenc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\base32.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\base64.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\basecode.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\blake2.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\blowfish.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\blumshub.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\camellia.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\cast.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\cbcmac.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ccm.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\chacha.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\chachapoly.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\cham.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\channels.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\cmac.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_align.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_asm.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_cpu.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_cxx.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_dll.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_int.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_misc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_ns.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_os.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\config_ver.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\cpu.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\crc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\cryptlib.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\darn.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\default.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\des.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\dh.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\dh2.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\dll.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\dmac.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\donna.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\donna_32.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\donna_64.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\donna_sse.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\drbg.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\dsa.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\eax.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ec2n.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\eccrypto.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ecp.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ecpoint.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\elgamal.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\emsa2.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\eprecomp.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\esign.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\factory.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\fhmqv.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\files.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\filters.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\fips140.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\fltrimpl.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gcm.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gf2_32.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gf2n.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gf256.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gfpcrypt.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gost.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\gzip.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hashfwd.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hc128.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hc256.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hex.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hight.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hkdf.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hmac.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hmqv.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\hrtimer.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ida.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\idea.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\integer.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\iterhash.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\kalyna.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\keccak.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\lea.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\lubyrack.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\luc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\mars.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\md2.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\md4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\md5.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\mdc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\mersenne.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\misc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\modarith.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\modes.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\modexppc.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\mqueue.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\mqv.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\naclite.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\nbtheory.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\nr.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\oaep.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\oids.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\osrng.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ossig.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\padlkrng.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\panama.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\pch.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\pkcspad.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\poly1305.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\polynomi.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ppc_simd.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\pssr.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\pubkey.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\pwdbased.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\queue.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rabbit.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rabin.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\randpool.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rc2.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rc5.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rc6.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rdrand.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\resource.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rijndael.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ripemd.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rng.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rsa.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\rw.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\safer.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\salsa.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\scrypt.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\seal.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\secblock.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\secblockfwd.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\seckey.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\seed.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\serpent.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\serpentp.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sha.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sha1_armv4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sha3.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sha256_armv4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sha512_armv4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\shacal2.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\shake.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\shark.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\simeck.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\simon.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\simple.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\siphash.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\skipjack.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sm3.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sm4.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\smartptr.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\sosemanuk.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\speck.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\square.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\stdcpp.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\strciphr.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\tea.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\threefish.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\tiger.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\trap.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\trunhash.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\ttmac.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\tweetnacl.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\twofish.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\vmac.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\wake.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\whrlpool.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\words.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\xed25519.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\xtr.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\xtrcrypt.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\xts.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\zdeflate.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\zinflate.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\zlib.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\3way.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\adler32.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\adv_simd.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto\aes.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\StyleProvider.h">
+    <ClInclude Include="UI\Widgets.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\HWID.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\Wrapper\AES.h">
+      <Filter>Dependencies\Crypto\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\Wrapper\RSADecrypt.h">
+      <Filter>Dependencies\Crypto\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\xts.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\zdeflate.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\zinflate.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\zlib.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\3way.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\adler32.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\adv_simd.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\aes.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\aes_armv4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\algebra.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\algparam.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\allocate.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\arc4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\argnames.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\aria.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\arm_simd.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\asn.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\authenc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\base32.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\base64.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\basecode.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\blake2.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\blowfish.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\blumshub.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\camellia.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\cast.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\cbcmac.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ccm.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\chacha.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\chachapoly.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\cham.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\channels.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\cmac.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_align.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_asm.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_cpu.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_cxx.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_dll.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_int.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_misc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_ns.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_os.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\config_ver.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\cpu.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\crc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\cryptlib.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\darn.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\default.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\des.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\dh.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\dh2.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\dll.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\dmac.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\donna.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\donna_32.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\donna_64.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\donna_sse.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\drbg.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\dsa.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\eax.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ec2n.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\eccrypto.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ecp.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ecpoint.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\elgamal.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\emsa2.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\eprecomp.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\esign.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\factory.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\fhmqv.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\files.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\filters.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\fips140.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\fltrimpl.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gcm.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gf2_32.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gf2n.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gf256.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gfpcrypt.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gost.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\gzip.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hashfwd.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hc128.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hc256.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hex.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hight.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hkdf.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hmac.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hmqv.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\hrtimer.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ida.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\idea.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\integer.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\iterhash.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\kalyna.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\keccak.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\lea.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\lubyrack.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\luc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\mars.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\md2.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\md4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\md5.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\mdc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\mersenne.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\misc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\modarith.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\modes.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\modexppc.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\mqueue.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\mqv.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\naclite.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\nbtheory.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\nr.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\oaep.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\oids.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\osrng.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ossig.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\padlkrng.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\panama.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\pch.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\pkcspad.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\poly1305.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\polynomi.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ppc_simd.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\pssr.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\pubkey.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\pwdbased.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\queue.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rabbit.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rabin.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\randpool.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rc2.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rc5.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rc6.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rdrand.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\resource.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rijndael.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ripemd.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rng.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rsa.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\rw.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\safer.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\salsa.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\scrypt.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\seal.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\secblock.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\secblockfwd.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\seckey.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\seed.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\serpent.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\serpentp.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sha.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sha1_armv4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sha3.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sha256_armv4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sha512_armv4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\shacal2.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\shake.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\shark.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\simeck.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\simon.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\simple.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\siphash.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\skipjack.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sm3.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sm4.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\smartptr.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\sosemanuk.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\speck.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\square.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\stdcpp.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\strciphr.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\tea.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\threefish.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\tiger.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\trap.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\trunhash.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\ttmac.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\tweetnacl.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\twofish.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\vmac.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\wake.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\whrlpool.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\words.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\xed25519.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\xtr.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\maple-loader\Maple Loader\Crypto\xtrcrypt.h">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Requests\HandshakeRequest.h">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Requests\LoginRequest.h">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Requests\Request.h">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Requests\RequestType.h">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Requests\DllStreamRequest.h">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Responses\DllStreamResponse.h">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Responses\FatalErrorResponse.h">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Responses\HandshakeResponse.h">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Responses\LoginResponse.h">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Responses\Response.h">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Responses\ResponseType.h">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\TCP\TCP_Client.h">
+      <Filter>Communication\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\TCP\Client.h">
+      <Filter>Communication\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\TCP\Client_Observer.h">
+      <Filter>Communication\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\TCP\Pipe_Ret_T.h">
+      <Filter>Communication\TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Cheat.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Communication.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Game.h">
+      <Filter>Communication</Filter>
     </ClInclude>
     <ClInclude Include="Communication\MatchedClient.h">
       <Filter>Communication</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\StringUtilities.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="Communication\User.h">
+      <Filter>Communication</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Responses\Response.h">
-      <Filter>Packets\Responses</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Responses\ResponseType.h">
-      <Filter>Packets\Responses</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs_BorlandC_inline.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Responses\FatalErrorResponse.h">
-      <Filter>Packets\Responses</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs_GNU_inline.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="Packets\Responses\HandshakeResponse.h">
-      <Filter>Packets\Responses</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs_ICL_inline.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Responses\LoginResponse.h">
-      <Filter>Packets\Responses</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs_LCC_inline.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Requests\HandshakeRequest.h">
-      <Filter>Packets\Requests</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs_VC_inline.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Requests\LoginRequest.h">
-      <Filter>Packets\Requests</Filter>
+    <ClInclude Include="Dependencies\ThemidaSDK\ThemidaSDK.h">
+      <Filter>Dependencies\ThemidaSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Requests\Request.h">
-      <Filter>Packets\Requests</Filter>
+    <ClInclude Include="Utilities\Security\xorstr.hpp">
+      <Filter>Utilities\Security</Filter>
     </ClInclude>
-    <ClInclude Include="Packets\Requests\RequestType.h">
-      <Filter>Packets\Requests</Filter>
+    <ClInclude Include="Utilities\GeneralHelper.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Textures.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="Communication\States.h">
+      <Filter>Communication</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9core.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Utilities\Hardware\HardwareHelper.h">
+      <Filter>Utilities\Hardware</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9effect.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Utilities\Hardware\smbios.h">
+      <Filter>Utilities\Hardware</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9math.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Utilities\Crypto\CryptoHelper.h">
+      <Filter>Utilities\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9mesh.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Injection\Data.h">
+      <Filter>Injection</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9shader.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Injection\MemoryUtils.h">
+      <Filter>Injection</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9shape.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Injection\ProcessHollowing.h">
+      <Filter>Injection</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9tex.h">
-      <Filter>UI\DirectX</Filter>
+    <ClInclude Include="Injection\DataWriter.h">
+      <Filter>Injection</Filter>
     </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9xof.h">
-      <Filter>UI\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9.h">
-      <Filter>UI\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\DirectX\d3dx9anim.h">
-      <Filter>UI\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Widgets.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="User.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Cheat.h" />
-    <ClInclude Include="Utils\TextureUtils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Packets\Requests\DllStreamRequest.h">
-      <Filter>Packets\Requests</Filter>
-    </ClInclude>
-    <ClInclude Include="Packets\Responses\DllStreamResponse.h">
-      <Filter>Packets\Responses</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\AnimatedTexture.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\AnimationHandler.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\AnimatedLogin.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessHollowing\ProcessHollowing.h">
-      <Filter>ProcessHollowing</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessHollowing\Write.h">
-      <Filter>ProcessHollowing</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessHollowing\MemoryUtils.h">
-      <Filter>ProcessHollowing</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessHollowing\Data.h">
-      <Filter>ProcessHollowing</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\smbios.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\RegistryUtils.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="Utilities\Autofill\AutofillHelper.h">
+      <Filter>Utilities\Autofill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Maple Loader.rc" />
+    <ClCompile Include="Maple Loader.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx9.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_win32.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\StyleProvider.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Textures\TextureHelper.cpp">
+      <Filter>Utilities\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Strings\StringUtilities.cpp">
+      <Filter>Utilities\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Widgets.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\Wrapper\AES.cpp">
+      <Filter>Dependencies\Crypto\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\Wrapper\RSADecrypt.cpp">
+      <Filter>Dependencies\Crypto\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\xts.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\zdeflate.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\zinflate.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\zlib.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\3way.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\adler32.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\algebra.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\algparam.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\allocate.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\arc4.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\aria.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\aria_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ariatab.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\asn.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\authenc.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\base32.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\base64.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\basecode.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\bfinit.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\blake2.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\blake2b_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\blake2s_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\blowfish.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\blumshub.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\camellia.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cast.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\casts.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cbcmac.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ccm.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\chacha.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\chacha_avx.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\chacha_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\chachapoly.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cham.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cham_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\channels.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cmac.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cpu.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\crc.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\crc_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\cryptlib.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\darn.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\default.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\des.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\dessp.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\dh.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\dh2.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\dll.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\donna_32.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\donna_64.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\donna_sse.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\dsa.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\eax.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ec2n.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\eccrypto.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ecp.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\elgamal.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\emsa2.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\eprecomp.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\esign.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\files.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\filters.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\fips140.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\fipsalgt.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\fipstest.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gcm.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gcm_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gf2_32.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gf2n.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gf2n_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gf256.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gfpcrypt.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gost.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\gzip.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\hc128.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\hc256.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\hex.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\hight.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\hmac.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\hrtimer.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ida.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\idea.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\integer.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\iterhash.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\kalyna.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\kalynatab.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\keccak.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\keccak_core.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\keccak_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\lea.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\lea_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\luc.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\mars.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\marss.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\md2.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\md4.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\md5.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\misc.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\modes.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\mqueue.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\mqv.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\nbtheory.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\neon_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\oaep.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\osrng.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\padlkrng.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\panama.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\pch.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\pkcspad.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\poly1305.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\polynomi.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ppc_power7.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ppc_power8.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ppc_power9.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ppc_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\pssr.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\pubkey.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\queue.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rabbit.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rabin.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\randpool.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rc2.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rc5.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rc6.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rdrand.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rdtables.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rijndael.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rijndael_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ripemd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rng.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rsa.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\rw.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\safer.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\salsa.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\scrypt.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\seal.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\seed.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\serpent.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sha.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sha_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sha3.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\shacal2.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\shacal2_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\shake.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\shark.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sharkbox.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\simeck.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\simon.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\simon128_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\simple.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\skipjack.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sm3.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sm4.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sm4_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sosemanuk.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\speck.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\speck128_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\square.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\squaretb.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\sse_simd.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\strciphr.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\tea.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\tftables.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\threefish.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\tiger.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\tigertab.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\ttmac.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\tweetnacl.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\twofish.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\vmac.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\wake.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\whrlpool.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\xed25519.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\xtr.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\maple-loader\Maple Loader\Crypto\xtrcrypt.cpp">
+      <Filter>Dependencies\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Requests\LoginRequest.cpp">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Requests\Request.cpp">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Requests\DllStreamRequest.cpp">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Requests\HandshakeRequest.cpp">
+      <Filter>Communication\Packets\Requests</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Responses\DllStreamResponse.cpp">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Responses\FatalErrorResponse.cpp">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Responses\HandshakeResponse.cpp">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Responses\LoginResponse.cpp">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Responses\Response.cpp">
+      <Filter>Communication\Packets\Responses</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\TCP\TCP_Client.cpp">
+      <Filter>Communication\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\TCP\Client.cpp">
+      <Filter>Communication\TCP</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Communication.cpp">
+      <Filter>Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\GeneralHelper.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Hardware\HardwareHelper.cpp">
+      <Filter>Utilities\Hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Crypto\CryptoHelper.cpp">
+      <Filter>Utilities\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Autofill\AutofillHelper.cpp">
+      <Filter>Utilities\Autofill</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="loaderIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Crypto\aes_armv4.S">
-      <Filter>Crypto</Filter>
+    <None Include="Dependencies\DirectX\d3dx9math.inl">
+      <Filter>Dependencies\DirectX</Filter>
     </None>
-    <None Include="Crypto\bds10.zip">
-      <Filter>Crypto</Filter>
+    <None Include="..\..\maple-loader\Maple Loader\Crypto\vs2005.zip">
+      <Filter>Dependencies\Crypto</Filter>
     </None>
-    <None Include="Crypto\Doxyfile">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\GNUmakefile">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\GNUmakefile-cross">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\rdrand.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\rdseed.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\sha1_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\sha256_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\sha512_armv4.S">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\vs2005.zip">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\x64dll.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\x64masm.asm">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="Crypto\adhoc.cpp.proto">
-      <Filter>Crypto</Filter>
-    </None>
-    <None Include="UI\DirectX\d3dx9math.inl">
-      <Filter>UI\DirectX</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Crypto\Filelist.txt">
-      <Filter>Crypto</Filter>
-    </Text>
-    <Text Include="Crypto\History.txt">
-      <Filter>Crypto</Filter>
-    </Text>
-    <Text Include="Crypto\Install.txt">
-      <Filter>Crypto</Filter>
-    </Text>
-    <Text Include="Crypto\License.txt">
-      <Filter>Crypto</Filter>
-    </Text>
-    <Text Include="Crypto\Readme.txt">
-      <Filter>Crypto</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="UI\DirectX\d3dx9.lib">
-      <Filter>UI\DirectX</Filter>
-    </Library>
   </ItemGroup>
 </Project>

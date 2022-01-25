@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.35
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maple Loader", "Maple Loader\Maple Loader.vcxproj", "{E152963C-F233-493C-9B06-B803878B2792}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maple Loader", "Maple Loader\Maple Loader.vcxproj", "{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injector", "Injector\Injector.vcxproj", "{F174BB9A-98A9-4E79-9802-7973A2E484D7}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectorTester", "InjectorTester\InjectorTester.vcxproj", "{893192A8-364C-48F1-B868-6345D5511A8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,14 +15,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E152963C-F233-493C-9B06-B803878B2792}.Debug|x64.ActiveCfg = Debug|x64
-		{E152963C-F233-493C-9B06-B803878B2792}.Debug|x64.Build.0 = Debug|x64
-		{E152963C-F233-493C-9B06-B803878B2792}.Debug|x86.ActiveCfg = Debug|Win32
-		{E152963C-F233-493C-9B06-B803878B2792}.Debug|x86.Build.0 = Debug|Win32
-		{E152963C-F233-493C-9B06-B803878B2792}.Release|x64.ActiveCfg = Release|x64
-		{E152963C-F233-493C-9B06-B803878B2792}.Release|x64.Build.0 = Release|x64
-		{E152963C-F233-493C-9B06-B803878B2792}.Release|x86.ActiveCfg = Release|Win32
-		{E152963C-F233-493C-9B06-B803878B2792}.Release|x86.Build.0 = Release|Win32
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Debug|x64.ActiveCfg = Debug|x64
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Debug|x64.Build.0 = Debug|x64
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Debug|x86.ActiveCfg = Debug|Win32
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Debug|x86.Build.0 = Debug|Win32
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Release|x64.ActiveCfg = Release|x64
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Release|x64.Build.0 = Release|x64
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Release|x86.ActiveCfg = Release|Win32
+		{23BCFA0F-92E4-4ADA-82A6-9E3F57B0502D}.Release|x86.Build.0 = Release|Win32
 		{F174BB9A-98A9-4E79-9802-7973A2E484D7}.Debug|x64.ActiveCfg = Debug|x64
 		{F174BB9A-98A9-4E79-9802-7973A2E484D7}.Debug|x64.Build.0 = Debug|x64
 		{F174BB9A-98A9-4E79-9802-7973A2E484D7}.Debug|x86.ActiveCfg = Debug|Win32
@@ -33,19 +31,11 @@ Global
 		{F174BB9A-98A9-4E79-9802-7973A2E484D7}.Release|x64.Build.0 = Release|x64
 		{F174BB9A-98A9-4E79-9802-7973A2E484D7}.Release|x86.ActiveCfg = Release|Win32
 		{F174BB9A-98A9-4E79-9802-7973A2E484D7}.Release|x86.Build.0 = Release|Win32
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Debug|x64.ActiveCfg = Debug|x64
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Debug|x64.Build.0 = Debug|x64
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Debug|x86.ActiveCfg = Debug|Win32
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Debug|x86.Build.0 = Debug|Win32
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Release|x64.ActiveCfg = Release|x64
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Release|x64.Build.0 = Release|x64
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Release|x86.ActiveCfg = Release|Win32
-		{893192A8-364C-48F1-B868-6345D5511A8F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E7372662-B2A6-4867-BC89-2240093F9020}
+		SolutionGuid = {53B7EAE1-AC4D-4B9D-AF03-A302D9637E46}
 	EndGlobalSection
 EndGlobal

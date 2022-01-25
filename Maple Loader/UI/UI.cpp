@@ -1,555 +1,608 @@
 #include "UI.h"
 
-#include "../Globals.h"
+#include <tchar.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui_internal.h>
+#include <imgui.h>
+#include <imgui_impl_dx9.h>
+#include <imgui_impl_win32.h>
+
 #include "../resource.h"
-
-#include "ImGui/imgui_impl_dx9.h"
-#include "ImGui/imgui_impl_win32.h"
-
 #include "StyleProvider.h"
 #include "Widgets.h"
-#include "AnimationHandler.h"
+#include "../Utilities/Textures/TextureHelper.h"
+#include "../Communication/Communication.h"
+#include "../Utilities/GeneralHelper.h"
+#include "../Communication/Packets/Requests/LoginRequest.h"
+#include "../Communication/Packets/Requests/DllStreamRequest.h"
+#include "../Utilities/Hardware/HardwareHelper.h"
+#include "../Utilities/Crypto/CryptoHelper.h"
 
-#include "../AntiDebug/xorstr.hpp"
-#include "../Packets/Requests/DllStreamRequest.h"
-#include "../Packets/Requests/LoginRequest.h"
-#include "../Utils/HWID.h"
+bool UI::createD3DDevice(HWND hWnd)
+{
+    if ((D3D = Direct3DCreate9(D3D_SDK_VERSION)) == NULL)
+        return false;
+
+    ZeroMemory(&D3DPresentParameters, sizeof(D3DPresentParameters));
+    D3DPresentParameters.Windowed = TRUE;
+    D3DPresentParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    D3DPresentParameters.BackBufferFormat = D3DFMT_UNKNOWN;
+    D3DPresentParameters.EnableAutoDepthStencil = TRUE;
+    D3DPresentParameters.AutoDepthStencilFormat = D3DFMT_D16;
+    D3DPresentParameters.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+
+    if (D3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &D3DPresentParameters, &D3DDevice) < 0)
+        return false;
+
+    return true;
+}
+
+void UI::cleanupD3DDevice()
+{
+    if (D3DDevice)
+    {
+        D3DDevice->Release();
+        D3DDevice = NULL;
+    }
+
+    if (D3D)
+    {
+        D3D->Release();
+        D3D = NULL;
+    }
+}
+
+void UI::resetDevice()
+{
+    ImGui_ImplDX9_InvalidateDeviceObjects();
+    HRESULT hr = D3DDevice->Reset(&D3DPresentParameters);
+    if (hr == D3DERR_INVALIDCALL)
+        IM_ASSERT(0);
+    ImGui_ImplDX9_CreateDeviceObjects();
+}
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-LRESULT UI::wndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+LRESULT WINAPI UI::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wparam, lparam))
-		return true;
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;
 
-	if (message == WM_DESTROY)
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
+    switch (msg)
+    {
+        case WM_SIZE:
+            if (D3DDevice != NULL && wParam != SIZE_MINIMIZED)
+            {
+                D3DPresentParameters.BackBufferWidth = LOWORD(lParam);
+                D3DPresentParameters.BackBufferHeight = HIWORD(lParam);
 
-	return DefWindowProc(hwnd, message, wparam, lparam);
-}
+                resetDevice();
+            }
+            return 0;
+        case WM_SYSCOMMAND:
+            if ((wParam & 0xfff0) == SC_KEYMENU)
+                return 0;
+            break;
+        case WM_DESTROY:
+            ::PostQuitMessage(0);
+            return 0;
+    }
 
-HWND UI::createWindow(HINSTANCE instance)
-{
-	WNDCLASSEX wc;
-	memset(&wc, 0, sizeof(wc));
-
-	HICON hIcon = static_cast<HICON>(::LoadImage(instance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR));
-	
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = CS_CLASSDC;
-	wc.lpfnWndProc = wndProc;
-	wc.hInstance = instance;
-	wc.hIcon = hIcon;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = 0;
-	wc.lpszClassName = L"DiscordClass";
-
-	RECT pos;
-	GetClientRect(GetDesktopWindow(), &pos);
-	pos.left = (pos.right / 2) - (StyleProvider::WindowSize.x / 2);
-	pos.top = (pos.bottom / 2) - (StyleProvider::WindowSize.y / 2);
-
-	RegisterClassEx(&wc);
-
-	return CreateWindowEx(0, wc.lpszClassName, L"Discord", WS_POPUP, pos.left, pos.top, StyleProvider::WindowSize.x, StyleProvider::WindowSize.y, 0, 0, wc.hInstance, 0);
-}
-
-bool UI::createDevice(HWND hwnd)
-{
-	D3D = Direct3DCreate9(D3D_SDK_VERSION);
-	if (!D3D)
-		return false;
-
-	memset(&D3DPresentParams, 0, sizeof(D3DPresentParams));
-
-	D3DPresentParams.Windowed = TRUE;
-	D3DPresentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	D3DPresentParams.BackBufferFormat = D3DFMT_UNKNOWN;
-	D3DPresentParams.EnableAutoDepthStencil = TRUE;
-	D3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
-	D3DPresentParams.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-
-	auto res = D3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &D3DPresentParams, &D3DDevice);
-	if (res != D3D_OK)
-		return false;
-
-	return true;
+    return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 void UI::handleWindowDrag()
 {
-	if (ImGui::IsMouseClicked(0))
-	{
-		POINT point;
-		RECT rect;
+    if (ImGui::IsMouseClicked(0))
+    {
+        POINT point;
+        RECT rect;
 
-		GetCursorPos(&point);
-		GetWindowRect(Window, &rect);
+        GetCursorPos(&point);
+        GetWindowRect(Window, &rect);
 
-		dragOffsetX = point.x - rect.left;
-		dragOffsetY = point.y - rect.top;
-	}
+        dragOffsetX = point.x - rect.left;
+        dragOffsetY = point.y - rect.top;
 
-	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && !ImGui::GetIO().WantTextInput)
-	{
-		POINT point;
-		GetCursorPos(&point);
+        canDrag = !ImGui::IsAnyItemHovered();
+    }
 
-		SetWindowPos(Window, nullptr, point.x - dragOffsetX, point.y - dragOffsetY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-	}
+    if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && canDrag)
+    {
+        POINT point;
+        GetCursorPos(&point);
+
+        SetWindowPos(Window, nullptr, point.x - dragOffsetX, point.y - dragOffsetY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    }
 }
 
-bool UI::Initialize(HINSTANCE instance, int showCmd)
+void UI::updateWindowSize()
 {
-	Window = createWindow(instance);
-	if (!Window)
-		return false;
+    bool loggedIn = Communication::CurrentState == States::LoggedIn || Communication::CurrentState == States::LoadingDLL;
 
-	if (!createDevice(Window))
-		return false;
+    int width = loggedIn ? StyleProvider::MainWindowSize.x : StyleProvider::LoginWindowSize.x;
+    int height = loggedIn ? StyleProvider::MainWindowSize.y : StyleProvider::LoginWindowSize.y;
 
-	ShowWindow(Window, showCmd);
+    RECT pos;
+    GetClientRect(GetDesktopWindow(), &pos);
+    pos.left = (pos.right / 2) - (width / 2);
+    pos.top = (pos.bottom / 2) - (height / 2);
 
-	SetWindowRgn(Window, CreateRoundRectRgn(0, 0, 600, 400, 20, 20), true); //rounded corners uwu
+    SetWindowRgn(Window, CreateRoundRectRgn(0, 0, width, height, 50, 50), true);
 
-	ImGui::CreateContext();
-
-	ImGui::StyleColorsDark();
-
-	StyleProvider::LoadFonts();
-	StyleProvider::LoadColours();
-	StyleProvider::LoadTextures();
-	
-	ImGuiIO& io = ImGui::GetIO();
-	io.IniFilename = nullptr;
-
-	ImGuiStyle& style = ImGui::GetStyle();
-	style.WindowPadding = ImVec2(0, 0);
-	style.WindowBorderSize = 0;
-	style.ItemSpacing = ImVec2(5, 10);
-	style.FrameRounding = 5;
-	style.FramePadding = ImVec2(5, 5);
-	style.ChildRounding = 20;
-
-	ImGui_ImplWin32_Init(Window);
-	ImGui_ImplDX9_Init(D3DDevice);
-
-	return true;
+    ::SetWindowPos(Window, 0, pos.left, pos.top, width, height, SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
-bool UI::Render()
+bool UI::Initialize(HINSTANCE hInst)
 {
-	ImGui_ImplDX9_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
+    ImGui_ImplWin32_EnableDpiAwareness();
 
-	handleWindowDrag();
+    HICON hIcon = static_cast<HICON>(::LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR));
 
-	ImGui::SetNextWindowSize(StyleProvider::WindowSize, ImGuiCond_Always);
-	ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiCond_Always);
+    windowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, wndProc, 0L, 0L, GetModuleHandle(NULL), hIcon, NULL, NULL, NULL, _T("Discord"), NULL };
+    ::RegisterClassEx(&windowClass);
 
-	ImGui::Begin(xor ("MainWindow"), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar);
-	{
-		ImGui::PushFont(StyleProvider::FontDefault);
+    Window = ::CreateWindow(windowClass.lpszClassName, _T("Discord"), WS_POPUP, 0, 0, 0, 0, NULL, NULL, windowClass.hInstance, NULL);
 
-		if (Globals::LoaderState < LoaderStates::LoggedIn)
-			AnimationHandler::DoAnimation(&StyleProvider::LoginBackgroundTextureAnimated, ImVec2(0, 0), StyleProvider::WindowSize);
-			//ImGui::GetWindowDrawList()->AddImage(StyleProvider::LoginBackgroundTexture, ImVec2(0, 0), StyleProvider::WindowSize);
+    updateWindowSize();
 
-		if (Globals::LoaderState < LoaderStates::LoggedIn)
-		{
-			ImGui::SetCursorPos(ImVec2(StyleProvider::LoginBackgroundWavesWidth + StyleProvider::LoginPadding.x, StyleProvider::LoginPadding.y));
-			ImGui::BeginChild(xor ("Login"), ImVec2(StyleProvider::WindowSize.x - StyleProvider::LoginBackgroundWavesWidth - StyleProvider::LoginPadding.x * 2, StyleProvider::WindowSize.y - StyleProvider::LoginPadding.y * 2));
-			{
-				ImGui::SetCursorPos(ImGui::GetCursorPos() + StyleProvider::LoginPanelPadding);
-				ImGui::BeginChild(xor ("Login##001"), ImGui::GetWindowSize() - StyleProvider::LoginPanelPadding * 2);
-				{
-					ImGui::PushFont(StyleProvider::FontHugeBold);
-					ImVec2 welcomeSize = ImGui::CalcTextSize(xor ("Welcome to Maple!"));
-					ImGui::SetCursorPosX(ImGui::GetWindowSize().x / 2 - welcomeSize.x / 2);
-					ImGui::Text(xor ("Welcome to Maple!"));
-					ImGui::PopFont();
+    if (!createD3DDevice(Window))
+    {
+        cleanupD3DDevice();
+        ::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
 
-					ImGui::PushFont(StyleProvider::FontSmallSemiBold);
-					ImVec2 mottoSize = ImGui::CalcTextSize(xor ("the quickest way to the top"));
-					ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x / 2 - mottoSize.x / 2, welcomeSize.y));
-					ImGui::TextColored(StyleProvider::MottoColour, xor ("the quickest way to the top"));
-					ImGui::PopFont();
+        return false;
+    }
 
-					ImGui::Spacing();
+    ::ShowWindow(Window, SW_SHOWDEFAULT);
+    ::UpdateWindow(Window);
 
-					bool loggingIn = Globals::LoaderState == LoaderStates::LoggingIn;
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
 
-					ImGui::Text(xor ("Username"));
-					ImGui::PushItemWidth(ImGui::GetWindowSize().x);
-					if (loggingIn)
-					{
-						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-					}
-					Widgets::TextBox(xor ("##username"), Globals::CurrentUser.Username, 24);
-					if (loggingIn)
-					{
-						ImGui::PopStyleVar();
-						ImGui::PopItemFlag();
-					}
-					ImGui::Spacing();
+    ImGui_ImplWin32_Init(Window);
+    ImGui_ImplDX9_Init(D3DDevice);
 
-					ImGui::Text(xor ("Password"));
-					ImGui::PushItemWidth(ImGui::GetWindowSize().x);
-					if (loggingIn)
-					{
-						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-					}
-					Widgets::TextBox(xor ("##password"), Globals::CurrentUser.Password, 256, ImGuiInputTextFlags_Password);
-					if (loggingIn)
-					{
-						ImGui::PopStyleVar();
-						ImGui::PopItemFlag();
-					}
-					Widgets::Link(xor ("Forgot your password?"), xor ("https://maple.software/auth/forgotPassword"));
+    StyleProvider::Initialize();
 
-					if (loggingIn)
-					{
-						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-					}
-					if (ImGui::Button(xor(Globals::LoaderState == LoaderStates::LoggingIn ? "Logging in..." : "Log in"), ImVec2(ImGui::GetWindowSize().x, ImGui::GetFrameHeight())))
-					{
-						std::string hwid = HWID::GetHWID();
-						if (hwid.empty())
-						{
-							MessageBoxA(Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
+    return true;
+}
 
-							Globals::ShutdownAndExit();
-						}
+void UI::Render()
+{
+    ImGui_ImplDX9_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
 
-						std::string hash;
-						CryptoPP::SHA256 algo;
-						char szModule[MAX_PATH];
-						GetModuleFileNameA(NULL, szModule, MAX_PATH);
-						CryptoPP::FileSource fs(szModule, true, new CryptoPP::HashFilter(algo, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
-						
-						LoginRequest loginPacket = LoginRequest(hwid, hash, Globals::CurrentUser.Username, Globals::CurrentUser.Password, Globals::MatchedClient);
+    bool loggedIn = Communication::CurrentState == States::LoggedIn || Communication::CurrentState == States::LoadingDLL;
+    bool wasLoggedIn = previousState == States::LoggedIn || previousState == States::LoadingDLL;
 
-						pipe_ret_t sendRet = Globals::TCPClient.sendBytes(loginPacket.Data);
-						if (!sendRet.success)
-						{
-							MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
+    previousState = Communication::CurrentState;
 
-							Globals::ShutdownAndExit();
-						}
+    handleWindowDrag();
 
-						Globals::LoaderState = LoaderStates::LoggingIn;
-					}
-					if (loggingIn)
-					{
-						ImGui::PopStyleVar();
-						ImGui::PopItemFlag();
-					}
-					
-					Widgets::LinkWithText(xor ("Sign up"), xor ("https://maple.software/auth/signup"), xor ("Need an account?"), StyleProvider::MottoColour);
-				}
-				ImGui::EndChild();
-			}
-			ImGui::EndChild();
-		}
-		else
-		{
-			bool loadingDll = Globals::LoaderState == LoaderStates::LoadingDLL;
-			
-			ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(-20, -20), StyleProvider::LoaderSideBarSize, ImColor(ImGui::GetStyle().Colors[ImGuiCol_ChildBg]), 20);
-			ImGui::SetCursorPos(StyleProvider::LoaderPadding);
-			ImGui::BeginChild(xor ("LoaderSideBar"), StyleProvider::LoaderSideBarSize - StyleProvider::LoaderPadding * 2);
-			{
-				ImGui::PushFont(StyleProvider::FontHugeBold);
-				ImVec2 titleSize = ImGui::CalcTextSize(xor ("Maple"));
-				ImGui::SetCursorPosX(ImGui::GetWindowSize().x / 2 - titleSize.x / 2 - ImGui::GetStyle().ItemSpacing.x - (StyleProvider::MapleLogoSize.x / 2));
-				ImGui::Image(StyleProvider::MapleLogoTexture, StyleProvider::MapleLogoSize);
-				ImGui::SameLine();
-				ImGui::TextColored(StyleProvider::LinkColour, xor ("Maple"));
-				ImGui::PopFont();
+    ImGuiStyle& style = ImGui::GetStyle();
 
-				ImGui::PushFont(StyleProvider::FontSmallSemiBold);
-				ImVec2 mottoSize = ImGui::CalcTextSize(xor ("the quickest way to the top"));
-				ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x / 2 - mottoSize.x / 2, titleSize.y));
-				ImGui::TextColored(StyleProvider::MottoColour, xor ("the quickest way to the top"));
-				ImGui::PopFont();
+    ImGui::SetNextWindowSize(loggedIn ? StyleProvider::MainWindowSize : StyleProvider::LoginWindowSize);
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::Begin(xor ("Main Window"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+    {
+        ImGui::PushFont(StyleProvider::FontDefault);
 
-				ImGui::Spacing();
+        const ImVec2 mainWindowSize = ImGui::GetCurrentWindow()->Size;
 
-				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(ImColor(38, 38, 38, 255)));
-				ImGui::BeginChild(xor ("LoaderSideBar#001"), ImVec2(ImGui::GetWindowSize().x, 50));
-				{
-					ImGui::PopStyleColor();
+        //window bg
+        ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(0, 0), mainWindowSize, ImColor(loggedIn ? StyleProvider::MenuColour : StyleProvider::MenuColourDark));
 
-					ImVec2 loggedInAsSize = ImGui::CalcTextSize(xor ("logged in as"));
-					ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x / 2 - loggedInAsSize.x / 2, ImGui::GetWindowSize().y / 2 - loggedInAsSize.y - 2));
-					ImGui::Text(xor ("logged in as"));
+        if (!loggedIn)
+        {
+            //render logo
+            ImGui::PushFont(StyleProvider::FontHugeBold);
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(5, 10));
+            ImGui::SetCursorPos(ImVec2(mainWindowSize.x / 2 - ImGui::CalcTextSize(xor ("Maple")).x / 2 - ImGui::GetFontSize() / 2, StyleProvider::WindowControlSize.y));
+            ImGui::Image(StyleProvider::MapleLogoTexture, ImVec2(ImGui::GetFontSize(), ImGui::GetFontSize()));
+            ImGui::SameLine();
+            ImGui::TextColored(StyleProvider::AccentColour, xor ("Maple"));
+            ImGui::PopStyleVar();
+            ImGui::PopFont();
+            ImGui::PushFont(StyleProvider::FontSmall);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - style.ItemSpacing.y);
+            ImGui::SetCursorPosX(mainWindowSize.x / 2 - ImGui::CalcTextSize(xor ("the quickest way to the top")).x / 2);
+            ImGui::TextColored(StyleProvider::MottoColour, xor ("the quickest way to the top"));
+            ImGui::PopFont();
 
-					ImVec2 usernameSize = ImGui::CalcTextSize(Globals::CurrentUser.Username);
-					ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x / 2 - usernameSize.x / 2, ImGui::GetWindowSize().y / 2 + 2));
-					Widgets::Link(Globals::CurrentUser.Username, xor ("https://maple.software/dashboard"), false);
-				}
-				ImGui::EndChild();
+            ImGui::Spacing();
 
-				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(ImColor(38, 38, 38, 255)));
-				ImGui::BeginChild(xor ("LoaderSideBar#002"), ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y - ImGui::GetCursorPosY()));
-				{
-					ImGui::SetCursorPos(ImVec2(StyleProvider::LoaderPadding));
-					ImGui::BeginChild(xor ("LoaderSideBar##003"), ImGui::GetWindowSize() - StyleProvider::LoaderPadding * 2);
-					ImGui::PopStyleColor();
-					if (shouldSelectFirstGame)
-					{
-						shouldSelectFirstGame = false;
-						ImGui::SetNextTreeNodeOpen(true);
-					}
-					for (int i = 0; i < Globals::Games.size(); i++)
-					{
-						if (loadingDll)
-						{
-							ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-							ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-						}
-						bool nodeOpen = Widgets::TreeNode(Globals::Games[i]->Name.c_str(), Globals::Games[i]->Icon);
-						if (loadingDll)
-						{
-							ImGui::PopStyleVar();
-							ImGui::PopItemFlag();
-						}
-						if (nodeOpen)
-						{
-							for (int j = 0; j < Globals::Cheats.size(); j++)
-							{
-								if (Globals::Cheats[j]->GameID != Globals::Games[i]->ID)
-									continue;
+            ImGui::SetCursorPosX(StyleProvider::LoginWindowPadding.x);
+            ImGui::BeginChild(xor ("Login Child Window"), mainWindowSize - ImVec2(StyleProvider::LoginWindowPadding.x * 2, ImGui::GetCursorPosY() + StyleProvider::LoginWindowPadding.y), false, ImGuiWindowFlags_NoBackground);
+            {
+                const ImVec2 loginChildWindowSize = ImGui::GetCurrentWindow()->Size;
+                const ImVec2 loginChildWindowPos = ImGui::GetCurrentWindow()->Pos;
 
-								if (loadingDll)
-								{
-									ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-									ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-								}
-								bool selected = ImGui::Selectable(Globals::Cheats[j]->Name.c_str(), Globals::CurrentCheat->ID == Globals::Cheats[j]->ID, 0, ImVec2(ImGui::GetWindowSize().x - ImGui::GetCursorPosX() - ceil(ImGui::GetStyle().FramePadding.x / 2.0f), ImGui::GetFont()->FontSize));
-								if (loadingDll)
-								{
-									ImGui::PopStyleVar();
-									ImGui::PopItemFlag();
-								}
-								if (selected)
-								{
-									Globals::CurrentCheat = Globals::Cheats[j];
+                ImGui::GetCurrentWindow()->DrawList->AddRectFilled(loginChildWindowPos, loginChildWindowPos + loginChildWindowSize, ImColor(StyleProvider::MenuColourVeryDark), style.ChildRounding);
 
-									for (Game* game : Globals::Games)
-										if (game->ID == Globals::CurrentCheat->GameID)
-											Globals::CurrentGame = game;
-								}
-							}
+                ImGui::SetCursorPos(StyleProvider::LoginWindowInnerPadding);
+                ImGui::BeginChild(xor ("Login Child Window Content"), loginChildWindowSize - StyleProvider::LoginWindowInnerPadding * 2, false, ImGuiWindowFlags_NoBackground);
+                {
+                    const ImVec2 loginChildWindowContentSize = ImGui::GetCurrentWindow()->Size;
 
-							ImGui::TreePop();
-						}
-					}
-					ImGui::EndChild();
-				}
-				ImGui::EndChild();
-			}
-			ImGui::EndChild();
+                    bool loggingIn = Communication::CurrentState == States::LoggingIn;
 
-			ImGui::SetCursorPos(ImVec2(StyleProvider::LoaderSideBarSize.x, 0));
-			ImGui::BeginChild(xor ("CheatBanner"), StyleProvider::CheatBannerSize, false, ImGuiWindowFlags_NoBackground);
-			{
-				ImGui::GetWindowDrawList()->AddImage(Globals::CurrentGame->Banner, ImVec2(StyleProvider::LoaderSideBarSize.x, 0), ImVec2(StyleProvider::LoaderSideBarSize.x, 0) + ImGui::GetWindowSize());
-				Widgets::Gradient(ImVec2(StyleProvider::LoaderSideBarSize.x, ImGui::GetWindowSize().y), ImVec2(StyleProvider::LoaderSideBarSize.x + ImGui::GetWindowSize().x, 0), StyleProvider::BannerGradientStartColour, StyleProvider::BannerGradientEndColour);
+                    if (loggingIn)
+                        ImGui::BeginDisabled();
 
-				ImGui::SetCursorPos(StyleProvider::LoaderPadding);
-				ImGui::BeginChild(xor ("CheatBanner##001"), ImGui::GetWindowSize() - StyleProvider::LoaderPadding * 2, false, ImGuiWindowFlags_NoBackground);
-				{
-					ImGui::PushFont(StyleProvider::FontHugeBold);
-					ImGui::Text(Globals::CurrentCheat->Name.c_str());
-					ImGui::PopFont();
+                    bool loginPressed = false;
 
-					ImGui::SetCursorPosY(ImGui::GetCursorPos().y - ImGui::GetStyle().ItemSpacing.y);
-					ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-					ImGui::Text(xor ("for %s"), Globals::CurrentGame->Name.c_str());
+                    ImGui::Text(xor ("Username"));
+                    ImGui::PushItemWidth(loginChildWindowContentSize.x);
+                    loginPressed |= ImGui::InputText(xor ("###username"), Communication::CurrentUser->Username, 24, ImGuiInputTextFlags_EnterReturnsTrue);
 
-					ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x - 100, ImGui::GetWindowSize().y - ImGui::GetFrameHeight() * 2 - ImGui::GetStyle().ItemSpacing.y));
-					ImGui::PushItemWidth(100);
-					if (loadingDll)
-					{
-						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-					}
-					Widgets::Combo("##releaseStream", &Globals::CurrentCheat->CurrentStream, Globals::CurrentCheat->ReleaseStreams);
-					if (loadingDll)
-					{
-						ImGui::PopStyleVar();
-						ImGui::PopItemFlag();
-					}
-					
-					ImVec2 buttonSize = ImVec2(100, ImGui::GetFrameHeight());
-					ImGui::SetCursorPos(ImGui::GetWindowSize() - buttonSize);
-					if (strcmp(Globals::CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
-					{
-						if (ImGui::Button(xor ("Buy now"), buttonSize))
-							ShellExecuteA(NULL, xor("open"), xor("https://maple.software/dashboard/store"), NULL, NULL, SW_SHOWNORMAL);
-					}
-					else
-					{
-						if (loadingDll)
-						{
-							ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-							ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-						}
-						bool loadClicked = ImGui::Button(xor (Globals::LoaderState == LoaderStates::LoadingDLL ? "Loading..." : "Load"), buttonSize);
-						if (loadingDll)
-						{
-							ImGui::PopStyleVar();
-							ImGui::PopItemFlag();
-						}
-						if (loadClicked)
-						{
-							DllStreamRequest dllStream = DllStreamRequest(Globals::CurrentCheat->ID, Globals::CurrentCheat->ReleaseStreams[Globals::CurrentCheat->CurrentStream], Globals::MatchedClient);
+                    ImGui::Spacing();
 
-							pipe_ret_t sendRet = Globals::TCPClient.sendBytes(dllStream.Data);
-							if (!sendRet.success)
-							{
-								MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
+                    ImGui::Text(xor ("Password"));
+                    ImGui::PushItemWidth(loginChildWindowContentSize.x);
+                    loginPressed |= ImGui::InputText(xor ("###password"), Communication::CurrentUser->Password, 256, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue);
 
-								Globals::ShutdownAndExit();
-							}
+                    if (loggingIn)
+                        ImGui::EndDisabled();
 
-							Globals::LoaderState = LoaderStates::LoadingDLL;
-						}
-					}
+                    Widgets::Link(xor ("Forgot your password?"), xor ("https://maple.software/auth/forgotpassword"));
 
-					ImVec2 priceSize = ImGui::CalcTextSize(xor ("10 euro per month"));
-					ImGui::SetCursorPosY(ImGui::GetWindowSize().y - ImGui::GetFrameHeight() / 2 - priceSize.y / 2);
-					ImGui::Text(xor ("%i euro per month"), Globals::CurrentCheat->Price);
-					ImGui::PopFont();
-				}
-				ImGui::EndChild();
-			}
-			ImGui::EndChild();
+                    ImGui::Spacing();
 
-			ImGui::SetCursorPos(ImVec2(StyleProvider::LoaderSideBarSize.x, StyleProvider::CheatBannerSize.y));
-			ImGui::BeginChild(xor ("CheatInfo"), ImVec2(StyleProvider::WindowSize.x - StyleProvider::LoaderSideBarSize.x, StyleProvider::WindowSize.y - StyleProvider::CheatBannerSize.y), false, ImGuiWindowFlags_NoBackground);
-			{
-				ImGui::SetCursorPos(StyleProvider::LoaderPadding);
-				ImGui::BeginChild("CheatInfo#001", ImGui::GetWindowSize() - StyleProvider::LoaderPadding * 2, false, ImGuiWindowFlags_NoBackground);
-				{
-					ImGui::PushFont(StyleProvider::FontBigBold);
-					ImGui::Text(xor ("Subscription expires at"));
-					ImGui::PopFont();
+                    if (loggingIn)
+                        ImGui::BeginDisabled();
 
-					ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-					ImGui::Text(Globals::CurrentCheat->ExpiresAt.c_str());
-					if (strcmp(Globals::CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
-					{
-						ImGui::SameLine();
-						Widgets::Link(xor ("subscribe now"), xor ("https://maple.software/dashboard/store"), false);
-					}
-					ImGui::PopFont();
+                    loginPressed |= Widgets::Button(xor (Communication::CurrentState == States::LoggingIn ? "Logging in..." : "Log in"), ImVec2(loginChildWindowContentSize.x, ImGui::GetFrameHeight()));
 
-					ImGui::Spacing();
+                    if (loggingIn)
+                        ImGui::EndDisabled();
 
-					ImGui::PushFont(StyleProvider::FontBigBold);
-					ImGui::Text(xor ("Status"));
-					ImGui::PopFont();
+                    if (loginPressed)
+                    {
+                        std::string hwid = HardwareHelper::GetHWID();
+                        if (hwid.empty())
+                        {
+                            MessageBoxA(Window, xor ("Failed to gather hardware information!\nPlease report this.\n\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
-					ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-					switch (Globals::CurrentCheat->Status)
-					{
-						case CheatStatus::UpToDate:
-							ImGui::TextColored(ImVec4(0, 1, 0, 1), xor ("up to date"));
-							break;
-						case CheatStatus::Outdated:
-							ImGui::TextColored(ImVec4(ImColor(255, 69, 0, 255)), xor ("outdated"));
-							break;
-						case CheatStatus::Detected:
-							ImGui::TextColored(ImVec4(1, 0, 0, 1), xor ("detected"));
-							break;
-					}
-					ImGui::PopFont();
+                            GeneralHelper::ShutdownAndExit();
+                        }
 
-					ImGui::Spacing();
+                        LoginRequest loginPacket = LoginRequest(hwid, CryptoHelper::GetSHA256HashOfCurrentFile(), Communication::CurrentUser->Username, Communication::CurrentUser->Password, Communication::MatchedClient);
 
-					ImGui::PushFont(StyleProvider::FontBigBold);
-					ImGui::Text(xor ("Features"));
-					ImGui::PopFont();
+                        pipe_ret_t sendRet = Communication::TCPClient.sendBytes(loginPacket.Data);
+                        if (!sendRet.success)
+                        {
+                            MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
-					ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-					ImGui::Text(Globals::CurrentCheat->Features.c_str());
-					Widgets::Link(xor ("Visit our website for a full list of features"), xor ("https://maple.software/"), false);
-					ImGui::PopFont();
-				}
-				ImGui::EndChild();
-			}
-			ImGui::EndChild();
-		}
+                            GeneralHelper::ShutdownAndExit();
+                        }
 
-		ImGui::SetCursorPos(ImVec2(StyleProvider::WindowSize.x - StyleProvider::WindowControlSize.x * 2, 0));
-		ImGui::BeginChild(xor("WindowControls"), ImVec2(StyleProvider::WindowControlSize.x * 2, StyleProvider::WindowControlSize.y), false, ImGuiWindowFlags_NoBackground);
-		{
-			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, StyleProvider::WindowControlTextColour);
+                        Communication::CurrentState = States::LoggingIn;
+                    }
 
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0, 0, 0, 0)));
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, StyleProvider::MinimizeButtonHoveredColour);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, StyleProvider::MinimizeButtonActiveColour);
+                    Widgets::LinkWithText(xor ("Sign up"), xor ("https://maple.software/auth/signup"), xor ("Need an account?"));
+                }
+                ImGui::EndChild();
+            }
+            ImGui::EndChild();
+        }
+        else
+        {
+            bool loadingDll = Communication::CurrentState == States::LoadingDLL;
 
-			if (ImGui::Button(xor ("_"), StyleProvider::WindowControlSize))
-				ShowWindow(Window, SW_MINIMIZE);
-			ImGui::PopStyleColor(3);
+            ImGui::BeginChild(xor ("Side Bar"), StyleProvider::MainWindowSideBarSize, false, ImGuiWindowFlags_NoBackground);
+            {
+                const ImVec2 sideBarSize = ImGui::GetCurrentWindow()->Size;
+                const ImVec2 sideBarPos = ImGui::GetCurrentWindow()->Pos;
 
-			ImGui::SameLine();
+                ImGui::GetCurrentWindow()->DrawList->AddRectFilled(sideBarPos, sideBarPos + sideBarSize, ImColor(StyleProvider::MenuColourDark), style.ChildRounding, ImDrawFlags_RoundCornersBottomRight);
 
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0, 0, 0, 0)));
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, StyleProvider::CloseButtonHoveredColour);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, StyleProvider::CloseButtonActiveColour);
-			if (ImGui::Button(xor ("x"), StyleProvider::WindowControlSize))
-				Globals::ShutdownAndExit();
+                ImGui::SetCursorPos(StyleProvider::Padding);
+                ImGui::BeginChild(xor ("Side Bar Content"), sideBarSize - StyleProvider::Padding * 2, false, ImGuiWindowFlags_NoBackground);
+                {
+                    const ImVec2 sideBarContentSize = ImGui::GetCurrentWindow()->Size;
 
-			ImGui::PopStyleVar();
-			ImGui::PopStyleColor(4);
-		}
-		ImGui::EndChild();
+                    //render logo
+                    ImGui::PushFont(StyleProvider::FontHugeBold);
+                    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(5, 10));
+                    ImGui::SetCursorPosX(sideBarContentSize.x / 2 - ImGui::CalcTextSize(xor ("Maple")).x / 2 - ImGui::GetFontSize() / 2);
+                    ImGui::Image(StyleProvider::MapleLogoTexture, ImVec2(ImGui::GetFontSize(), ImGui::GetFontSize()));
+                    ImGui::SameLine();
+                    ImGui::TextColored(StyleProvider::AccentColour, xor ("Maple"));
+                    ImGui::PopStyleVar();
+                    ImGui::PopFont();
+                    ImGui::PushFont(StyleProvider::FontSmall);
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - style.ItemSpacing.y);
+                    ImGui::SetCursorPosX(sideBarContentSize.x / 2 - ImGui::CalcTextSize(xor ("the quickest way to the top")).x / 2);
+                    ImGui::TextColored(StyleProvider::MottoColour, xor ("the quickest way to the top"));
+                    ImGui::PopFont();
 
-		ImGui::PopFont();
-	}
-	ImGui::End();
+                    ImGui::Spacing();
 
-	ImGui::EndFrame();
-	if (D3DDevice->BeginScene() == D3D_OK)
-	{
-		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-		D3DDevice->EndScene();
-	}
+                    ImGui::BeginChild(xor ("Side Bar User Info"), ImVec2(sideBarContentSize.x, 100), false, ImGuiWindowFlags_NoBackground);
+                    {
+                        const ImVec2 sideBarUserInfoSize = ImGui::GetCurrentWindow()->Size;
+                        const ImVec2 sideBarUserInfoPos = ImGui::GetCurrentWindow()->Pos;
 
-	HRESULT result = D3DDevice->Present(0, 0, 0, 0);
-	if (result == D3DERR_DEVICELOST && D3DDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
-	{
-		ImGui_ImplDX9_InvalidateDeviceObjects();
-		HRESULT hr = D3DDevice->Reset(&D3DPresentParams);
-		if (hr == D3DERR_INVALIDCALL)
-			return false;
+                        ImGui::GetCurrentWindow()->DrawList->AddRectFilled(sideBarUserInfoPos, sideBarUserInfoPos + sideBarUserInfoSize, ImColor(StyleProvider::MenuColourVeryDark), style.ChildRounding);
 
-		ImGui_ImplDX9_CreateDeviceObjects();
-	}
+                        ImGui::GetWindowDrawList()->AddImageRounded(StyleProvider::AvatarTexture, sideBarUserInfoPos + ImVec2(sideBarUserInfoSize.y / 4, sideBarUserInfoSize.y / 4), sideBarUserInfoPos + ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2, sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), style.FrameRounding);
 
-	return true;
+                        ImGui::PushFont(StyleProvider::FontDefaultBold);
+                        ImGui::SetCursorPos(ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2 + style.ItemSpacing.x, sideBarUserInfoSize.y / 2 - style.ItemSpacing.y / 4 - ImGui::CalcTextSize("Welcome back").y));
+                        ImGui::Text(xor ("Welcome back"));
+
+                        ImGui::SetCursorPos(ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2 + style.ItemSpacing.x, sideBarUserInfoSize.y / 2 + style.ItemSpacing.y / 4));
+                        Widgets::Link(Communication::CurrentUser->Username, "https://maple.software/dashboard", false);
+                        ImGui::PopFont();
+                    }
+                    ImGui::EndChild();
+
+                    ImGui::BeginChild(xor ("Side Bar Cheats"), ImVec2(sideBarContentSize.x, sideBarContentSize.y - ImGui::GetCursorPosY()), false, ImGuiWindowFlags_NoBackground);
+                    {
+                        const ImVec2 sideBarCheatsSize = ImGui::GetCurrentWindow()->Size;
+                        const ImVec2 sideBarCheatsPos = ImGui::GetCurrentWindow()->Pos;
+
+                        ImGui::GetCurrentWindow()->DrawList->AddRectFilled(sideBarCheatsPos, sideBarCheatsPos + sideBarCheatsSize, ImColor(StyleProvider::MenuColourVeryDark), style.ChildRounding);
+
+                        ImGui::SetCursorPos(StyleProvider::Padding);
+                        ImGui::BeginChild(xor ("Side Bar Cheats Content"), sideBarCheatsSize - StyleProvider::Padding * 2, false, ImGuiWindowFlags_NoBackground);
+                        {
+                            if (shouldSelectFirstGame)
+                            {
+                                shouldSelectFirstGame = false;
+                                ImGui::SetNextTreeNodeOpen(true);
+                            }
+
+                            for (int i = 0; i < Communication::CurrentUser->Games.size(); i++)
+                            {
+                                ImGui::PushFont(StyleProvider::FontDefaultBold);
+
+                                if (loadingDll)
+                                    ImGui::BeginDisabled();
+
+                                bool nodeOpened = Widgets::TreeNode(Communication::CurrentUser->Games[i]->Name.c_str(), Communication::CurrentUser->Games[i]->Icon);
+
+                                if (loadingDll)
+                                    ImGui::EndDisabled();
+
+                                ImGui::PopFont();
+
+                                if (nodeOpened)
+                                {
+                                    for (int j = 0; j < Communication::CurrentUser->Cheats.size(); j++)
+                                    {
+                                        if (Communication::CurrentUser->Cheats[j]->GameID != Communication::CurrentUser->Games[i]->ID)
+                                            continue;
+
+                                        ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
+
+                                        if (loadingDll)
+                                            ImGui::BeginDisabled();
+
+                                        bool selected = Widgets::Selectable(Communication::CurrentUser->Cheats[j]->Name.c_str(), Communication::CurrentUser->CurrentCheat->ID == Communication::CurrentUser->Cheats[j]->ID, ImGuiSelectableFlags_SpanAllColumns);
+
+                                        if (loadingDll)
+                                            ImGui::EndDisabled();
+
+                                        ImGui::PopFont();
+
+                                        if (selected)
+                                        {
+                                            Communication::CurrentUser->CurrentCheat = Communication::CurrentUser->Cheats[j];
+
+                                            for (Game* game : Communication::CurrentUser->Games)
+                                                if (game->ID == Communication::CurrentUser->CurrentCheat->GameID)
+                                                    Communication::CurrentUser->CurrentGame = game;
+                                        }
+                                    }
+
+                                    ImGui::TreePop();
+                                }
+                            }
+                        }
+                        ImGui::EndChild();
+                    }
+                    ImGui::EndChild();
+                }
+                ImGui::EndChild();
+            }
+            ImGui::EndChild();
+
+            ImGui::SetCursorPos(ImVec2(StyleProvider::MainWindowSideBarSize.x, 0));
+            ImGui::BeginChild(xor ("Cheat Banner"), StyleProvider::CheatBannerSize, false, ImGuiWindowFlags_NoBackground);
+            {
+                const ImVec2 cheatBannerSize = ImGui::GetCurrentWindow()->Size;
+
+                ImGui::Image(Communication::CurrentUser->CurrentGame->Banner, cheatBannerSize);
+                Widgets::Gradient(ImVec2(0, cheatBannerSize.y), ImVec2(cheatBannerSize.x, 0), StyleProvider::CheatBannerGradientStartColour, StyleProvider::CheatBannerGradientEndColour);
+
+                ImGui::SetCursorPos(StyleProvider::Padding);
+                ImGui::BeginChild(xor ("Cheat Banner Content"), cheatBannerSize - StyleProvider::Padding * 2, false, ImGuiWindowFlags_NoBackground);
+                {
+                    const ImVec2 cheatBannerContentSize = ImGui::GetCurrentWindow()->Size;
+
+                    ImGui::PushFont(StyleProvider::FontHugeBold);
+                    ImGui::Text(Communication::CurrentUser->CurrentCheat->Name.c_str());
+                    ImGui::PopFont();
+
+                    ImGui::SetCursorPosY(ImGui::GetCursorPos().y - ImGui::GetStyle().ItemSpacing.y);
+                    ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
+                    ImGui::Text(xor ("for %s"), Communication::CurrentUser->CurrentGame->Name.c_str());
+
+                    const float priceHeight = ImGui::CalcTextSize(xor ("10 euro per month")).y;
+                    ImGui::SetCursorPosY(cheatBannerContentSize.y - ImGui::GetFrameHeight() / 2 - priceHeight / 2);
+                    ImGui::Text(xor("%i euro per month"), Communication::CurrentUser->CurrentCheat->Price);
+                    ImGui::PopFont();
+
+                    const float widgetWidth = cheatBannerContentSize.x * 0.25f;
+
+                    if (loadingDll)
+                        ImGui::BeginDisabled();
+
+                    ImGui::SetCursorPos(cheatBannerContentSize - ImVec2(widgetWidth, ImGui::GetFrameHeight() * 2 + style.ItemSpacing.y));
+                    ImGui::PushItemWidth(widgetWidth);
+                    Widgets::Combo(xor ("###ReleaseStream"), &Communication::CurrentUser->CurrentCheat->CurrentStream, Communication::CurrentUser->CurrentCheat->ReleaseStreams);
+
+                    if (loadingDll)
+                        ImGui::EndDisabled();
+
+                    ImGui::SetCursorPos(cheatBannerContentSize - ImVec2(widgetWidth, ImGui::GetFrameHeight()));
+                    if (strcmp(Communication::CurrentUser->CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
+                    {
+                        if (ImGui::Button(xor ("Buy now"), ImVec2(widgetWidth, ImGui::GetFrameHeight())))
+                            ShellExecuteA(NULL, xor ("open"), xor ("https://maple.software/dashboard/store"), NULL, NULL, SW_SHOWNORMAL);
+                    }
+                    else
+                    {
+                        if (loadingDll)
+                            ImGui::BeginDisabled();
+
+                        bool loadClicked = Widgets::Button(xor(Communication::CurrentState == States::LoadingDLL ? "Loading..." : "Load"), ImVec2(widgetWidth, ImGui::GetFrameHeight()));
+
+                        if (loadingDll)
+                            ImGui::EndDisabled();
+
+                        if (loadClicked)
+                        {
+                            DllStreamRequest dllStream = DllStreamRequest(Communication::CurrentUser->CurrentCheat->ID, Communication::CurrentUser->CurrentCheat->ReleaseStreams[Communication::CurrentUser->CurrentCheat->CurrentStream], Communication::MatchedClient);
+
+                            pipe_ret_t sendRet = Communication::TCPClient.sendBytes(dllStream.Data);
+                            if (!sendRet.success)
+                            {
+                                MessageBoxA(Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
+
+                                GeneralHelper::ShutdownAndExit();
+                            }
+
+                            Communication::CurrentState = States::LoadingDLL;
+                        }
+                    }
+                }
+                ImGui::EndChild();
+            }
+            ImGui::EndChild();
+
+            ImGui::SetCursorPos(ImVec2(StyleProvider::MainWindowSideBarSize.x, StyleProvider::CheatBannerSize.y));
+            ImGui::BeginChild(xor ("Cheat Info"), ImVec2(mainWindowSize.x - StyleProvider::MainWindowSideBarSize.x, mainWindowSize.y - StyleProvider::CheatBannerSize.y), false, ImGuiWindowFlags_NoBackground);
+            {
+                const ImVec2 cheatInfoSize = ImGui::GetCurrentWindow()->Size;
+
+                ImGui::SetCursorPos(StyleProvider::Padding);
+                ImGui::BeginChild(xor ("Cheat Info Content"), cheatInfoSize - StyleProvider::Padding * 2, false, ImGuiWindowFlags_NoBackground);
+                {
+                    ImGui::PushFont(StyleProvider::FontBigBold);
+                    ImGui::Text(xor ("Subscription expires at"));
+                    ImGui::PopFont();
+
+                    ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
+                    ImGui::Text(Communication::CurrentUser->CurrentCheat->ExpiresAt.c_str());
+                    if (strcmp(Communication::CurrentUser->CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
+                    {
+                        ImGui::SameLine();
+                        Widgets::Link(xor ("subscribe now"), xor ("https://maple.software/dashboard/store"), false);
+                    }
+                    ImGui::PopFont();
+
+                    ImGui::Spacing();
+
+                    ImGui::PushFont(StyleProvider::FontBigBold);
+                    ImGui::Text(xor ("Status"));
+                    ImGui::PopFont();
+
+                    ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
+                    switch (Communication::CurrentUser->CurrentCheat->Status)
+                    {
+                        case CheatStatus::UpToDate:
+                            ImGui::TextColored(ImVec4(0, 1, 0, 1), xor ("up to date"));
+                            break;
+                        case CheatStatus::Outdated:
+                            ImGui::TextColored(ImVec4(ImColor(255, 69, 0, 255)), xor ("outdated"));
+                            break;
+                        case CheatStatus::Detected:
+                            ImGui::TextColored(ImVec4(1, 0, 0, 1), xor ("detected"));
+                            break;
+                    }
+                    ImGui::PopFont();
+
+                    ImGui::Spacing();
+
+                    ImGui::PushFont(StyleProvider::FontBigBold);
+                    ImGui::Text(xor ("Features"));
+                    ImGui::PopFont();
+
+                    ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
+                    ImGui::TextWrapped(Communication::CurrentUser->CurrentCheat->Features.c_str());
+                    Widgets::Link(xor ("Visit our website for more information"), xor ("https://maple.software/"), false);
+                    ImGui::PopFont();
+                }
+                ImGui::EndChild();
+            }
+            ImGui::EndChild();
+        }
+
+        ImGui::SetCursorPos(ImVec2(mainWindowSize.x - StyleProvider::WindowControlSize.x * 2, 0));
+        ImGui::BeginChild(xor ("Window Controls"), ImVec2(StyleProvider::WindowControlSize.x * 2, StyleProvider::WindowControlSize.y), false, ImGuiWindowFlags_NoBackground);
+        {
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+            ImGui::PushStyleColor(ImGuiCol_Text, StyleProvider::WindowControlTextColour);
+
+            ImGui::PushStyleColor(ImGuiCol_Button, StyleProvider::MinimizeButtonColour);
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, StyleProvider::MinimizeButtonHoveredColour);
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, StyleProvider::MinimizeButtonActiveColour);
+
+            if (Widgets::Button(xor ("_"), StyleProvider::WindowControlSize))
+                ShowWindow(Window, SW_MINIMIZE);
+
+            ImGui::PopStyleColor(3);
+
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, StyleProvider::CloseButtonColour);
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, StyleProvider::CloseButtonHoveredColour);
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, StyleProvider::CloseButtonActiveColour);
+
+            if (Widgets::Button(xor ("x"), StyleProvider::WindowControlSize))
+                GeneralHelper::ShutdownAndExit();
+
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor(4);
+        }
+        ImGui::EndChild();
+
+        ImGui::PopFont();
+    }
+    ImGui::End();
+
+    ImGui::EndFrame();
+
+    D3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+    D3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    D3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+
+    D3DCOLOR clear_col_dx = D3DCOLOR_RGBA(65, 65, 65, 255);
+    D3DDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
+    if (D3DDevice->BeginScene() >= 0)
+    {
+        ImGui::Render();
+        ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+        D3DDevice->EndScene();
+    }
+
+    if (loggedIn != wasLoggedIn)
+        updateWindowSize();
+
+    if (D3DDevice->Present(NULL, NULL, NULL, NULL) == D3DERR_DEVICELOST && D3DDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+        resetDevice();
 }
 
 void UI::Shutdown()
 {
-	ImGui_ImplDX9_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
-	
-	D3DDevice->Release();
-	D3D->Release();
-	
-	DestroyWindow(Window);
+    ImGui_ImplDX9_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
+    cleanupD3DDevice();
+    ::DestroyWindow(Window);
+    ::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
 }

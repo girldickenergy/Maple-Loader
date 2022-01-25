@@ -7,7 +7,8 @@
 #include "MemoryUtils.h"
 
 #include "blackbone/BlackBone/Process/Process.h"
-#include "../ThemidaSDK.h"
+
+#include <ThemidaSDK.h>
 
 static inline std::vector<MemoryRegion> memoryRegions;
 
@@ -130,5 +131,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		blackbone::RebaseProcess | blackbone::NoDelayLoad | blackbone::WipeHeader,
 		nullptr, nullptr, &args);
 	VM_EAGLE_BLACK_END
-		return 0;
+
+	return 0;
 }
