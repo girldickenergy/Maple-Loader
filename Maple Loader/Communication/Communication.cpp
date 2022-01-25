@@ -3,11 +3,12 @@
 #include <ThemidaSDK.h>
 
 #include "Packets/Requests/HandshakeRequest.h"
+#include "Packets/Requests/FinalDllStreamRequest.h"
 
 #include "Packets/Responses/FatalErrorResponse.h"
 #include "Packets/Responses/HandshakeResponse.h"
 #include "Packets/Responses/LoginResponse.h"
-#include "Packets/Responses/DllStreamResponse.h"
+#include "Packets/Responses/InitialDllStreamResponse.h"
 
 #include "../UI/UI.h"
 #include "../Utilities/Security/xorstr.hpp"
@@ -163,72 +164,47 @@ void Communication::onIncomingMessage(const char* msg, size_t size)
 
 			break;
 		}
-		case ResponseType::DllStream:
+		case ResponseType::InitialDllStream:
 		{
-			auto* const dllStreamResponse = static_cast<DllStreamResponse*>(response);
+			auto* const dllStreamResponse = static_cast<InitialDllStreamResponse*>(response);
 			switch (dllStreamResponse->Result)
 			{
-			case DllStreamResult::Success:
+			case InitialDllStreamResult::Success:
 			{
-				VM_SHARK_BLACK_START
+				//todo: allocate shit
+				//todo: resolve imports
+				//todo: do injection magic
+				//TODO: MOVE THIS TO INJECTOR
 
-				int code = 0;
-				// Dll stream has been fully decrypted and received. Now we RunPE the injector and WPM the binary into it!
-				HANDLE hProcess = ProcessHollowing::CreateHollowedProcess(InjectorData::Injector_protected_exe, &code);
-				if (hProcess == INVALID_HANDLE_VALUE)
+				std::vector<unsigned int> imports;
+				for (int i = 0; i < dllStreamResponse->Imports.size(); i++)
+					imports.push_back(0xdeadbeef);
+
+				FinalDllStreamRequest dllStream = FinalDllStreamRequest(0x1337, imports, Communication::MatchedClient);
+
+				pipe_ret_t sendRet = Communication::TCPClient.sendBytes(dllStream.Data);
+				if (!sendRet.success)
 				{
-					std::string err = "Injection failed. (code: " + std::to_string(code) + ")";
-					MessageBoxA(UI::Window, xor (err.c_str()), xor ("Discord"), MB_ICONERROR | MB_OK);
-					CurrentState = States::LoggedIn;
+					MessageBoxA(UI::Window, xor ("Failed to communicate with the server!\nThe application will now exit."), xor ("Discord"), MB_ICONERROR | MB_OK);
 
-					break;
+					GeneralHelper::ShutdownAndExit();
 				}
-
-				// Amazing, now we wait for the PE to load fully because Themida can take a while...
-				while (true)
-				{
-					HANDLE mtx = OpenMutexA(SYNCHRONIZE, FALSE, "QVPj0LSOL81Lko4d");
-					if (mtx != NULL)
-					{
-						CloseHandle(mtx);
-						break;
-					}
-					Sleep(100);
-				}
-
-				// Now we read the memory of the ghost process, write the binary to it, and the player data.
-				if (!DataWriter::WriteData(hProcess, &dllStreamResponse->ByteArray, &code))
-				{
-					std::string err = "Injection failed after 3 retries. (code: " + std::to_string(code) + ")";
-					MessageBoxA(UI::Window, xor (err.c_str()), xor ("Discord"), MB_ICONERROR | MB_OK);
-					CurrentState = States::LoggedIn;
-
-					break;
-				}
-				
-				TCPClient.finish();
-
-				MessageBoxA(UI::Window, xor ("Injection process has started. Please launch osu! and wait for injection to finish.\nOnce Maple is injected you can toggle in-game menu with DELETE button.\n\nThanks for choosing Maple and have fun!"), xor ("Discord"), MB_ICONINFORMATION | MB_OK);
-
-				VM_SHARK_BLACK_END
-
-				GeneralHelper::ShutdownAndExit(false);
 
 				break;
 			}
-			case DllStreamResult::NotSubscribed:
+			case InitialDllStreamResult::NotSubscribed:
 				MessageBoxA(UI::Window, xor ("Sorry, you're not subscribed to the Maple membership."), xor ("Discord"), MB_ICONERROR | MB_OK);
 				CurrentState = States::LoggedIn;
 
 				break;
-			case DllStreamResult::InvalidSession:
+			case InitialDllStreamResult::InvalidSession:
 				MessageBoxA(UI::Window, xor ("Your session has expired.\n\nPlease log in again."), xor ("Discord"), MB_ICONERROR | MB_OK);
 				CurrentState = States::Idle;
 
 				AutofillHelper::Fill();
 
 				break;
-			case DllStreamResult::InternalError:
+			case InitialDllStreamResult::InternalError:
 				MessageBoxA(UI::Window, xor ("An internal error occured!\nPlease contact staff."), xor ("Discord"), MB_ICONERROR | MB_OK);
 				CurrentState = States::LoggedIn;
 
@@ -263,12 +239,12 @@ bool Communication::ConnectToServer()
 	STR_ENCRYPT_START
 
 	client_observer_t observer;
-	observer.wantedIp = xor("198.251.89.179");
+	observer.wantedIp = xor("127.0.0.1");
 	observer.incoming_packet_func = onIncomingMessage;
 	observer.disconnected_func = onDisconnection;
 	TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = TCPClient.connectTo(xor("198.251.89.179"), 9999);
+	pipe_ret_t connectRet = TCPClient.connectTo(xor("127.0.0.1"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV

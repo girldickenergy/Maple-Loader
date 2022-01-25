@@ -14,7 +14,7 @@
 #include "../Communication/Communication.h"
 #include "../Utilities/GeneralHelper.h"
 #include "../Communication/Packets/Requests/LoginRequest.h"
-#include "../Communication/Packets/Requests/DllStreamRequest.h"
+#include "../Communication/Packets/Requests/InitialDllStreamRequest.h"
 #include "../Utilities/Hardware/HardwareHelper.h"
 #include "../Utilities/Crypto/CryptoHelper.h"
 
@@ -465,7 +465,7 @@ void UI::Render()
 
                         if (loadClicked)
                         {
-                            DllStreamRequest dllStream = DllStreamRequest(Communication::CurrentUser->CurrentCheat->ID, Communication::CurrentUser->CurrentCheat->ReleaseStreams[Communication::CurrentUser->CurrentCheat->CurrentStream], Communication::MatchedClient);
+                            InitialDllStreamRequest dllStream = InitialDllStreamRequest(Communication::CurrentUser->CurrentCheat->ID, Communication::CurrentUser->CurrentCheat->ReleaseStreams[Communication::CurrentUser->CurrentCheat->CurrentStream], Communication::MatchedClient);
 
                             pipe_ret_t sendRet = Communication::TCPClient.sendBytes(dllStream.Data);
                             if (!sendRet.success)

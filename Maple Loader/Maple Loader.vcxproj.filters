@@ -771,10 +771,10 @@
     <ClInclude Include="Communication\Packets\Requests\RequestType.h">
       <Filter>Communication\Packets\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="Communication\Packets\Requests\DllStreamRequest.h">
+    <ClInclude Include="Communication\Packets\Requests\InitialDllStreamRequest.h">
       <Filter>Communication\Packets\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="Communication\Packets\Responses\DllStreamResponse.h">
+    <ClInclude Include="Communication\Packets\Responses\InitialDllStreamResponse.h">
       <Filter>Communication\Packets\Responses</Filter>
     </ClInclude>
     <ClInclude Include="Communication\Packets\Responses\FatalErrorResponse.h">
@@ -872,6 +872,9 @@
     </ClInclude>
     <ClInclude Include="Utilities\Autofill\AutofillHelper.h">
       <Filter>Utilities\Autofill</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\Requests\FinalDllStreamRequest.h">
+      <Filter>Communication\Packets\Requests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1449,13 +1452,13 @@
     <ClCompile Include="Communication\Packets\Requests\Request.cpp">
       <Filter>Communication\Packets\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="Communication\Packets\Requests\DllStreamRequest.cpp">
+    <ClCompile Include="Communication\Packets\Requests\InitialDllStreamRequest.cpp">
       <Filter>Communication\Packets\Requests</Filter>
     </ClCompile>
     <ClCompile Include="Communication\Packets\Requests\HandshakeRequest.cpp">
       <Filter>Communication\Packets\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="Communication\Packets\Responses\DllStreamResponse.cpp">
+    <ClCompile Include="Communication\Packets\Responses\InitialDllStreamResponse.cpp">
       <Filter>Communication\Packets\Responses</Filter>
     </ClCompile>
     <ClCompile Include="Communication\Packets\Responses\FatalErrorResponse.cpp">
@@ -1490,6 +1493,9 @@
     </ClCompile>
     <ClCompile Include="Utilities\Autofill\AutofillHelper.cpp">
       <Filter>Utilities\Autofill</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Packets\Requests\FinalDllStreamRequest.cpp">
+      <Filter>Communication\Packets\Requests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

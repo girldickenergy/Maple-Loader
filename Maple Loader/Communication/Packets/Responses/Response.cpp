@@ -1,6 +1,6 @@
 #include "Response.h"
 
-#include "DllStreamResponse.h"
+#include "InitialDllStreamResponse.h"
 #include "FatalErrorResponse.h"
 #include "HandshakeResponse.h"
 #include "LoginResponse.h"
@@ -27,8 +27,8 @@ void* Response::ConstructResponse(const char* msg, size_t size, MatchedClient* m
 			return new HandshakeResponse(msg, size);
 		case ResponseType::Login:
 			return new LoginResponse(msg, size, matchedClient);
-		case ResponseType::DllStream:
-			return new DllStreamResponse(msg, size, matchedClient);
+		case ResponseType::InitialDllStream:
+			return new InitialDllStreamResponse(msg, size, matchedClient);
 	}
 
 	return new Response(msg, size);
