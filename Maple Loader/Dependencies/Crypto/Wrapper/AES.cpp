@@ -1,5 +1,7 @@
 #include "AES.h"
 
+#include "ThemidaSDK.h"
+
 AESWrapper::AESWrapper()
 {
 	srand(static_cast<unsigned>(time(nullptr)));  // NOLINT(cert-msc51-cpp)

@@ -263,12 +263,12 @@ bool Communication::ConnectToServer()
 	STR_ENCRYPT_START
 
 	client_observer_t observer;
-	observer.wantedIp = xor("198.251.89.179");
+	observer.wantedIp = xor("127.0.0.1");
 	observer.incoming_packet_func = onIncomingMessage;
 	observer.disconnected_func = onDisconnection;
 	TCPClient.subscribe(observer);
 
-	pipe_ret_t connectRet = TCPClient.connectTo(xor("198.251.89.179"), 9999);
+	pipe_ret_t connectRet = TCPClient.connectTo(xor("127.0.0.1"), 9999);
 	if (connectRet.success)
 	{
 		// Send initial Handshake, to get RSA Encrypted Client Key and IV

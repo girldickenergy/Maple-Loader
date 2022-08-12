@@ -15,20 +15,18 @@ struct Cheat
 	int GameID;
 	std::vector<std::string> ReleaseStreams;
 	std::string Name;
-	int Price;
+	int StartsAt;
 	CheatStatus Status;
-	std::string Features;
-	std::string ExpiresAt;
+	std::string ExpiresOn;
 
-	Cheat(int id, int gameID, std::vector<std::string> releaseStreams, std::string name, int price, CheatStatus status, std::string features, std::string expiresAt)
+	Cheat(int id, int gameID, std::vector<std::string> releaseStreams, std::string name, int startsAt, CheatStatus status, std::string expiresOn)
 	{
 		ID = id;
 		GameID = gameID;
 		ReleaseStreams = releaseStreams;
 		Name = name;
-		Price = price;
+		StartsAt = startsAt;
 		Status = status;
-		Features = features;
-		ExpiresAt = expiresAt;
+		ExpiresOn = expiresOn;
 	}
 };

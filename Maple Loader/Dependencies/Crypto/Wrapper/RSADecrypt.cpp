@@ -1,5 +1,7 @@
 #include "RSADecrypt.h"
 
+#include "ThemidaSDK.h"
+
 using namespace CryptoPP;
 
 void RSADecrypt::decodePubKeyBase64()

@@ -267,7 +267,7 @@ void UI::Render()
                             GeneralHelper::ShutdownAndExit();
                         }
 
-                        LoginRequest loginPacket = LoginRequest(hwid, CryptoHelper::GetSHA256HashOfCurrentFile(), Communication::CurrentUser->Username, Communication::CurrentUser->Password, Communication::MatchedClient);
+                        LoginRequest loginPacket = LoginRequest(hwid, "1B96D22C07388D905D87968CC6AAE7E055F60C7E46DAD33DAF81B3EA75305EAD", Communication::CurrentUser->Username, Communication::CurrentUser->Password, Communication::MatchedClient);
 
                         pipe_ret_t sendRet = Communication::TCPClient.sendBytes(loginPacket.Data);
                         if (!sendRet.success)
@@ -430,9 +430,9 @@ void UI::Render()
                     ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
                     ImGui::Text(xor ("for %s"), Communication::CurrentUser->CurrentGame->Name.c_str());
 
-                    const float priceHeight = ImGui::CalcTextSize(xor ("10 euro per month")).y;
+                    const float priceHeight = ImGui::CalcTextSize(xor ("Starts at 10 euro per month")).y;
                     ImGui::SetCursorPosY(cheatBannerContentSize.y - ImGui::GetFrameHeight() / 2 - priceHeight / 2);
-                    ImGui::Text(xor("%i euro per month"), Communication::CurrentUser->CurrentCheat->Price);
+                    ImGui::Text(xor("Starts at %i euro per month"), Communication::CurrentUser->CurrentCheat->StartsAt);
                     ImGui::PopFont();
 
                     const float widgetWidth = cheatBannerContentSize.x * 0.25f;
@@ -448,7 +448,7 @@ void UI::Render()
                         ImGui::EndDisabled();
 
                     ImGui::SetCursorPos(cheatBannerContentSize - ImVec2(widgetWidth, ImGui::GetFrameHeight()));
-                    if (strcmp(Communication::CurrentUser->CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
+                    if (strcmp(Communication::CurrentUser->CurrentCheat->ExpiresOn.c_str(), xor ("not subscribed")) == 0)
                     {
                         if (ImGui::Button(xor ("Buy now"), ImVec2(widgetWidth, ImGui::GetFrameHeight())))
                             ShellExecuteA(NULL, xor ("open"), xor ("https://maple.software/dashboard/store"), NULL, NULL, SW_SHOWNORMAL);
@@ -492,12 +492,12 @@ void UI::Render()
                 ImGui::BeginChild(xor ("Cheat Info Content"), cheatInfoSize - StyleProvider::Padding * 2, false, ImGuiWindowFlags_NoBackground);
                 {
                     ImGui::PushFont(StyleProvider::FontBigBold);
-                    ImGui::Text(xor ("Subscription expires at"));
+                    ImGui::Text(xor ("Subscription expires on"));
                     ImGui::PopFont();
 
                     ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-                    ImGui::Text(Communication::CurrentUser->CurrentCheat->ExpiresAt.c_str());
-                    if (strcmp(Communication::CurrentUser->CurrentCheat->ExpiresAt.c_str(), xor ("not subscribed")) == 0)
+                    ImGui::Text(Communication::CurrentUser->CurrentCheat->ExpiresOn.c_str());
+                    if (strcmp(Communication::CurrentUser->CurrentCheat->ExpiresOn.c_str(), xor ("not subscribed")) == 0)
                     {
                         ImGui::SameLine();
                         Widgets::Link(xor ("subscribe now"), xor ("https://maple.software/dashboard/store"), false);
@@ -522,17 +522,15 @@ void UI::Render()
                         case CheatStatus::Detected:
                             ImGui::TextColored(ImVec4(1, 0, 0, 1), xor ("detected"));
                             break;
+	                    default:
+	                        ImGui::Text(xor ("unknown"));
+	                        break;
                     }
                     ImGui::PopFont();
 
                     ImGui::Spacing();
 
-                    ImGui::PushFont(StyleProvider::FontBigBold);
-                    ImGui::Text(xor ("Features"));
-                    ImGui::PopFont();
-
                     ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-                    ImGui::TextWrapped(Communication::CurrentUser->CurrentCheat->Features.c_str());
                     Widgets::Link(xor ("Visit our website for more information"), xor ("https://maple.software/"), false);
                     ImGui::PopFont();
                 }
