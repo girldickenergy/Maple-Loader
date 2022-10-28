@@ -1,24 +1,22 @@
 #pragma once
 
-#include <vector>
+#include <string>
 
-#include "Game.h"
-#include "Cheat.h"
-
-struct User
+class User
 {
-	char Username[24];
-	char Password[256];
-	std::string SessionID;
-	std::string DiscordID;
-	std::string AvatarHash;
-	std::vector<Game*> Games;
-	std::vector<Cheat*> Cheats;
-	Game* CurrentGame = nullptr;
-	Cheat* CurrentCheat = nullptr;
+	std::string username;
+	std::string sessionToken;
+	std::string discordID;
+	std::string avatarHash;
+	void* avatarTexture;
+public:
+	User(const std::string& username, const std::string& sessionToken, const std::string& discordID, const std::string& avatarHash);
+	User() = default;
+	~User();
 
-	void ResetSensitiveFields()
-	{
-		memset(Password, 0, sizeof(Password));
-	}
+	const std::string& GetUsername();
+	const std::string& GetSessionToken();
+	const std::string& GetDiscordID();
+	const std::string& GetAvatarHash();
+	void* GetAvatarTexture();
 };

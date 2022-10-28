@@ -1,7 +1,6 @@
 #pragma once
 
 #include <imgui.h>
-#include <d3d9.h>
 
 class StyleProvider
 {
@@ -55,10 +54,10 @@ public:
 	static inline ImVec4 CloseButtonActiveColour;
 
 	//textures/texture sizes
-	static inline IDirect3DTexture9* MapleLogoTexture;
-	static inline IDirect3DTexture9* AvatarTexture;
-	static inline IDirect3DTexture9* ChevronIconTexture;
+	static inline void* MapleLogoTexture;
+	static inline void* ChevronIconTexture;
 	static inline ImVec2 CheatBannerSize = ImVec2(550, 225);
 
 	static void Initialize();
+	static void Shutdown();
 };
