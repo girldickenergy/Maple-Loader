@@ -22,7 +22,7 @@ unsigned char DataWriter::stichByte(char a, char b)
 	return charToByte(a) << 4 | charToByte(b);
 }
 
-uintptr_t DataWriter::findDataPointer(HANDLE processHandle)
+uintptr_t DataWriter::findDataPointer()
 {
 	std::string pattern = "61 7A 75 6B 69 6D 61 67 69 63";
 	std::vector<unsigned char> sig;
@@ -42,17 +42,17 @@ uintptr_t DataWriter::findDataPointer(HANDLE processHandle)
 	MEMORY_BASIC_INFORMATION mbi;
 	PVOID address = nullptr;
 
-	while (VirtualQueryEx(processHandle, address, reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mbi), sizeof mbi) != 0)
+	while (VirtualQueryEx(hProcess, address, reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mbi), sizeof mbi) != 0)
 	{
 		if (mbi.State == MEM_COMMIT && mbi.Protect != PAGE_NOACCESS && !(mbi.Protect & PAGE_GUARD))
 		{
 			DWORD previousProtect;
-			if (VirtualProtectEx(processHandle, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE, &previousProtect))
+			if (VirtualProtectEx(hProcess, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE, &previousProtect))
 			{
 				unsigned char* buffer = new unsigned char[mbi.RegionSize];
 				size_t bytesRead;
-				ReadProcessMemory(processHandle, mbi.BaseAddress, buffer, mbi.RegionSize, &bytesRead);
-				VirtualProtectEx(processHandle, mbi.BaseAddress, mbi.RegionSize, previousProtect, &previousProtect);
+				ReadProcessMemory(hProcess, mbi.BaseAddress, buffer, mbi.RegionSize, &bytesRead);
+				VirtualProtectEx(hProcess, mbi.BaseAddress, mbi.RegionSize, previousProtect, &previousProtect);
 
 				for (unsigned int mem = 0; mem < bytesRead - sig.size(); mem++)
 				{
@@ -82,7 +82,32 @@ uintptr_t DataWriter::findDataPointer(HANDLE processHandle)
 	return 0u;
 }
 
-bool DataWriter::WriteUserData(DWORD processID, const std::string& username, const std::string& sessionToken, const std::string& discordID, const std::string& discordAvatarHash, unsigned int cheatID, const std::string& releaseStream)
+bool DataWriter::Initialize(DWORD processID)
+{
+	if (!processID)
+		return false;
+
+	hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
+	if (!hProcess)
+		return false;
+
+	if (dataPointer = findDataPointer())
+		return true;
+
+	CloseHandle(hProcess);
+	TerminateProcess(hProcess, -1);
+
+	return false;
+}
+
+void DataWriter::Finish()
+{
+	*(unsigned int*)dataPointer = 0xdeadbeef;
+
+	CloseHandle(hProcess);
+}
+
+bool DataWriter::WriteUserData(const std::string& username, const std::string& sessionToken, const std::string& discordID, const std::string& discordAvatarHash, unsigned int cheatID, const std::string& releaseStream)
 {
 	UserInfoStruct userInfoStruct = UserInfoStruct();
 	sprintf(userInfoStruct.Username, "%s", username.c_str());
@@ -92,21 +117,11 @@ bool DataWriter::WriteUserData(DWORD processID, const std::string& username, con
 	sprintf(userInfoStruct.ReleaseStream, "%s", releaseStream.c_str());
 	userInfoStruct.CheatID = cheatID;
 
-	if (!processID)
-		return false;
-
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
-	if (!hProcess)
-		return false;
-
-	if (const uintptr_t address = findDataPointer(hProcess))
+	if (WriteProcessMemory(hProcess, (LPVOID)(dataPointer + sizeof(unsigned int)), &userInfoStruct, sizeof(UserInfoStruct), NULL))
 	{
-		if (WriteProcessMemory(hProcess, (LPVOID)address, &userInfoStruct, sizeof(UserInfoStruct), NULL))
-		{
-			CloseHandle(hProcess);
+		CloseHandle(hProcess);
 
-			return true;
-		}
+		return true;
 	}
 
 	TerminateProcess(hProcess, -1);

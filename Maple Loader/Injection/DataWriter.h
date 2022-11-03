@@ -23,11 +23,16 @@ class DataWriter
 	DataWriter() = default;
 	static inline DataWriter* instance = nullptr;
 
+	HANDLE hProcess;
+	uintptr_t dataPointer;
+
 	unsigned char charToByte(char ch);
 	unsigned char stichByte(char a, char b);
-	uintptr_t findDataPointer(HANDLE processHandle);
+	uintptr_t findDataPointer();
 public:
-	bool WriteUserData(DWORD processID, const std::string& username, const std::string& sessionToken, const std::string& discordID, const std::string& discordAvatarHash, unsigned int cheatID, const std::string& releaseStream);
+	bool Initialize(DWORD processID);
+	bool WriteUserData(const std::string& username, const std::string& sessionToken, const std::string& discordID, const std::string& discordAvatarHash, unsigned int cheatID, const std::string& releaseStream);
+	void Finish();
 
 	static DataWriter* GetInstance();
 };

@@ -223,15 +223,20 @@ void Communication::onReceive(const std::vector<unsigned char>& data)
 								Sleep(100);
 							}
 
-							if (DataWriter::GetInstance()->WriteUserData(pid, user->GetUsername(), user->GetSessionToken(), user->GetDiscordID(), user->GetAvatarHash(), selectedCheat->GetID(), selectedCheat->GetReleaseStreams()[selectedCheat->CurrentStream]))
+							if (DataWriter::GetInstance()->Initialize(pid))
 							{
-								tcpClient.Disconnect();
+								if (DataWriter::GetInstance()->WriteUserData(user->GetUsername(), user->GetSessionToken(), user->GetDiscordID(), user->GetAvatarHash(), selectedCheat->GetID(), selectedCheat->GetReleaseStreams()[selectedCheat->CurrentStream]))
+								{
+									tcpClient.Disconnect();
 
-								MessageBoxA(UI::NativeWindow, xorstr_("Injection process has started. Please launch the game and wait for injection to finish.\nOnce Maple is injected you can toggle the in-game menu with DELETE button.\n\nThank you for choosing Maple and have fun!"), xorstr_("Success"), MB_ICONINFORMATION | MB_OK);
+									MessageBoxA(UI::NativeWindow, xorstr_("Injection process has started. Please launch the game and wait for injection to finish.\nOnce Maple is injected you can toggle the in-game menu with DELETE button.\n\nThank you for choosing Maple and have fun!"), xorstr_("Success"), MB_ICONINFORMATION | MB_OK);
 
-								glfwSetWindowShouldClose(UI::GLFWWindow, 1);
+									DataWriter::GetInstance()->Finish();
 
-								break;
+									glfwSetWindowShouldClose(UI::GLFWWindow, 1);
+
+									break;
+								}
 							}
 						}
 					}
