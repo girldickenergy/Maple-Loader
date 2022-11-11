@@ -102,7 +102,9 @@ bool DataWriter::Initialize(DWORD processID)
 
 void DataWriter::Finish()
 {
-	*(unsigned int*)dataPointer = 0xdeadbeef;
+	unsigned int signature = 0xdeadbeef;
+
+	WriteProcessMemory(hProcess, (LPVOID)dataPointer, &signature, sizeof(unsigned int), NULL);
 
 	CloseHandle(hProcess);
 }
@@ -117,12 +119,8 @@ bool DataWriter::WriteUserData(const std::string& username, const std::string& s
 	sprintf(userInfoStruct.ReleaseStream, "%s", releaseStream.c_str());
 	userInfoStruct.CheatID = cheatID;
 
-	if (WriteProcessMemory(hProcess, (LPVOID)(dataPointer + sizeof(unsigned int)), &userInfoStruct, sizeof(UserInfoStruct), NULL))
-	{
-		CloseHandle(hProcess);
-
+	if (WriteProcessMemory(hProcess, reinterpret_cast<LPVOID>(dataPointer + sizeof(unsigned int)), &userInfoStruct, sizeof(UserInfoStruct), NULL))
 		return true;
-	}
 
 	TerminateProcess(hProcess, -1);
 	CloseHandle(hProcess);

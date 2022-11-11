@@ -10,12 +10,12 @@
 struct UserInfoStruct
 {
 public:
-	char Username[24];
-	char SessionToken[32];
-	char DiscordID[32];
-	char DiscordAvatarHash[32];
+	char Username[25];
+	char SessionToken[33];
+	char DiscordID[33];
+	char DiscordAvatarHash[33];
 	unsigned int CheatID;
-	char ReleaseStream[16];
+	char ReleaseStream[17];
 };
 
 class DataWriter
