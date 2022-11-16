@@ -29,8 +29,7 @@ unsigned char DataWriter::stichByte(char a, char b)
 #pragma optimize("", off)
 uintptr_t DataWriter::findDataPointer()
 {
-	VM_SHARK_BLACK_START
-	STR_ENCRYPT_START
+	VM_FISH_RED_START
 
 	std::string pattern = xorstr_("61 7A 75 6B 69 6D 61 67 69 63");
 	std::vector<unsigned char> sig;
@@ -46,6 +45,8 @@ uintptr_t DataWriter::findDataPointer()
 		else if (std::isxdigit(ch))
 			sig.push_back(stichByte(ch, pattern[++i]));
 	}
+
+	VM_FISH_RED_END
 
 	MEMORY_BASIC_INFORMATION mbi;
 	PVOID address = nullptr;
@@ -86,9 +87,6 @@ uintptr_t DataWriter::findDataPointer()
 
 		address = reinterpret_cast<PVOID>((uintptr_t)mbi.BaseAddress + mbi.RegionSize);
 	}
-
-	STR_ENCRYPT_END
-	VM_SHARK_BLACK_END
 
 	return 0u;
 }
