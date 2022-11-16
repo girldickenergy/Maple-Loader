@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <vector>
+#include "../Utilities/Security/xorstr.hpp"
 
 unsigned char DataWriter::charToByte(char ch)
 {
@@ -24,7 +25,7 @@ unsigned char DataWriter::stichByte(char a, char b)
 
 uintptr_t DataWriter::findDataPointer()
 {
-	std::string pattern = "61 7A 75 6B 69 6D 61 67 69 63";
+	std::string pattern = xorstr_("61 7A 75 6B 69 6D 61 67 69 63");
 	std::vector<unsigned char> sig;
 	for (unsigned int i = 0u; i < pattern.size(); i++)
 	{
