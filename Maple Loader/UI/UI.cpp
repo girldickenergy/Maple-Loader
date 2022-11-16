@@ -59,7 +59,7 @@ bool UI::Initialize()
     if (!glfwInit())
         return false;
 
-    const char* glsl_version = "#version 130";
+    const char* glsl_version = xorstr_("#version 130");
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
