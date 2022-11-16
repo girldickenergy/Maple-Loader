@@ -1,6 +1,7 @@
 #include "UI.h"
 
 #include <shellapi.h>
+#include <filesystem>
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
@@ -63,7 +64,10 @@ bool UI::Initialize()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
-    GLFWWindow = glfwCreateWindow(600, 400, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
+    char filepath[MAX_PATH];
+    GetModuleFileNameA(NULL, filepath, MAX_PATH);
+    const std::string filename = std::filesystem::path(filepath).stem().string();
+    GLFWWindow = glfwCreateWindow(600, 400, filename.c_str(), NULL, NULL);
     if (!GLFWWindow)
         return false;
 	
