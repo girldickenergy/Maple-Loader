@@ -3,6 +3,8 @@
 #endif
 #include <windows.h>
 
+#include <TlHelp32.h>
+
 #include <stdio.h>
 
 #include <WinSock2.h>
@@ -15,12 +17,61 @@
 #include "UI/UI.h"
 #include "Utilities/Security/xorstr.hpp"
 
+DWORD getProcessIDByName(const wchar_t* processName)
+{
+    PROCESSENTRY32 processInfo;
+    processInfo.dwSize = sizeof processInfo;
+
+    HANDLE processSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+    if (processSnapshot == INVALID_HANDLE_VALUE)
+        return 0;
+
+    Process32First(processSnapshot, &processInfo);
+    if (wcscmp(processName, processInfo.szExeFile) == 0)
+    {
+        CloseHandle(processSnapshot);
+        return processInfo.th32ProcessID;
+    }
+
+    while (Process32Next(processSnapshot, &processInfo))
+    {
+        if (wcscmp(processName, processInfo.szExeFile) == 0)
+        {
+            CloseHandle(processSnapshot);
+            return processInfo.th32ProcessID;
+        }
+    }
+
+    CloseHandle(processSnapshot);
+
+    return 0;
+}
+
+bool safeToProceed = false;
+void osuKiller()
+{
+	while (true)
+	{
+        if (const DWORD osuPID = getProcessIDByName(xorstr_(L"osu!.exe")))
+        {
+	        HANDLE osuHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, osuPID);
+			TerminateProcess(osuHandle, 0);
+			CloseHandle(osuHandle);
+        }
+
+        if (!safeToProceed)
+			safeToProceed = true;
+
+        Sleep(1);
+	}
+}
+
 #pragma optimize("", off)
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
     VM_FISH_RED_START
     STR_ENCRYPT_START
-
+		
 	#ifdef _DEBUG
 	    AllocConsole();
 	    FILE* fp = nullptr;
@@ -29,12 +80,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	    freopen_s(&fp, xorstr_("CONOUT$"), xorstr_("w"), stderr);
 	#endif
 
-    curl_global_init(CURL_GLOBAL_ALL);
-
     int protectionVar = 0x501938CA;
     CHECK_PROTECTION(protectionVar, 0x9CCC379)
     if (protectionVar != 0x9CCC379)
         return 0;
+
+    CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)osuKiller, 0, 0, nullptr);
+    while (!safeToProceed)
+        Sleep(500);
+
+    curl_global_init(CURL_GLOBAL_ALL);
 
     if (!Communication::Connect())
     {
