@@ -1,11 +1,8 @@
 #include "StyleProvider.h"
 
-#include <string>
-
-#include "../Utilities/Textures/TextureHelper.h"
-#include "Textures.h"
-#include "UI.h"
-#include "Fonts.h"
+#include "Assets/Fonts.h"
+#include "Assets/Textures.h"
+#include "../Utilities/Textures/TextureLoader.h"
 
 void StyleProvider::loadFonts()
 {
@@ -77,8 +74,8 @@ void StyleProvider::loadColours()
 
 void StyleProvider::loadTextures()
 {
-	MapleLogoTexture = TextureHelper::CreateTexture(Textures::MapleLogo, Textures::MapleLogoSize);
-	ChevronIconTexture = TextureHelper::CreateTexture(Textures::ChevronIcon, Textures::ChevronIconSize);
+	MapleLogoTexture = TextureLoader::LoadTextureFromMemory(Textures::MapleLogo, Textures::MapleLogoSize);
+	ChevronIconTexture = TextureLoader::LoadTextureFromMemory(Textures::ChevronIcon, Textures::ChevronIconSize);
 }
 
 void StyleProvider::Initialize()
@@ -99,4 +96,10 @@ void StyleProvider::Initialize()
 	loadFonts();
 	loadColours();
 	loadTextures();
+}
+
+void StyleProvider::Shutdown()
+{
+	TextureLoader::FreeTexture(MapleLogoTexture);
+	TextureLoader::FreeTexture(ChevronIconTexture);
 }

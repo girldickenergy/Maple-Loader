@@ -1,85 +1,101 @@
 #include "LoginResponse.h"
 
-#include <ThemidaSDK.h>
+#include "json.hpp"
+#include "ThemidaSDK.h"
 
 #include "../../../Utilities/Strings/StringUtilities.h"
+#include "../../../Utilities/Security/xorstr.hpp"
+#include "../../Crypto/CryptoProvider.h"
 
-std::vector<std::string> Split(std::string s, std::string delimiter)
+LoginResponse::LoginResponse(LoginResult result, const std::string& sessionToken, const std::string& discordID, const std::string& discordAvatarHash, const std::vector<Game*>& games, const std::vector<Cheat*>& cheats)
 {
-	size_t pos = 0;
-	std::string token;
-	std::vector<std::string> ret;
-	while ((pos = s.find(delimiter)) != std::string::npos) {
-		token = s.substr(0, pos);
-		ret.push_back(token);
-		s.erase(0, pos + delimiter.length());
-	}
-	ret.push_back(s);
-
-	return ret;
+	this->result = result;
+	this->sessionToken = sessionToken;
+	this->discordID = discordID;
+	this->discordAvatarHash = discordAvatarHash;
+	this->games = games;
+	this->cheats = cheats;
 }
 
-LoginResponse::LoginResponse(const char* msg, size_t size, MatchedClient* matchedClient) : Response(msg, size)
+LoginResult LoginResponse::GetResult()
+{
+	return result;
+}
+
+const std::string& LoginResponse::GetSessionToken()
+{
+	return sessionToken;
+}
+
+const std::string& LoginResponse::GetDiscordID()
+{
+	return discordID;
+}
+
+const std::string& LoginResponse::GetDiscordAvatarHash()
+{
+	return discordAvatarHash;
+}
+
+const std::vector<Game*>& LoginResponse::GetGames()
+{
+	return games;
+}
+
+const std::vector<Cheat*>& LoginResponse::GetCheats()
+{
+	return cheats;
+}
+
+#pragma optimize("", off)
+LoginResponse LoginResponse::Deserialize(const std::vector<unsigned char>& payload)
 {
 	VM_SHARK_BLACK_START
-	//login result
-	auto encryptedLoginResult = StringUtilities::StringToByteArray(RawData[0]);
+	STR_ENCRYPT_START
+
+	nlohmann::json jsonPayload = nlohmann::json::parse(StringUtilities::ByteArrayToString(CryptoProvider::GetInstance()->AESDecrypt(payload)));
 	
-	encryptedLoginResult.erase(encryptedLoginResult.begin());
-
-	std::string decryptedLoginResult = matchedClient->aes->Decrypt(encryptedLoginResult);
-
-	std::vector<std::string> decryptedLoginResultSplit = StringUtilities::Split(decryptedLoginResult);
-	Result = static_cast<LoginResult>(decryptedLoginResultSplit[0][0]);
-	if (Result != LoginResult::Success)
-		return;
-
-	decryptedLoginResultSplit[1].erase(decryptedLoginResultSplit[1].begin());
-	decryptedLoginResultSplit[2].erase(decryptedLoginResultSplit[2].begin());
-	decryptedLoginResultSplit[3].erase(decryptedLoginResultSplit[3].begin());
-	SessionToken = decryptedLoginResultSplit[1];
-	DiscordID = decryptedLoginResultSplit[2];
-	AvatarHash = decryptedLoginResultSplit[3];
-	//login result
-
-	//games list
-	auto encryptedGames = StringUtilities::StringToByteArray(RawData[1]);
-
-	encryptedGames.erase(encryptedGames.begin());
-
-	std::string decryptedGames = matchedClient->aes->Decrypt(encryptedGames);
-	std::vector<std::string> decryptedGamesSplit = StringUtilities::Split(decryptedGames);
-	for (int i = 0; i < decryptedGamesSplit.size(); i++)
+	LoginResult result = jsonPayload[xorstr_("Result")];
+	LoginResponse response = LoginResponse(result, "", "", "", {}, {});
+	if (result == LoginResult::Success)
 	{
-		if (i > 0)
-			decryptedGamesSplit[i].erase(decryptedGamesSplit[i].begin());
-		
-		std::vector<std::string> gameSplit = StringUtilities::Split(matchedClient->aes->Decrypt(StringUtilities::StringToByteArray(decryptedGamesSplit[i])));
-		gameSplit[1].erase(gameSplit[1].begin());
-		gameSplit[2].erase(gameSplit[2].begin());
+		std::string sessionToken = jsonPayload[xorstr_("SessionToken")];
+		std::string discordID = jsonPayload[xorstr_("DiscordID")];
+		std::string discordAvatarHash = jsonPayload[xorstr_("DiscordAvatarHash")];
 
-		Games.push_back(new Game(std::stoi(gameSplit[0]), gameSplit[1], gameSplit[2]));
+		std::vector<Game*> games;
+		for (auto game : jsonPayload[xorstr_("Games")])
+		{
+			unsigned int id = game[xorstr_("ID")];
+			std::string name = game[xorstr_("Name")];
+
+			games.push_back(new Game(id, name));
+		}
+
+		std::vector<Cheat*> cheats;
+		for (auto cheat : jsonPayload[xorstr_("Cheats")])
+		{
+			unsigned int id = cheat[xorstr_("ID")];
+			unsigned int gameID = cheat[xorstr_("GameID")];
+			std::string name = cheat[xorstr_("Name")];
+
+			std::vector<std::string> releaseStreams;
+			for (std::string releaseStream : cheat[xorstr_("ReleaseStreams")])
+				releaseStreams.push_back(releaseStream);
+
+			unsigned int startingPrice = cheat[xorstr_("StartingPrice")];
+			CheatStatus status = cheat[xorstr_("Status")];
+			std::string expiresOn = cheat[xorstr_("ExpiresOn")];
+
+			cheats.push_back(new Cheat(id, gameID, name, releaseStreams, startingPrice, status, expiresOn));
+		}
+
+		response = LoginResponse(result, sessionToken, discordID, discordAvatarHash, games, cheats);
 	}
-	//games list
-	
-	//cheats list
-	auto encryptedCheats = StringUtilities::StringToByteArray(RawData[2]);
 
-	encryptedCheats.erase(encryptedCheats.begin());
-
-	std::string decryptedCheats = matchedClient->aes->Decrypt(encryptedCheats);
-	std::vector<std::string> decryptedCheatsSplit = StringUtilities::Split(decryptedCheats);
-	for (int i = 0; i < decryptedCheatsSplit.size(); i++)
-	{
-		if (i > 0)
-			decryptedCheatsSplit[i].erase(decryptedCheatsSplit[i].begin());
-
-		std::vector<std::string> cheatSplit = StringUtilities::Split(matchedClient->aes->Decrypt(StringUtilities::StringToByteArray(decryptedCheatsSplit[i])));
-		for (int j = 1; j < cheatSplit.size(); j++)
-			cheatSplit[j].erase(cheatSplit[j].begin());
-
-		Cheats.push_back(new Cheat(std::stoi(cheatSplit[0]), std::stoi(cheatSplit[1]), Split(cheatSplit[2], ","), cheatSplit[3], std::stoi(cheatSplit[4]), static_cast<CheatStatus>(std::stoi(cheatSplit[5])), cheatSplit[7]));
-	}
-	//cheats list
+	STR_ENCRYPT_END
 	VM_SHARK_BLACK_END
+
+	return response;
 }
+#pragma optimize("", on)

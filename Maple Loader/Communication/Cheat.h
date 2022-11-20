@@ -1,32 +1,30 @@
 #pragma once
 
-enum class CheatStatus
-{
-	UpToDate = 0,
-	Outdated = 1,
-	Detected = 2
-};
+#include <vector>
+#include <string>
 
-struct Cheat
+#include "CheatStatus.h"
+
+class Cheat
 {
+	unsigned int id;
+	unsigned int gameID;
+	std::string name;
+	std::vector<std::string> releaseStreams;
+	unsigned int startingPrice;
+	CheatStatus status;
+	std::string expiresOn;
+public:
 	int CurrentStream = 0;
-	
-	int ID;
-	int GameID;
-	std::vector<std::string> ReleaseStreams;
-	std::string Name;
-	int StartsAt;
-	CheatStatus Status;
-	std::string ExpiresOn;
 
-	Cheat(int id, int gameID, std::vector<std::string> releaseStreams, std::string name, int startsAt, CheatStatus status, std::string expiresOn)
-	{
-		ID = id;
-		GameID = gameID;
-		ReleaseStreams = releaseStreams;
-		Name = name;
-		StartsAt = startsAt;
-		Status = status;
-		ExpiresOn = expiresOn;
-	}
+	Cheat(unsigned int id, unsigned int gameID, const std::string& name, const std::vector<std::string> releaseStreams, unsigned int startingPrice, CheatStatus status, const std::string& expiresOn);
+	Cheat() = default;
+
+	unsigned int GetID();
+	unsigned int GetGameID();
+	const std::string& GetName();
+	std::vector<std::string>& GetReleaseStreams();
+	unsigned int GetStartingPrice();
+	CheatStatus GetStatus();
+	const std::string& GetExpiration();
 };

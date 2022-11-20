@@ -1,36 +1,34 @@
 #include "StringUtilities.h"
 
-std::vector<std::string> StringUtilities::Split(const std::string& s, const std::string& delimiter)
+std::vector<std::string> StringUtilities::Split(std::string s, std::string delimiter)
 {
-    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    std::string token;
-    std::vector<std::string> res;
+	size_t pos = 0;
+	std::string token;
+	std::vector<std::string> ret;
+	while ((pos = s.find(delimiter)) != std::string::npos) {
+		token = s.substr(0, pos);
+		ret.push_back(token);
+		s.erase(0, pos + delimiter.length());
+	}
+	ret.push_back(s);
 
-    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
-        token = s.substr(pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back(token);
-    }
-
-    res.push_back(s.substr(pos_start));
-
-    return res;
+	return ret;
 }
 
 std::vector<unsigned char> StringUtilities::StringToByteArray(const std::string str)
 {
-	std::vector<unsigned char> arr;
-	for (const auto& c : str)
-		arr.push_back(c);
+    std::vector<unsigned char> arr;
+    for (const auto& c : str)
+        arr.push_back(c);
 
-	return arr;
+    return arr;
 }
 
 std::string StringUtilities::ByteArrayToString(const std::vector<unsigned char> arr)
 {
-	std::string str;
-	for (const auto& c : arr)
-		str.push_back(c);
+    std::string str;
+    for (const auto& c : arr)
+        str.push_back(c);
 
-	return str;
+    return str;
 }
