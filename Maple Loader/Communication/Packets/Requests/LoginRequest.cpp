@@ -16,6 +16,7 @@ LoginRequest::LoginRequest(const std::string& username, const std::string& passw
 	this->hwid = hwid;
 }
 
+#pragma optimize("", off)
 std::vector<unsigned char> LoginRequest::Serialize()
 {
 	VM_SHARK_BLACK_START
@@ -39,3 +40,4 @@ std::vector<unsigned char> LoginRequest::Serialize()
 
 	return packet;
 }
+#pragma optimize("", on)

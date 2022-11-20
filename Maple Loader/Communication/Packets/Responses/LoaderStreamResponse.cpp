@@ -23,6 +23,7 @@ const std::vector<unsigned char>& LoaderStreamResponse::GetLoaderData()
 	return loaderData;
 }
 
+#pragma optimize("", off)
 LoaderStreamResponse LoaderStreamResponse::Deserialize(const std::vector<unsigned char>& payload)
 {
 	VM_SHARK_BLACK_START
@@ -40,3 +41,4 @@ LoaderStreamResponse LoaderStreamResponse::Deserialize(const std::vector<unsigne
 
 	return response;
 }
+#pragma optimize("", on)

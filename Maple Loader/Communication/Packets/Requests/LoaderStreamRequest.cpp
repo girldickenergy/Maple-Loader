@@ -14,6 +14,7 @@ LoaderStreamRequest::LoaderStreamRequest(const std::string& sessionToken, unsign
 	this->cheatID = cheatID;
 }
 
+#pragma optimize("", off)
 std::vector<unsigned char> LoaderStreamRequest::Serialize()
 {
 	VM_SHARK_BLACK_START
@@ -35,3 +36,4 @@ std::vector<unsigned char> LoaderStreamRequest::Serialize()
 
 	return packet;
 }
+#pragma optimize("", on)

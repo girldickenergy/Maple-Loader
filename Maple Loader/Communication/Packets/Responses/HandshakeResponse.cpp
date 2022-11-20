@@ -23,6 +23,7 @@ const std::vector<unsigned char>& HandshakeResponse::GetIV()
 	return iv;
 }
 
+#pragma optimize("", off)
 HandshakeResponse HandshakeResponse::Deserialize(const std::vector<unsigned char>& payload)
 {
 	VM_SHARK_BLACK_START
@@ -37,3 +38,4 @@ HandshakeResponse HandshakeResponse::Deserialize(const std::vector<unsigned char
 
 	return response;
 }
+#pragma optimize("", on)
