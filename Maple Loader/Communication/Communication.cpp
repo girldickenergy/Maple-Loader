@@ -305,7 +305,7 @@ bool Communication::Connect()
 	STR_ENCRYPT_START
 
 	tcpClient = TCPClient(&onReceive, &onDisconnect);
-	if (!tcpClient.Connect(xorstr_("127.0.0.1"), xorstr_("9999")))
+	if (!tcpClient.Connect(xorstr_("198.251.89.179"), xorstr_("9999")))
 		return false;
 
 	HandshakeRequest handshakeRequest = HandshakeRequest();
