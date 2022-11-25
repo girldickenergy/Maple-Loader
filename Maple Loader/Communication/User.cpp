@@ -2,6 +2,7 @@
 
 #include "../Utilities/Textures/TextureLoader.h"
 #include "../Utilities/Security/xorstr.hpp"
+#include "../UI/Assets/Textures.h"
 
 User::User(const std::string& username, const std::string& sessionToken, const std::string& discordID, const std::string& avatarHash)
 {
@@ -40,7 +41,11 @@ const std::string& User::GetAvatarHash()
 void* User::GetAvatarTexture()
 {
 	if (!avatarTexture)
+	{
 		avatarTexture = TextureLoader::LoadTextureFromURL(xorstr_("https://cdn.discordapp.com/avatars/") + discordID + xorstr_("/") + avatarHash + xorstr_(".png?size=64"));
+		if (!avatarTexture)
+			avatarTexture = TextureLoader::LoadTextureFromMemory(Textures::DefaultAvatar, Textures::DefaultAvatarSize);
+	}
 
 	return avatarTexture;
 }
