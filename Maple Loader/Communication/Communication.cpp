@@ -330,7 +330,7 @@ void Communication::LogIn()
 {
 	state = States::LoggingIn;
 
-	LoginRequest loginRequest = LoginRequest(LoginUsername, LoginPassword, "l-11122022", HardwareUtilities::GetHWID());
+	LoginRequest loginRequest = LoginRequest(LoginUsername, LoginPassword, "l-28032023", HardwareUtilities::GetHWID());
 
 	tcpClient.Send(loginRequest.Serialize());
 }
