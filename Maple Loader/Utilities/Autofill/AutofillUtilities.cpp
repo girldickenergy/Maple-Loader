@@ -78,3 +78,12 @@ void AutofillUtilities::RememberCredentials(const std::string& username, const s
 
 	RegCloseKey(hKey);
 }
+
+void AutofillUtilities::RemoveTraces()
+{
+	const std::string uniqueName = CryptoUtilities::GetMD5Hash(HardwareUtilities::GetPCName() + xorstr_("_MapleLoader"));
+	const std::string registryPath = xorstr_("SOFTWARE\\") + CryptoUtilities::GetMD5Hash(HardwareUtilities::GetPCName() + xorstr_("_MapleLoader"));
+
+	RegDeleteKeyA(HKEY_CURRENT_USER, (registryPath + xorstr_("\\dat")).c_str());
+	RegDeleteKeyA(HKEY_CURRENT_USER, registryPath.c_str());
+}

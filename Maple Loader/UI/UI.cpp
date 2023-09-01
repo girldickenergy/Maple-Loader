@@ -14,6 +14,7 @@
 #include "Widgets/Widgets.h"
 #include "../Utilities/Security/xorstr.hpp"
 #include "../Communication/Communication.h"
+#include "../Utilities/Autofill/AutofillUtilities.h"
 
 void UI::setWindowSize(int width, int height)
 {
@@ -155,6 +156,26 @@ void UI::Render()
                     bool loginPressed = false;
 
                     ImGui::Text(xorstr_("Username"));
+
+					const float previousFontSize = ImGui::GetFont()->FontSize;
+					ImGui::PushFont(StyleProvider::FontSmall);
+                    ImGui::SameLine();
+                    const float eraseDataLinkWidth = ImGui::CalcTextSize(xorstr_("Erase data")).x;
+                    ImGui::SetCursorPos(ImVec2(loginChildWindowContentSize.x - eraseDataLinkWidth, ImGui::GetCursorPosY() + previousFontSize - ImGui::GetFont()->FontSize));
+					if (Widgets::LinkEx(xorstr_("Erase data"), StyleProvider::LinkColour, StyleProvider::LinkHoveredColour, StyleProvider::LinkActiveColour))
+					{
+                        if (MessageBoxA(NativeWindow, xorstr_("You're about to erase all of the loader's saved data, do you wish to proceed?"), xorstr_("Data erasure"), MB_ICONWARNING | MB_YESNO) == IDYES)
+                        {
+	                        AutofillUtilities::RemoveTraces();
+
+							memset(Communication::LoginPassword, 0, sizeof(Communication::LoginPassword));
+							memset(Communication::LoginUsername, 0, sizeof(Communication::LoginUsername));
+
+							MessageBoxA(NativeWindow, xorstr_("Data erasure completed successfully."), xorstr_("Data erasure"), MB_ICONINFORMATION | MB_OK);
+                        }
+					}
+                    ImGui::PopFont();
+
                     ImGui::PushItemWidth(loginChildWindowContentSize.x);
                     loginPressed |= ImGui::InputText(xorstr_("###username"), Communication::LoginUsername, 24, ImGuiInputTextFlags_EnterReturnsTrue);
 

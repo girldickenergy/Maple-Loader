@@ -494,11 +494,11 @@ bool Widgets::Combo(const char* label, int* current_item, const char* const item
     return value_changed;
 }
 
-void Widgets::LinkEx(const char* label, const char* url, ImVec4 vColor, ImVec4 vHoveredColor, ImVec4 vClickColor)
+bool Widgets::LinkEx(const char* label, ImVec4 vColor, ImVec4 vHoveredColor, ImVec4 vClickColor)
 {
     ImGuiWindow* window = ImGui::GetCurrentWindow();
     if (window->SkipItems)
-        return;
+        return false;
 
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
@@ -508,7 +508,7 @@ void Widgets::LinkEx(const char* label, const char* url, ImVec4 vColor, ImVec4 v
     const ImRect bb(pos, pos + label_size);
     ImGui::ItemSize(bb, 0.0f);
     if (!ImGui::ItemAdd(bb, id))
-        return;
+        return false;
 
     ImGuiButtonFlags flags = 0;
     bool hovered, held;
@@ -564,10 +564,7 @@ void Widgets::LinkEx(const char* label, const char* url, ImVec4 vColor, ImVec4 v
     ImGui::RenderTextClipped(p0, p1, label, NULL, &label_size, style.ButtonTextAlign, &bb);
     ImGui::PopStyleColor(1);
 
-    if (pressed)
-    {
-        ShellExecuteA(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
-    }
+    return pressed;
 }
 
 void Widgets::Link(const char* label, const char* url, bool useSmallFont)
@@ -575,7 +572,8 @@ void Widgets::Link(const char* label, const char* url, bool useSmallFont)
     if (useSmallFont)
         ImGui::PushFont(StyleProvider::FontSmall);
 
-    LinkEx(label, url, StyleProvider::LinkColour, StyleProvider::LinkHoveredColour, StyleProvider::LinkActiveColour);
+    if (LinkEx(label, StyleProvider::LinkColour, StyleProvider::LinkHoveredColour, StyleProvider::LinkActiveColour))
+        ShellExecuteA(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
 
     if (useSmallFont)
         ImGui::PopFont();
@@ -590,7 +588,8 @@ void Widgets::LinkWithText(const char* label, const char* url, const char* text,
 
     ImGui::SameLine(0.f, ImGui::CalcTextSize(" ").x);
 
-    LinkEx(label, url, StyleProvider::LinkColour, StyleProvider::LinkHoveredColour, StyleProvider::LinkActiveColour);
+    if (LinkEx(label, StyleProvider::LinkColour, StyleProvider::LinkHoveredColour, StyleProvider::LinkActiveColour))
+        ShellExecuteA(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
 
     if (useSmallFont)
         ImGui::PopFont();

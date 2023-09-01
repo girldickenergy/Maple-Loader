@@ -28,7 +28,7 @@ public:
 	static bool BeginComboPopup(ImGuiID popup_id, const ImRect& bb, ImGuiComboFlags flags);
 	static bool Combo(const char* label, int* current_item, bool(*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int popup_max_height_in_items = -1);
 	static bool Combo(const char* label, int* current_item, const char* const items[], int items_count, int popup_max_height_in_items = -1);
-	static void LinkEx(const char* label, const char* url, ImVec4 vColor, ImVec4 vHoveredColor, ImVec4 vClickColor);
+	static bool LinkEx(const char* label, ImVec4 vColor, ImVec4 vHoveredColor, ImVec4 vClickColor);
 	static void Link(const char* label, const char* url, bool useSmallFont = true);
 	static void LinkWithText(const char* label, const char* url, const char* text, bool useSmallFont = true);
 	static bool TreeNode(const char* label, void* icon);
