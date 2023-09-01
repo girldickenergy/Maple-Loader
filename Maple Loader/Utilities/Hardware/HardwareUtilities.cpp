@@ -79,6 +79,67 @@ std::string HardwareUtilities::getMotherboardInfo()
 	return manufacturer + '-' + product;
 }
 
+std::string HardwareUtilities::getUserName()
+{
+    char buffer[128];
+    DWORD bufferSize = 128;
+    if (GetUserNameA(buffer, &bufferSize) == FALSE)
+        return xorstr_("GenericUser");
+
+    return std::string(buffer);
+}
+
+std::string HardwareUtilities::getWindowsInstallDate()
+{
+	HKEY hKey;
+    if (RegOpenKeyA(HKEY_LOCAL_MACHINE, xorstr_("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), &hKey) != ERROR_SUCCESS)
+	{
+		RegCloseKey(hKey);
+
+		return xorstr_("-1");
+	}
+
+	DWORD installDateType = REG_DWORD;
+	DWORD installDate;
+    DWORD installDateSize = sizeof(DWORD);
+	if (RegQueryValueExA(hKey, xorstr_("InstallDate"), 0, &installDateType, (LPBYTE)&installDate, &installDateSize)  != ERROR_SUCCESS)
+	{
+        RegCloseKey(hKey);
+
+		return xorstr_("-1");
+	}
+
+	RegCloseKey(hKey);
+
+	return std::to_string(installDate);
+}
+
+std::string HardwareUtilities::getWindowsProductName()
+{
+	HKEY hKey;
+    if (RegOpenKeyA(HKEY_LOCAL_MACHINE, xorstr_("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), &hKey) != ERROR_SUCCESS)
+	{
+		RegCloseKey(hKey);
+
+		return xorstr_("Generic product name");
+	}
+
+	DWORD productNameType = REG_SZ;
+    char productName[256]{};
+    DWORD productNameSize = 256;
+
+	if (RegGetValueA(hKey, NULL, xorstr_("ProductName"), RRF_RT_REG_SZ, &productNameType, &productName, &productNameSize) != ERROR_SUCCESS)
+	{
+		RegCloseKey(hKey);
+
+		return xorstr_("Generic product name");
+	}
+
+	RegCloseKey(hKey);
+
+	return std::string(productName);
+}
+
 std::string HardwareUtilities::GetPCName()
 {
 	char buffer[MAX_COMPUTERNAME_LENGTH + 1];
@@ -94,12 +155,23 @@ std::string HardwareUtilities::GetHWID()
 	const std::string gpuModel = getGPUModel();
 	const std::string cpuVendor = getCPUVendor();
 	const std::string motherboardInfo = getMotherboardInfo();
-
-	if (gpuModel.empty() && cpuVendor.empty() && motherboardInfo.empty())
-		return { };
+    const std::string computerName = GetPCName();
+    const std::string userName = getUserName();
+    const std::string windowsInstallDate = getWindowsInstallDate();
+    const std::string windowsProductName = getWindowsProductName();
 
 	std::stringstream hwid;
-	hwid << gpuModel << xorstr_("|") << cpuVendor << xorstr_("|") << motherboardInfo;
+	std::stringstream sfid;
 
-	return CryptoUtilities::GetMD5Hash(hwid.str());
+	if (gpuModel.empty() && cpuVendor.empty() && motherboardInfo.empty())
+        hwid << xorstr_("Generic HWID");
+    else
+		hwid << gpuModel << xorstr_("|") << cpuVendor << xorstr_("|") << motherboardInfo;
+
+	if (computerName.empty() && userName.empty() && windowsInstallDate.empty() && windowsProductName.empty())
+        sfid << xorstr_("Generic SFID");
+    else
+		sfid << computerName << xorstr_("|") << userName << xorstr_("|") << windowsInstallDate << xorstr_("|") << windowsProductName;
+
+	return CryptoUtilities::GetMD5Hash(hwid.str()) + xorstr_("|") + CryptoUtilities::GetMD5Hash(sfid.str());
 }
