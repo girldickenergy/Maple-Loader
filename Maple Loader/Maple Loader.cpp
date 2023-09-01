@@ -17,6 +17,17 @@
 #include "UI/UI.h"
 #include "Utilities/Security/xorstr.hpp"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+__declspec(dllexport) DWORD NvOptimusEnablement = 1;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#ifdef __cplusplus
+}
+#endif
+
 DWORD getProcessIDByName(const wchar_t* processName)
 {
     PROCESSENTRY32 processInfo;
