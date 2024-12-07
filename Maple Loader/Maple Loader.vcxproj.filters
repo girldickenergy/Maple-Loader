@@ -724,6 +724,9 @@
     <Filter Include="Dependencies\JSON">
       <UniqueIdentifier>{9a9328fe-a58b-42f9-824c-163e1086a363}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\Fnv1a">
+      <UniqueIdentifier>{43fc119d-cec5-40c9-8d53-746f7b8fe2cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\GLFW\glfw3.h">
@@ -1490,6 +1493,9 @@
     </ClInclude>
     <ClInclude Include="Injection\DataWriter.h">
       <Filter>Injection</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Fnv1a\Fnv1a.h">
+      <Filter>Dependencies\Fnv1a</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

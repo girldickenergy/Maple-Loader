@@ -603,6 +603,7 @@
     <ClInclude Include="Dependencies\curl\system.h" />
     <ClInclude Include="Dependencies\curl\typecheck-gcc.h" />
     <ClInclude Include="Dependencies\curl\urlapi.h" />
+    <ClInclude Include="Dependencies\Fnv1a\Fnv1a.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
     <ClInclude Include="Dependencies\ImGui\backends\imgui_impl_glfw.h" />
