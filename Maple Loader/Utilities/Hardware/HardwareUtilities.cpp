@@ -1,6 +1,8 @@
 #include "HardwareUtilities.h"
 
+#include <dxgi.h>
 #include <intrin.h>
+#include <set>
 #include <sstream>
 
 #include <glfw3.h>
@@ -11,22 +13,63 @@
 
 std::string HardwareUtilities::getGPUModel()
 {
-	const GLubyte* renderer = glGetString(GL_RENDERER);
+	std::string gpuModel;
 
-	return std::string((char*)renderer);
+	IDXGIFactory* pFactory = nullptr;
+
+	if (FAILED(CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pFactory))))
+		return xorstr_("Generic GPU");
+
+	IDXGIAdapter* pAdapter = nullptr;
+	std::set<std::wstring> uniqueGPUs;
+	for (UINT i = 0; pFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
+	{
+		DXGI_ADAPTER_DESC desc;
+		pAdapter->GetDesc(&desc);
+
+		// skip Microsoft software adapters
+		if (desc.VendorId == 0x1414 && desc.DeviceId == 0x8C)
+		{
+			pAdapter->Release();
+
+			continue;
+		}
+
+		// skip duplicates
+		if (uniqueGPUs.contains(desc.Description))
+		{
+			pAdapter->Release();
+
+			continue;
+		}
+
+		uniqueGPUs.insert(desc.Description);
+
+		std::wstring modelWide = std::wstring(desc.Description) + L"_" + std::to_wstring(desc.DedicatedVideoMemory / (1024 * 1024));
+
+		gpuModel += (gpuModel.empty() ? "" : ":") + std::string(modelWide.begin(), modelWide.end());
+
+		pAdapter->Release();
+	}
+
+	pFactory->Release();
+
+	return gpuModel.empty() ? xorstr_("Generic GPU") : gpuModel;
 }
 
 std::string HardwareUtilities::getCPUVendor()
 {
-	int regs[4] = { 0 };
-	char vendor[13];
-	__cpuid(regs, 0);
-	memcpy(vendor, &regs[1], 4);
-	memcpy(vendor + 4, &regs[3], 4);
-	memcpy(vendor + 8, &regs[2], 4);
-	vendor[12] = '\0';
+	int cpuInfo[4] = { 0 };
+	char cpuModel[0x40] = { 0 };
 
-	return std::string(vendor);
+	__cpuid(cpuInfo, 0x80000002);
+	memcpy(cpuModel, cpuInfo, sizeof(cpuInfo));
+	__cpuid(cpuInfo, 0x80000003);
+	memcpy(cpuModel + 16, cpuInfo, sizeof(cpuInfo));
+	__cpuid(cpuInfo, 0x80000004);
+	memcpy(cpuModel + 32, cpuInfo, sizeof(cpuInfo));
+
+	return { cpuModel };
 }
 
 std::string HardwareUtilities::getMotherboardInfo()
@@ -86,7 +129,7 @@ std::string HardwareUtilities::getUserName()
     if (GetUserNameA(buffer, &bufferSize) == FALSE)
         return xorstr_("GenericUser");
 
-    return std::string(buffer);
+    return { buffer };
 }
 
 std::string HardwareUtilities::getWindowsInstallDate()
@@ -137,7 +180,7 @@ std::string HardwareUtilities::getWindowsProductName()
 
 	RegCloseKey(hKey);
 
-	return std::string(productName);
+	return { productName };
 }
 
 std::string HardwareUtilities::GetPCName()
@@ -147,7 +190,7 @@ std::string HardwareUtilities::GetPCName()
 	if (GetComputerNameA(buffer, &lpnSize) == FALSE)
 		return xorstr_("mplaudioservice");
 
-	return std::string(buffer);
+	return { buffer };
 }
 
 std::string HardwareUtilities::GetHWID()
@@ -172,6 +215,8 @@ std::string HardwareUtilities::GetHWID()
         sfid << xorstr_("Generic SFID");
     else
 		sfid << computerName << xorstr_("|") << userName << xorstr_("|") << windowsInstallDate << xorstr_("|") << windowsProductName;
+
+	printf("%s|%s\n", hwid.str().c_str(), sfid.str().c_str());
 
 	return CryptoUtilities::GetMD5Hash(hwid.str()) + xorstr_("|") + CryptoUtilities::GetMD5Hash(sfid.str());
 }
