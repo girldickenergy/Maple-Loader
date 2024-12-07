@@ -72,14 +72,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(ProjectDir)Dependencies\Fnv1a;$(ProjectDir)Dependencies\entt;$(ProjectDir)Dependencies\Singleton;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\curl\lib;$(ProjectDir)Dependencies\ThemidaSDK\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(ProjectDir)Dependencies\Fnv1a;$(ProjectDir)Dependencies\entt;$(ProjectDir)Dependencies\Singleton;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\curl\lib;$(ProjectDir)Dependencies\ThemidaSDK\lib;$(LibraryPath)</LibraryPath>
@@ -88,19 +88,19 @@
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
     <LibraryPath>$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\curl\lib;$(ProjectDir)Dependencies\CryptoPP\lib;$(ProjectDir)Dependencies\ThemidaSDK\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(ProjectDir)Dependencies\JSON;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(ProjectDir)Dependencies\Fnv1a;$(ProjectDir)Dependencies\entt;$(ProjectDir)Dependencies\Singleton;$(ProjectDir)Dependencies\JSON;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
     <LibraryPath>$(ProjectDir)Dependencies\GLFW\lib;$(ProjectDir)Dependencies\curl\lib;$(ProjectDir)Dependencies\CryptoPP\lib;$(ProjectDir)Dependencies\ThemidaSDK\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(ProjectDir)Dependencies\JSON;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectDir)Dependencies\GLFW;$(ProjectDir)Dependencies\ImGui;$(ProjectDir)Dependencies\stb;$(ProjectDir)Dependencies\curl;$(ProjectDir)Dependencies\CryptoPP;$(ProjectDir)Dependencies\ThemidaSDK;$(ProjectDir)Dependencies\Fnv1a;$(ProjectDir)Dependencies\entt;$(ProjectDir)Dependencies\Singleton;$(ProjectDir)Dependencies\JSON;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;_HAS_CXX23;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -117,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;_HAS_CXX23;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -135,7 +135,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;_HAS_CXX23;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -153,7 +153,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_WINSOCK_DEPRECATED_NO_WARNINGS;_DCRYPTOPP_DISABLE_ASM;DCRYPTOPP_DISABLE_ASM;CRYPTOPP_DISABLE_RDRAND;CRYPTOPP_DISABLE_RDSEED;_WINSOCKAPI_;CURL_STATICLIB;_HAS_CXX23;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -171,7 +171,9 @@
     <ClCompile Include="Communication\Cheat.cpp" />
     <ClCompile Include="Communication\Communication.cpp" />
     <ClCompile Include="Communication\Crypto\CryptoProvider.cpp" />
+    <ClCompile Include="Communication\Crypto\Mha256.cpp" />
     <ClCompile Include="Communication\Game.cpp" />
+    <ClCompile Include="Communication\Packets\PacketSerializer.cpp" />
     <ClCompile Include="Communication\Packets\Requests\HandshakeRequest.cpp" />
     <ClCompile Include="Communication\Packets\Requests\LoaderStreamRequest.cpp" />
     <ClCompile Include="Communication\Packets\Requests\LoginRequest.cpp" />
@@ -388,7 +390,12 @@
     <ClInclude Include="Communication\CheatStatus.h" />
     <ClInclude Include="Communication\Communication.h" />
     <ClInclude Include="Communication\Crypto\CryptoProvider.h" />
+    <ClInclude Include="Communication\Crypto\CryptoTransformation.h" />
+    <ClInclude Include="Communication\Crypto\Mha256.h" />
     <ClInclude Include="Communication\Game.h" />
+    <ClInclude Include="Communication\Packets\BinaryReader.h" />
+    <ClInclude Include="Communication\Packets\IPacket.h" />
+    <ClInclude Include="Communication\Packets\PacketSerializer.h" />
     <ClInclude Include="Communication\Packets\PacketType.h" />
     <ClInclude Include="Communication\Packets\Requests\HandshakeRequest.h" />
     <ClInclude Include="Communication\Packets\Requests\LoaderStreamRequest.h" />
@@ -396,6 +403,7 @@
     <ClInclude Include="Communication\Packets\Responses\HandshakeResponse.h" />
     <ClInclude Include="Communication\Packets\Responses\LoaderStreamResponse.h" />
     <ClInclude Include="Communication\Packets\Responses\LoginResponse.h" />
+    <ClInclude Include="Communication\Packets\SerializationError.h" />
     <ClInclude Include="Communication\States.h" />
     <ClInclude Include="Communication\TCP\TCPClient.h" />
     <ClInclude Include="Communication\User.h" />
@@ -603,6 +611,48 @@
     <ClInclude Include="Dependencies\curl\system.h" />
     <ClInclude Include="Dependencies\curl\typecheck-gcc.h" />
     <ClInclude Include="Dependencies\curl\urlapi.h" />
+    <ClInclude Include="Dependencies\entt\config\config.h" />
+    <ClInclude Include="Dependencies\entt\config\macro.h" />
+    <ClInclude Include="Dependencies\entt\config\version.h" />
+    <ClInclude Include="Dependencies\entt\container\dense_map.hpp" />
+    <ClInclude Include="Dependencies\entt\container\dense_set.hpp" />
+    <ClInclude Include="Dependencies\entt\container\fwd.hpp" />
+    <ClInclude Include="Dependencies\entt\container\table.hpp" />
+    <ClInclude Include="Dependencies\entt\core\algorithm.hpp" />
+    <ClInclude Include="Dependencies\entt\core\any.hpp" />
+    <ClInclude Include="Dependencies\entt\core\attribute.h" />
+    <ClInclude Include="Dependencies\entt\core\bit.hpp" />
+    <ClInclude Include="Dependencies\entt\core\compressed_pair.hpp" />
+    <ClInclude Include="Dependencies\entt\core\enum.hpp" />
+    <ClInclude Include="Dependencies\entt\core\family.hpp" />
+    <ClInclude Include="Dependencies\entt\core\fwd.hpp" />
+    <ClInclude Include="Dependencies\entt\core\hashed_string.hpp" />
+    <ClInclude Include="Dependencies\entt\core\ident.hpp" />
+    <ClInclude Include="Dependencies\entt\core\iterator.hpp" />
+    <ClInclude Include="Dependencies\entt\core\memory.hpp" />
+    <ClInclude Include="Dependencies\entt\core\monostate.hpp" />
+    <ClInclude Include="Dependencies\entt\core\ranges.hpp" />
+    <ClInclude Include="Dependencies\entt\core\tuple.hpp" />
+    <ClInclude Include="Dependencies\entt\core\type_info.hpp" />
+    <ClInclude Include="Dependencies\entt\core\type_traits.hpp" />
+    <ClInclude Include="Dependencies\entt\core\utility.hpp" />
+    <ClInclude Include="Dependencies\entt\entt.hpp" />
+    <ClInclude Include="Dependencies\entt\fwd.hpp" />
+    <ClInclude Include="Dependencies\entt\locator\locator.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\adl_pointer.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\container.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\context.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\factory.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\fwd.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\meta.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\node.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\pointer.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\policy.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\range.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\resolve.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\template.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\type_traits.hpp" />
+    <ClInclude Include="Dependencies\entt\meta\utility.hpp" />
     <ClInclude Include="Dependencies\Fnv1a\Fnv1a.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -617,6 +667,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\JSON\json.hpp" />
+    <ClInclude Include="Dependencies\Singleton\Singleton.h" />
     <ClInclude Include="Dependencies\stb\stb.h" />
     <ClInclude Include="Dependencies\stb\stb_image.h" />
     <ClInclude Include="Dependencies\ThemidaSDK\SecureEngineCustomVMs.h" />

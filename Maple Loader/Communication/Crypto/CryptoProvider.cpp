@@ -1,5 +1,8 @@
 #include "CryptoProvider.h"
 
+#include <random>
+#include <bit>
+
 #include "base64.h"
 #include "modes.h"
 #include "osrng.h"
@@ -7,14 +10,14 @@
 #include "ThemidaSDK.h"
 
 #include "../../Utilities/Security/xorstr.hpp"
+#include "CryptoTransformation.h"
+#include "glfw3.h"
+#include <WinUser.h>
+#include "../../UI/UI.h"
 
-using namespace CryptoPP;
-
-CryptoProvider::CryptoProvider()
+[[clang::optnone]] CryptoProvider::CryptoProvider(singletonLock)
 {
     VM_FISH_RED_START
-    STR_ENCRYPT_START
-    xorKey = xorstr_("xjCFQ58Pqd8KPNHp");
 
     const std::string rsaPrivateKeyStr =
         xorstr_("-----BEGIN PRIVATE KEY-----\n"
@@ -47,9 +50,10 @@ CryptoProvider::CryptoProvider()
         "-----END PRIVATE KEY-----\n");
 
     CryptoPP::StringSource source(rsaPrivateKeyStr, true);
-    CryptoPP::PEM_Load(source, rsaPrivateKey);
+    CryptoPP::PEM_Load(source, m_RsaPrivateKey);
 
-    STR_ENCRYPT_END
+    m_Mha256 = Mha256();
+
     VM_FISH_RED_END
 }
 
@@ -57,29 +61,27 @@ void CryptoProvider::InitializeAES(const std::vector<unsigned char>& key, const 
 {
     VM_FISH_RED_START
 
-    aesKeyBlock = SecByteBlock((&key[0]), key.size());
-    aesIVBlock = SecByteBlock((&iv[0]), iv.size());
+    m_AesKeyBlock = CryptoPP::SecByteBlock((&key[0]), key.size());
+    m_AesIvBlock = CryptoPP::SecByteBlock((&iv[0]), iv.size());
 
     VM_FISH_RED_END
 }
 
-std::vector<unsigned char> CryptoProvider::XOR(const std::vector<unsigned char>& data)
+std::string CryptoProvider::Base64Encode(const std::vector<unsigned char>& data)
 {
     VM_FISH_RED_START
 
-    std::vector<unsigned char> result = data;
+    std::string encoded;
 
-    unsigned int j = 0;
-    for (unsigned int i = 0; i < data.size(); i++)
-    {
-        result[i] = data[i] ^ xorKey[j];
-
-        j = (++j < xorKey.length() ? j : 0);
-    }
+    CryptoPP::VectorSource ss(data, true,
+        new CryptoPP::Base64Encoder(
+            new CryptoPP::StringSink(encoded), false
+        )
+    );
 
     VM_FISH_RED_END
 
-    return result;
+    return encoded;
 }
 
 std::vector<unsigned char> CryptoProvider::Base64Decode(const std::string& encoded)
@@ -88,9 +90,9 @@ std::vector<unsigned char> CryptoProvider::Base64Decode(const std::string& encod
 
     std::vector<unsigned char> decoded;
 
-    StringSource ss(encoded, true,
-        new Base64Decoder(
-            new VectorSink(decoded)
+    CryptoPP::StringSource ss(encoded, true,
+        new CryptoPP::Base64Decoder(
+            new CryptoPP::VectorSink(decoded)
         )
     );
 
@@ -105,7 +107,7 @@ std::vector<unsigned char> CryptoProvider::RSADecrypt(const std::vector<unsigned
 
     CryptoPP::AutoSeededRandomPool rng;
 
-    CryptoPP::RSAES_OAEP_SHA_Decryptor decryptor(rsaPrivateKey);
+    CryptoPP::RSAES_OAEP_SHA_Decryptor decryptor(m_RsaPrivateKey);
 
     size_t dpl = decryptor.MaxPlaintextLength(ciphertext.size());
     CryptoPP::SecByteBlock recovered(dpl);
@@ -121,18 +123,18 @@ std::vector<unsigned char> CryptoProvider::AESEncrypt(const std::vector<unsigned
 {
     VM_FISH_RED_START
 
-    if (aesKeyBlock.empty() || aesKeyBlock.size() <= 0)
+    if (m_AesKeyBlock.empty() || m_AesKeyBlock.size() <= 0)
         return {};
 
-    if (aesIVBlock.empty() || aesIVBlock.size() <= 0)
+    if (m_AesIvBlock.empty() || m_AesIvBlock.size() <= 0)
         return {};
 
-    AutoSeededRandomPool prng;
+    CryptoPP::AutoSeededRandomPool prng;
 
     std::vector<unsigned char> cipher;
 
-    CryptoPP::AES::Encryption aesEncryption(aesKeyBlock, 32);
-    CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, aesIVBlock);
+    CryptoPP::AES::Encryption aesEncryption(m_AesKeyBlock, 32);
+    CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, m_AesIvBlock);
 
     CryptoPP::StreamTransformationFilter stfEncryptor(cbcEncryption, new CryptoPP::VectorSink(cipher));
     stfEncryptor.Put(reinterpret_cast<const unsigned char*>(&cleartext[0]), cleartext.size());
@@ -147,13 +149,13 @@ std::vector<unsigned char> CryptoProvider::AESDecrypt(const std::vector<unsigned
 {
     VM_FISH_RED_START
 
-    if (aesKeyBlock.empty() || aesKeyBlock.size() <= 0)
+    if (m_AesKeyBlock.empty() || m_AesKeyBlock.size() <= 0)
         return {};
 
-    if (aesIVBlock.empty() || aesIVBlock.size() <= 0)
+    if (m_AesIvBlock.empty() || m_AesIvBlock.size() <= 0)
         return {};
 
-    AutoSeededRandomPool prng;
+    CryptoPP::AutoSeededRandomPool prng;
 
     std::vector<unsigned char> recovered;
 
@@ -163,21 +165,121 @@ std::vector<unsigned char> CryptoProvider::AESDecrypt(const std::vector<unsigned
     {
         VM_FISH_RED_START
 
-        CBC_Mode<AES>::Decryption d;
-        d.SetKeyWithIV(aesKeyBlock, aesKeyBlock.size(), aesIVBlock);
+        CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption d;
+        d.SetKeyWithIV(m_AesKeyBlock, m_AesKeyBlock.size(), m_AesIvBlock);
 
-        VectorSource s(ciphertext, true,
-            new StreamTransformationFilter(d,
-                new VectorSink(recovered)
+        CryptoPP::VectorSource s(ciphertext, true,
+            new CryptoPP::StreamTransformationFilter(d,
+                new CryptoPP::VectorSink(recovered)
             )
         );
 
         VM_FISH_RED_END
     }
-    catch (Exception& e)
+    catch (CryptoPP::Exception& e)
     {
         return {};
     }
 
     return recovered;
+}
+
+std::vector<uint8_t> CryptoProvider::ApplyCryptoTransformations(const std::vector<uint8_t>& buffer, uint32_t key1, uint32_t key2, uint32_t key3, bool reverse)
+{
+    VM_FISH_WHITE_START
+
+    key1 ^= key3;
+    key2 ^= key3;
+    auto transformedBuffer = std::vector<uint8_t>(buffer);
+    std::mt19937 rng(static_cast<int32_t>(key1 ^ key2 ^ key3));
+    std::uniform_int_distribution<int> dist(0, static_cast<int>(CryptoTransformation::Cancer));
+
+    uint8_t previousByte = 0x00;
+    for (size_t i = 0; i < transformedBuffer.size(); i++)
+    {
+        auto transformation = dist(rng);
+
+        if (reverse)
+        {
+            transformedBuffer[i] ^= (i > 0 ? previousByte : 0);
+            previousByte = (transformedBuffer[i] ^ previousByte);
+        }
+
+        VM_FISH_WHITE_END
+
+        switch (transformation)
+        {
+            case Xor:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= (key1 ^ key2);
+                VM_FISH_WHITE_END
+                break;
+            case Shl:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= (key1 ^ key2) << ((i + 1) % 16);
+                VM_FISH_WHITE_END
+                break;
+            case Shr:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= (key1 ^ key2) >> (16 - ((i + 1) % 16));
+                VM_FISH_WHITE_END
+                break;
+            case Shlr:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= (key1 << ((i + 1) % 16) ^ (key2 >> (16 - ((i + 1) % 16))));
+                VM_FISH_WHITE_END
+                break;
+            case Rol:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= std::rotl(key1 ^ key2, (i + 1) % 16);
+                VM_FISH_WHITE_END
+                break;
+            case Ror:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= std::rotr(key1 ^ key2, 16 - ((i + 1) % 16));
+                VM_FISH_WHITE_END
+                break;
+            case Rolr:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= std::rotl(key1, (i + 1) % 16) ^ std::rotr(key2, 16 - ((i + 1) % 16));
+                VM_FISH_WHITE_END
+                break;
+            case Add:
+                VM_FISH_WHITE_START
+                if (reverse)
+                    transformedBuffer[i] -= key1 ^ key2;
+                else
+                    transformedBuffer[i] += key1 ^ key2;
+                VM_FISH_WHITE_END
+                break;
+            case Sub:
+                VM_FISH_WHITE_START
+                if (reverse)
+                    transformedBuffer[i] += key1 ^ key2;
+                else
+                    transformedBuffer[i] -= key1 ^ key2;
+                VM_FISH_WHITE_END
+                break;
+            case Cancer:
+                VM_FISH_WHITE_START
+                transformedBuffer[i] ^= key1 ^ key2 ^ 0xdeadbeef ^ std::rotl(key3, (i + 1) % 16) ^ (key3 >> (16 - ((i + 1) % 16)));
+                VM_FISH_WHITE_END
+                break;
+            default:
+                VM_FISH_WHITE_START
+                MessageBoxA(UI::NativeWindow, xorstr_("You have been disconnected from the server.\nThe application will now exit."), xorstr_("Fatal error"), MB_ICONERROR | MB_OK);
+                glfwSetWindowShouldClose(UI::GLFWWindow, 1);
+                VM_FISH_WHITE_END
+                break;
+        }
+
+        VM_FISH_WHITE_START
+
+        if (!reverse)
+            transformedBuffer[i] ^= i > 0 ? transformedBuffer[i - 1] : 0;
+    }
+
+    VM_FISH_WHITE_END
+
+    return transformedBuffer;
 }

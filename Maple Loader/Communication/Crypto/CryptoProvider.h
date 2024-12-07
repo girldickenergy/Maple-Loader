@@ -4,30 +4,33 @@
 
 #include "rsa.h"
 #include "secblock.h"
+#include "../Singleton/Singleton.h"
 
-class CryptoProvider
+#include "Mha256.h"
+
+class CryptoProvider : public Singleton<CryptoProvider>
 {
-	std::string xorKey;
-	CryptoPP::RSA::PrivateKey rsaPrivateKey;
-	CryptoPP::SecByteBlock aesKeyBlock;
-	CryptoPP::SecByteBlock aesIVBlock;
-
-	static inline CryptoProvider* instance = nullptr;
-	CryptoProvider();
+	CryptoPP::RSA::PrivateKey m_RsaPrivateKey;
+	CryptoPP::SecByteBlock m_AesKeyBlock;
+	CryptoPP::SecByteBlock m_AesIvBlock;
+	Mha256 m_Mha256;
 public:
-	static CryptoProvider* GetInstance()
-	{
-		if (!instance)
-			instance = new CryptoProvider();
-
-		return instance;
-	}
+	CryptoProvider(singletonLock);
 
 	void InitializeAES(const std::vector<unsigned char>& key, const std::vector<unsigned char>& iv);
 
-	std::vector<unsigned char> XOR(const std::vector<unsigned char>& data);
+	std::string Base64Encode(const std::vector<unsigned char>& data);
 	std::vector<unsigned char> Base64Decode(const std::string& encoded);
 	std::vector<unsigned char> RSADecrypt(const std::vector<unsigned char>& ciphertext);
 	std::vector<unsigned char> AESEncrypt(const std::vector<unsigned char>& cleartext);
 	std::vector<unsigned char> AESDecrypt(const std::vector<unsigned char>& ciphertext);
+
+	std::vector<uint8_t> ApplyCryptoTransformations(const std::vector<uint8_t>& buffer, uint32_t key1, uint32_t key2, uint32_t key3, bool reverse = false);
+
+	__forceinline std::array<uint8_t, 32> ComputeHashMha256(const std::vector<uint8_t>& buffer) // DO NOT use outside vm macros
+	{
+		auto result = m_Mha256.ComputeHash(buffer);
+
+		return result;
+	}
 };
