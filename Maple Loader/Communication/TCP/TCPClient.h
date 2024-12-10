@@ -7,26 +7,29 @@
 
 class TCPClient
 {
-	static inline unsigned int constexpr BUFFER_LENGTH = 8192;
-	static inline unsigned int constexpr PACKET_HEADER_SIZE = 8;
-	static inline unsigned int constexpr PACKET_HEADER_SIGNATURE = 0xdeadbeef;
+	static const int32_t constexpr HeaderSize = 8 * sizeof(uint32_t);
+	static const uint32_t constexpr HeaderSignature = 0xdeadbeef;
+	static const uint32_t constexpr SeedXor = 0x1032399B;
+	static const uint32_t constexpr RandomSequenceElementCount = 5;
+	static const int32_t constexpr MaxSegmentLength = 8192;
 
-	bool connected = false;
+	bool m_Connected = false;
 	SOCKET m_socket;
 	std::thread* m_receiveThread = nullptr;
 
-	typedef void (*fn_receiveCallback)(const std::vector<unsigned char>& data);
-	fn_receiveCallback receiveCallback = nullptr;
+	typedef void (*fn_receiveCallback)(const std::vector<uint8_t>& data);
+	fn_receiveCallback m_ReceiveCallback = nullptr;
 
 	typedef void (*fn_disconnectedCallback)();
-	fn_disconnectedCallback disconnectedCallback = nullptr;
+	fn_disconnectedCallback m_DisconnectedCallback = nullptr;
 
-	std::vector<unsigned char> receiveStreamData;
-	bool isReceiving = false;
-	int receiveStreamLength;
-	int receiveStreamRemainingLength;
+	std::vector<uint8_t> m_ReceiveStreamData;
+	bool m_IsReceiving = false;
+	int m_ReceiveStreamLength;
+	int m_ReceiveStreamRemainingLength;
 
 	void receiveThread();
+	void receive()
 public:
 	TCPClient() = default;
 	TCPClient(fn_receiveCallback receiveCallback, fn_disconnectedCallback disconnectedCallback);
@@ -34,5 +37,5 @@ public:
 
 	bool Connect(const std::string& host, const std::string& port);
 	void Disconnect();
-	void Send(const std::vector<unsigned char>& data);
+	void Send(const std::vector<uint8_t>& data);
 };

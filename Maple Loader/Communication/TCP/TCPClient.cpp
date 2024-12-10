@@ -1,52 +1,76 @@
 #include "TCPClient.h"
 
+#include <random>
 #include <ws2tcpip.h>
 
 void TCPClient::receiveThread()
 {
-    while (connected)
+    while (m_Connected)
     {
-        char buffer[BUFFER_LENGTH];
-        const int bytesReceived = recv(m_socket, buffer, BUFFER_LENGTH, 0);
-        if (bytesReceived <= 0)
+        char buffer[MaxSegmentLength];
+        const int bytesReceived = recv(m_socket, buffer, MaxSegmentLength, 0);
+        if (bytesReceived <= 0 || (!m_IsReceiving && bytesReceived < HeaderSize))
         {
-            if (disconnectedCallback)
-                disconnectedCallback();
-
             Disconnect();
 
             return;
         }
 
-		if (!isReceiving && *reinterpret_cast<unsigned int*>(buffer) == PACKET_HEADER_SIGNATURE)
-		{
-			isReceiving = true;
-			receiveStreamLength = *reinterpret_cast<int*>(buffer + sizeof(unsigned int)) + PACKET_HEADER_SIZE;
-            receiveStreamRemainingLength = receiveStreamLength;
-		}
-
-        receiveStreamRemainingLength -= bytesReceived;
-        receiveStreamData.insert(receiveStreamData.end(), buffer, buffer + bytesReceived);
-
-        if (receiveStreamRemainingLength == 0)
+        if (!m_IsReceiving)
         {
-            receiveStreamData.erase(receiveStreamData.begin(), receiveStreamData.begin() + PACKET_HEADER_SIZE);
+            auto signature = *reinterpret_cast<uint32_t*>(buffer);
+            auto seed = *reinterpret_cast<uint32_t*>(buffer + sizeof(uint32_t));
 
-            if (receiveCallback)
-                receiveCallback(receiveStreamData);
+            if ((signature ^ seed) != HeaderSignature)
+            {
+                Disconnect();
 
-            receiveStreamLength = 0;
-            receiveStreamRemainingLength = 0;
-            isReceiving = false;
-            receiveStreamData.clear();
+                return;
+            }
+
+            std::mt19937 random(seed);
+            std::uniform_int_distribution dist(INT_MIN, INT_MAX - 1);
+
+            for (auto i = 0; i < RandomSequenceElementCount; i++)
+            {
+                if (*reinterpret_cast<uint32_t*>(buffer + sizeof(uint32_t) * (2 + i)) != static_cast<uint32_t>(dist(random)))
+                {
+                    Disconnect();
+
+                    return;
+                }
+            }
+
+            m_IsReceiving = true;
+            m_ReceiveStreamLength = *reinterpret_cast<int32_t*>(buffer + HeaderSize - sizeof(int32_t)) + HeaderSize;
+            m_ReceiveStreamRemainingLength = m_ReceiveStreamLength;
         }
+
+        if (!m_IsReceiving)
+            continue;
+
+        m_ReceiveStreamRemainingLength -= (std::min)(bytesReceived, m_ReceiveStreamLength);
+        m_ReceiveStreamData.insert(m_ReceiveStreamData.end(), buffer, buffer + (std::min)(bytesReceived, m_ReceiveStreamLength));
+
+        if (m_ReceiveStreamRemainingLength != 0)
+            continue;
+
+        m_ReceiveStreamData.erase(m_ReceiveStreamData.begin(), m_ReceiveStreamData.begin() + HeaderSize);
+
+        if (m_ReceiveCallback)
+            m_ReceiveCallback(m_ReceiveStreamData);
+
+        m_ReceiveStreamLength = 0;
+        m_ReceiveStreamRemainingLength = 0;
+        m_IsReceiving = false;
+        m_ReceiveStreamData.clear();
     }
 }
 
 TCPClient::TCPClient(fn_receiveCallback receiveCallback, fn_disconnectedCallback disconnectedCallback)
 {
-	this->receiveCallback = receiveCallback;
-    this->disconnectedCallback = disconnectedCallback;
+	this->m_ReceiveCallback = receiveCallback;
+    this->m_DisconnectedCallback = disconnectedCallback;
 }
 
 TCPClient::~TCPClient()
@@ -109,16 +133,19 @@ bool TCPClient::Connect(const std::string& host, const std::string& port)
 
     m_receiveThread = new std::thread(&TCPClient::receiveThread, this);
 
-    connected = true;
+    m_Connected = true;
 
     return true;
 }
 
 void TCPClient::Disconnect()
 {
-    if (connected)
+    if (m_DisconnectedCallback)
+        m_DisconnectedCallback();
+
+    if (m_Connected)
     {
-        connected = false;
+        m_Connected = false;
 
         if (m_receiveThread)
         {
@@ -137,19 +164,40 @@ void TCPClient::Disconnect()
 
 void TCPClient::Send(const std::vector<unsigned char>& data)
 {
-    unsigned char header[PACKET_HEADER_SIZE];
-    *reinterpret_cast<unsigned int*>(header) = PACKET_HEADER_SIGNATURE;
-    *reinterpret_cast<int*>(header + sizeof(unsigned int)) = data.size();
+    std::vector<uint8_t> packet;
 
-    std::vector<unsigned char> packet;
-    packet.insert(packet.begin(), header, header + PACKET_HEADER_SIZE);
+    auto rd = std::random_device();
+
+    uint32_t seed = rd();
+    uint32_t signature = HeaderSignature ^ seed;
+    int32_t bufferLength = data.size();
+
+    std::mt19937 random(seed);
+    std::uniform_int_distribution dist(INT_MIN, INT_MAX - 1);
+
+    std::vector<uint32_t> randomSequence;
+    for (auto i = 0; i < RandomSequenceElementCount; i++)
+        randomSequence.push_back(dist(random));
+
+    packet.insert(packet.end(), &signature, &signature + sizeof(uint32_t));
+    packet.insert(packet.end(), &seed, &seed + sizeof(uint32_t));
+    packet.insert(packet.end(), randomSequence.begin(), randomSequence.end());
+    packet.insert(packet.end(), &bufferLength, &bufferLength + sizeof(int32_t));
+
+    if (packet.size() != HeaderSize)
+    {
+        Disconnect();
+
+        return;
+    }
+
     packet.insert(packet.end(), data.begin(), data.end());
 
     int remainingBytes = packet.size();
     int offset = 0;
     while (remainingBytes > 0)
     {
-	    const int bytesToSend = (std::min)(BUFFER_LENGTH, static_cast<unsigned>(remainingBytes));
+	    const int bytesToSend = (std::min)(MaxSegmentLength, remainingBytes);
 
 		send(m_socket, reinterpret_cast<char*>(packet.data() + offset), bytesToSend, 0);
 
