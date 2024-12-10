@@ -751,6 +751,9 @@
     <Filter Include="Dependencies\Singleton">
       <UniqueIdentifier>{c3cc0f05-99bf-4687-8b40-5fc24140c7df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilities\Reflection">
+      <UniqueIdentifier>{16fa8900-82cc-4724-8e3b-0fd7559c7b66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\GLFW\glfw3.h">
@@ -1665,8 +1668,8 @@
     <ClInclude Include="Communication\Packets\RequestResult.h">
       <Filter>Communication\Packets</Filter>
     </ClInclude>
-    <ClInclude Include="Communication\Packets\PacketRegistrar.h">
-      <Filter>Communication\Packets</Filter>
+    <ClInclude Include="Utilities\Reflection\TypeRegistrar.h">
+      <Filter>Utilities\Reflection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

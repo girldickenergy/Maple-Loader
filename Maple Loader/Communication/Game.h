@@ -4,17 +4,18 @@
 
 class Game
 {
-	unsigned int id;
-	std::string name;
-	void* iconTexture;
-	void* bannerTexture;
+	uint32_t m_ID;
+	std::string m_Name;
+	void* m_IconTexture;
+	void* m_BannerTexture;
 public:
-	Game(unsigned int id, const std::string& name);
 	Game() = default;
 	~Game();
 
-	unsigned int GetID();
+	uint32_t GetID();
 	const std::string& GetName();
 	void* GetIconTexture();
 	void* GetBannerTexture();
+
+	static void Register();
 };

@@ -3,9 +3,9 @@
 #include "entt.hpp"
 #include "Fnv1a.h"
 
-#include "../PacketRegistrar.h"
+#include "../../Utilities/Reflection/TypeRegistrar.h"
 
-static const PacketRegistrar<HandshakeRequest> registrar;
+static const TypeRegistrar<HandshakeRequest> registrar;
 
 uint32_t HandshakeRequest::GetStaticIdentifier()
 {

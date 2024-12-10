@@ -3,9 +3,9 @@
 #include "entt.hpp"
 #include "Fnv1a.h"
 
-#include "../PacketRegistrar.h"
+#include "../../Utilities/Reflection/TypeRegistrar.h"
 
-static const PacketRegistrar<LoaderStreamRequest> registrar;
+static const TypeRegistrar<LoaderStreamRequest> registrar;
 
 uint32_t LoaderStreamRequest::GetStaticIdentifier()
 {

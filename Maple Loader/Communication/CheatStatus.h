@@ -1,6 +1,6 @@
 #pragma once
 
-enum class CheatStatus
+enum class CheatStatus : uint32_t
 {
 	Undetected = 0,
 	Outdated = 1,

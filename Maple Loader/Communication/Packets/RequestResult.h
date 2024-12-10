@@ -1,6 +1,6 @@
 #pragma once
 
-enum class RequestResult : int
+enum class RequestResult : int32_t
 {
     InvalidRequest = -1,
     Success = 0,

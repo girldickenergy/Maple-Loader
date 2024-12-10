@@ -1,54 +1,66 @@
 #include "Game.h"
 
+#include "entt.hpp"
+#include "Fnv1a.h"
+
 #include "../Utilities/Security/xorstr.hpp"
 #include "../Utilities/Textures/TextureLoader.h"
+#include "../Utilities/Reflection/TypeRegistrar.h"
 #include "../UI/Assets/Textures.h"
 
-Game::Game(unsigned int id, const std::string& name)
-{
-	this->id = id;
-	this->name = name;
-}
+static const TypeRegistrar<Game> registrar;
 
 Game::~Game()
 {
-	if (iconTexture)
-		TextureLoader::FreeTexture(iconTexture);
+	if (m_IconTexture)
+		TextureLoader::FreeTexture(m_IconTexture);
 
-	if (bannerTexture)
-		TextureLoader::FreeTexture(bannerTexture);
+	if (m_BannerTexture)
+		TextureLoader::FreeTexture(m_BannerTexture);
 }
 
-unsigned int Game::GetID()
+uint32_t Game::GetID()
 {
-	return id;
+	return m_ID;
 }
 
 const std::string& Game::GetName()
 {
-	return name;
+	return m_Name;
 }
 
 void* Game::GetIconTexture()
 {
-	if (!iconTexture)
+	if (!m_IconTexture)
 	{
-		iconTexture = TextureLoader::LoadTextureFromURL(xorstr_("https://maple.software/assets/games/icons/") + std::to_string(id) + xorstr_(".png"));
-		if (!iconTexture)
-			iconTexture = TextureLoader::LoadTextureFromMemory(Textures::DefaultGameIcon, Textures::DefaultGameIconSize);
+		m_IconTexture = TextureLoader::LoadTextureFromURL(xorstr_("https://maple.software/assets/games/icons/") + std::to_string(m_ID) + xorstr_(".png"));
+
+		if (!m_IconTexture)
+			m_IconTexture = TextureLoader::LoadTextureFromMemory(Textures::DefaultGameIcon, Textures::DefaultGameIconSize);
 	}
 
-	return iconTexture;
+	return m_IconTexture;
 }
 
 void* Game::GetBannerTexture()
 {
-	if (!bannerTexture)
+	if (!m_BannerTexture)
 	{
-		bannerTexture = TextureLoader::LoadTextureFromURL(xorstr_("https://maple.software/assets/games/banners/") + std::to_string(id) + xorstr_(".png"));
-		if (!bannerTexture)
-			bannerTexture = TextureLoader::LoadTextureFromMemory(Textures::DefaultBanner, Textures::DefaultBannerSize);
+		m_BannerTexture = TextureLoader::LoadTextureFromURL(xorstr_("https://maple.software/assets/games/banners/") + std::to_string(m_ID) + xorstr_(".png"));
+
+		if (!m_BannerTexture)
+			m_BannerTexture = TextureLoader::LoadTextureFromMemory(Textures::DefaultBanner, Textures::DefaultBannerSize);
 	}
 
-	return bannerTexture;
+	return m_BannerTexture;
+}
+
+void Game::Register()
+{
+	if (registrar.IsRegistered)
+		return;
+
+	entt::meta<Game>()
+		.data<&Game::m_ID>(Hash32Fnv1aConst("ID"))
+		.data<&Game::m_Name>(Hash32Fnv1aConst("Name"));
 }

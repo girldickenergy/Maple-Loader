@@ -7,17 +7,16 @@
 
 class Cheat
 {
-	unsigned int id;
-	unsigned int gameID;
-	std::string name;
-	std::vector<std::string> releaseStreams;
-	unsigned int startingPrice;
-	CheatStatus status;
-	std::string expiresOn;
+	uint32_t m_ID;
+	uint32_t m_GameID;
+	std::string m_Name;
+	std::vector<std::string> m_ReleaseStreams;
+	uint32_t m_StartingPrice;
+	uint32_t m_Status;
+	std::string m_ExpiresOn;
 public:
 	int CurrentStream = 0;
 
-	Cheat(unsigned int id, unsigned int gameID, const std::string& name, const std::vector<std::string> releaseStreams, unsigned int startingPrice, CheatStatus status, const std::string& expiresOn);
 	Cheat() = default;
 
 	unsigned int GetID();
@@ -27,4 +26,6 @@ public:
 	unsigned int GetStartingPrice();
 	CheatStatus GetStatus();
 	const std::string& GetExpiration();
+
+	static void Register();
 };
