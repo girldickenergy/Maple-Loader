@@ -41,14 +41,21 @@ void Communication::OnReceive(const std::vector<unsigned char>& data)
 		IntegritySignature3 -= 0x1;
 	}
 
-	std::vector buf(data);
+	std::vector<uint8_t> decryptedData;
 
-	if (m_HandshakeComplete)
+	if (!m_HandshakeComplete)
 	{
-		buf = CryptoProvider::Get().AESDecrypt(buf);
-	}
+		auto key1 = *reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(data.data()));
+		auto key2 = *reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(data.data()) + sizeof(uint32_t));
+		auto key3 = *reinterpret_cast<uint32_t*>(const_cast<uint8_t*>(data.data()) + sizeof(uint32_t) * 2);
 
-	const auto& packet = PacketSerializer::Get().Deserialize(buf);
+		decryptedData = CryptoProvider::Get().ApplyCryptoTransformations(std::vector(data.begin() + sizeof(uint32_t) * 3, data.end()), key1, key2, key3, true);
+	}
+	else
+		decryptedData = CryptoProvider::Get().AESDecrypt(data);
+
+	const auto& packet = PacketSerializer::Get().Deserialize(decryptedData);
+
 	if (!packet.has_value())
 	{
 		Disconnect();
@@ -72,7 +79,6 @@ void Communication::OnDisconnect()
 {
 	VM_SHARK_BLACK_START
 	STR_ENCRYPT_START
-
 		
 	MessageBoxA(UI::NativeWindow, xorstr_("You have been disconnected from the server.\nThe application will now exit."), xorstr_("Fatal error"), MB_ICONERROR | MB_OK);
 
@@ -341,11 +347,9 @@ bool Communication::Connect()
 	auto data = std::vector<uint32_t>(length);
 
 	for (size_t i = 0; i < length; i++)
-	{
 		data[i] = intDistribution(random);
-	}
 
-	data[1] = data[0] ^ data[2] ^ 0xDEADBEEF;
+	data[1] = data[0] ^ data[2] ^ 0xdeadbeef;
 
 	auto handshakeRequest = HandshakeRequest(data);
 	auto handshakeRequestSerialized = PacketSerializer::Get().Serialize(handshakeRequest);
@@ -353,7 +357,17 @@ bool Communication::Connect()
 	if (!handshakeRequestSerialized.has_value())
 		return false;
 
-	m_TcpClient.Send(handshakeRequestSerialized.value());
+	uint32_t key1 = intDistribution(random);
+	uint32_t key2 = intDistribution(random);
+	uint32_t key3 = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() >> 10) ^ 0xdeadbeef;
+
+	std::vector<uint8_t> encryptedHandshake = CryptoProvider::Get().ApplyCryptoTransformations(handshakeRequestSerialized.value(), key1, key2, key3);
+
+	encryptedHandshake.insert(encryptedHandshake.begin(), reinterpret_cast<uint8_t*>(&key3), reinterpret_cast<uint8_t*>(&key3) + sizeof(uint32_t));
+	encryptedHandshake.insert(encryptedHandshake.begin(), reinterpret_cast<uint8_t*>(&key2), reinterpret_cast<uint8_t*>(&key2) + sizeof(uint32_t));
+	encryptedHandshake.insert(encryptedHandshake.begin(), reinterpret_cast<uint8_t*>(&key1), reinterpret_cast<uint8_t*>(&key1) + sizeof(uint32_t));
+
+	m_TcpClient.Send(encryptedHandshake);
 
 	STR_ENCRYPT_END
 	VM_FISH_RED_END
