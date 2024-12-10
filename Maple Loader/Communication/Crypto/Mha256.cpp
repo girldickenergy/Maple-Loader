@@ -1,9 +1,10 @@
 #include "Mha256.h"
+
 #include <bit>
 
 Mha256::Mha256(const size_t blockSize, const int rounds)
 {
-	_ASSERT(blockSize % 4 != 0);
+	_ASSERT(blockSize % 4 == 0);
 
 	m_InitialState = {
 		0x1f, 0x4b, 0xa7, 0x3c, 0xd2, 0x5e, 0x9f, 0x8a,
@@ -41,6 +42,9 @@ void Mha256::Mix(const std::span<uint8_t>& block, int round)
 
 			stateInt1 = std::rotl(stateInt1, 7);
 			stateInt2 = std::rotl(stateInt2, 11);
+
+			stateInt1 = (stateInt1 * 0xDEADBEEF) & 0xFFFFFFFF;
+			stateInt2 = (stateInt2 * 0xFEEBDAED) & 0xFFFFFFFF;
 
 			stateInt1 = ~stateInt1;
 			stateInt2 = ~stateInt2;
