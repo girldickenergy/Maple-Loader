@@ -13,6 +13,9 @@ void TCPClient::receiveThread()
         {
             Disconnect();
 
+            if (m_DisconnectedCallback)
+                m_DisconnectedCallback();
+
             return;
         }
 
@@ -25,6 +28,9 @@ void TCPClient::receiveThread()
             {
                 Disconnect();
 
+                if (m_DisconnectedCallback)
+                    m_DisconnectedCallback();
+
                 return;
             }
 
@@ -36,6 +42,9 @@ void TCPClient::receiveThread()
                 if (*reinterpret_cast<uint32_t*>(buffer + sizeof(uint32_t) * (2 + i)) != static_cast<uint32_t>(dist(random)))
                 {
                     Disconnect();
+
+                    if (m_DisconnectedCallback)
+                        m_DisconnectedCallback();
 
                     return;
                 }
@@ -140,9 +149,6 @@ bool TCPClient::Connect(const std::string& host, const std::string& port)
 
 void TCPClient::Disconnect()
 {
-    if (m_DisconnectedCallback)
-        m_DisconnectedCallback();
-
     if (m_Connected)
     {
         m_Connected = false;
@@ -187,6 +193,9 @@ void TCPClient::Send(const std::vector<unsigned char>& data)
     if (packet.size() != HeaderSize)
     {
         Disconnect();
+
+        if (m_DisconnectedCallback)
+            m_DisconnectedCallback();
 
         return;
     }

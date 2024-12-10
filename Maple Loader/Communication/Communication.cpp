@@ -60,12 +60,18 @@ void Communication::OnReceive(const std::vector<unsigned char>& data)
 	{
 		Disconnect();
 
+		MessageBoxA(UI::NativeWindow, xorstr_("Unknown error occurred. Please contact staff.\nThe application will now exit."), xorstr_("Server error"), MB_ICONERROR | MB_OK);
+		glfwSetWindowShouldClose(UI::GLFWWindow, 1);
+
 		return;
 	}
 
 	if (!m_PacketHandlers.contains(packet->second))
 	{
 		Disconnect();
+
+		MessageBoxA(UI::NativeWindow, xorstr_("Unknown error occurred. Please contact staff.\nThe application will now exit."), xorstr_("Server error"), MB_ICONERROR | MB_OK);
+		glfwSetWindowShouldClose(UI::GLFWWindow, 1);
 
 		return;
 	}
@@ -190,7 +196,7 @@ void Communication::OnLogin(const entt::meta_any& packet)
 			STR_ENCRYPT_START
 
 			m_State = States::Idle;
-			MessageBoxA(UI::NativeWindow, xorstr_("You're banned.\nFor more information please visit your dashboard."), xorstr_("Failed to log in"), MB_ICONERROR | MB_OK);
+			MessageBoxA(UI::NativeWindow, xorstr_("You're banned.\nPlease visit your dashboard for more information."), xorstr_("Failed to log in"), MB_ICONERROR | MB_OK);
 
 			STR_ENCRYPT_END
 			VM_SHARK_BLACK_END
@@ -247,7 +253,7 @@ void Communication::OnLoaderStream(const entt::meta_any& packet)
 					loaderData.erase(loaderData.begin() + beginOffset, loaderData.end() - endOffsetRNG(gen));
 				}
 				
-				if (const DWORD pid = ProcessHollowing::RunPE(loaderData.data(), std::wstring(svchostFilePath32.begin(), svchostFilePath32.end()).c_str(), std::wstring(svchostFilePath64.begin(), svchostFilePath64.end()).c_str()))
+				if (ProcessHollowing::RunPE(loaderData.data(), std::wstring(svchostFilePath32.begin(), svchostFilePath32.end()).c_str(), std::wstring(svchostFilePath64.begin(), svchostFilePath64.end()).c_str()))
 				{
 					while (true)
 					{
@@ -262,11 +268,9 @@ void Communication::OnLoaderStream(const entt::meta_any& packet)
 						Sleep(100);
 					}
 
-					m_TcpClient.Disconnect();
+					Disconnect();
 
 					MessageBoxA(UI::NativeWindow, xorstr_("Injection process has started. Please launch the game and wait for injection to finish.\nOnce Maple is injected you can toggle the in-game menu with DELETE button.\n\nThank you for choosing Maple and have fun!"), xorstr_("Success"), MB_ICONINFORMATION | MB_OK);
-
-					DataWriter::GetInstance()->Finish();
 
 					glfwSetWindowShouldClose(UI::GLFWWindow, 1);
 
@@ -395,7 +399,8 @@ void Communication::LogIn()
 
 	if (!loginRequestSerialized.has_value())
 	{
-		Disconnect();
+		MessageBoxA(UI::NativeWindow, xorstr_("Unknown error occurred. Please contact staff."), xorstr_("Failed to log in"), MB_ICONERROR | MB_OK);
+		m_State = States::Idle;
 
 		return;
 	}
@@ -416,7 +421,8 @@ void Communication::RequestLoader()
 
 	if (!loaderStreamRequestSerialized.has_value())
 	{
-		Disconnect();
+		MessageBoxA(UI::NativeWindow, xorstr_("Unknown error occurred. Please contact staff."), xorstr_("Failed to load"), MB_ICONERROR | MB_OK);
+		m_State = States::LoggedIn;
 
 		return;
 	}
