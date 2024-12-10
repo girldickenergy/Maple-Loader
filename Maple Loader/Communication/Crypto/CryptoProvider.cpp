@@ -11,8 +11,6 @@
 
 #include "../../Utilities/Security/xorstr.hpp"
 #include "CryptoTransformation.h"
-#include "glfw3.h"
-#include <WinUser.h>
 #include "../../UI/UI.h"
 
 [[clang::optnone]] CryptoProvider::CryptoProvider(singletonLock)
@@ -282,4 +280,14 @@ std::vector<uint8_t> CryptoProvider::ApplyCryptoTransformations(const std::vecto
     VM_FISH_WHITE_END
 
     return transformedBuffer;
+}
+
+std::vector<uint8_t> CryptoProvider::ApplyRollingXor(const std::vector<uint8_t>& buffer, const std::vector<uint8_t>& key)
+{
+    auto encrypted = std::vector(buffer);
+
+    for (size_t i = 0; i < encrypted.size(); i++)
+        encrypted[i] ^= key[i % key.size()];
+
+    return encrypted;
 }

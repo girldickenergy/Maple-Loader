@@ -4,7 +4,7 @@
 
 #include "../IPacket.h"
 
-class LoginRequest : IPacket
+class LoginRequest : public IPacket
 {
 	std::string m_Username;
 	std::string m_Password;

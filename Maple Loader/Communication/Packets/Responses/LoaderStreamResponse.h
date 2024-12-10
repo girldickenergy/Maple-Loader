@@ -5,7 +5,7 @@
 #include "../IPacket.h"
 #include "../RequestResult.h"
 
-class LoaderStreamResponse : IPacket
+class LoaderStreamResponse : public IPacket
 {
 	int32_t m_Result;
 	std::vector<unsigned char> m_LoaderData;

@@ -4,7 +4,7 @@
 
 #include "../IPacket.h"
 
-class HandshakeRequest : IPacket
+class HandshakeRequest : public IPacket
 {
 	std::vector<uint32_t> m_RandomJunk;
 

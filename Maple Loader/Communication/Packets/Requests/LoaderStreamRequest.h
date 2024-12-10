@@ -4,7 +4,7 @@
 
 #include "../IPacket.h"
 
-class LoaderStreamRequest : IPacket
+class LoaderStreamRequest : public IPacket
 {
 	std::string m_SessionToken;
 	unsigned int m_CheatID;

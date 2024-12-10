@@ -8,7 +8,7 @@
 #include "../../Cheat.h"
 #include "../../Game.h"
 
-class LoginResponse : IPacket
+class LoginResponse : public IPacket
 {
 	int32_t m_Result;
 	std::string m_SessionToken;

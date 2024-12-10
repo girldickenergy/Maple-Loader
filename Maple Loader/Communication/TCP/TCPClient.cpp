@@ -28,7 +28,7 @@ void TCPClient::receiveThread()
                 return;
             }
 
-            std::mt19937 random(seed);
+            std::mt19937 random(static_cast<int32_t>(seed ^ SeedXor));
             std::uniform_int_distribution dist(INT_MIN, INT_MAX - 1);
 
             for (auto i = 0; i < RandomSequenceElementCount; i++)
@@ -67,7 +67,7 @@ void TCPClient::receiveThread()
     }
 }
 
-TCPClient::TCPClient(fn_receiveCallback receiveCallback, fn_disconnectedCallback disconnectedCallback)
+TCPClient::TCPClient(const std::function<void(const std::vector<unsigned char>&)>& receiveCallback, const std::function<void()>& disconnectedCallback)
 {
 	this->m_ReceiveCallback = receiveCallback;
     this->m_DisconnectedCallback = disconnectedCallback;
@@ -172,17 +172,17 @@ void TCPClient::Send(const std::vector<unsigned char>& data)
     uint32_t signature = HeaderSignature ^ seed;
     int32_t bufferLength = data.size();
 
-    std::mt19937 random(seed);
+    std::mt19937 random(static_cast<int32_t>(seed ^ SeedXor));
     std::uniform_int_distribution dist(INT_MIN, INT_MAX - 1);
 
     std::vector<uint32_t> randomSequence;
     for (auto i = 0; i < RandomSequenceElementCount; i++)
-        randomSequence.push_back(dist(random));
+        randomSequence.push_back(static_cast<uint32_t>(dist(random)));
 
-    packet.insert(packet.end(), &signature, &signature + sizeof(uint32_t));
-    packet.insert(packet.end(), &seed, &seed + sizeof(uint32_t));
-    packet.insert(packet.end(), randomSequence.begin(), randomSequence.end());
-    packet.insert(packet.end(), &bufferLength, &bufferLength + sizeof(int32_t));
+    packet.insert(packet.end(), reinterpret_cast<uint8_t*>(&signature), reinterpret_cast<uint8_t*>(&signature) + sizeof(uint32_t));
+    packet.insert(packet.end(), reinterpret_cast<uint8_t*>(&seed), reinterpret_cast<uint8_t*>(&seed) + sizeof(uint32_t));
+    packet.insert(packet.end(), reinterpret_cast<uint8_t*>(randomSequence.data()), reinterpret_cast<uint8_t*>(randomSequence.data()) + randomSequence.size() * sizeof(uint32_t));
+    packet.insert(packet.end(), reinterpret_cast<uint8_t*>(&bufferLength), reinterpret_cast<uint8_t*>(&bufferLength) + sizeof(int32_t));
 
     if (packet.size() != HeaderSize)
     {

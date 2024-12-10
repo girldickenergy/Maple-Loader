@@ -9,7 +9,7 @@ static const TypeRegistrar<HandshakeRequest> registrar;
 
 uint32_t HandshakeRequest::GetStaticIdentifier()
 {
-	return Hash32Fnv1aConst("LoginRequest");
+	return Hash32Fnv1aConst("HandshakeRequest");
 }
 
 HandshakeRequest::HandshakeRequest(const std::vector<uint32_t>& randomJunk)

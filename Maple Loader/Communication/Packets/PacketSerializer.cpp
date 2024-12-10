@@ -21,7 +21,9 @@ std::vector<uint8_t> PacketSerializer::SerializePacket(const entt::meta_any& pac
     ADD_RANGE(serializedPacket, TO_BYTE_VECTOR(timestamp));
     ADD_RANGE(serializedPacket, serializedType);
 
-    // todo: checksum
+    std::array<uint8_t, 32> checksum = CryptoProvider::Get().ComputeHashMha256(serializedPacket);
+
+    ADD_RANGE(serializedPacket, std::vector<uint8_t>(checksum.begin(), checksum.end()));
 
     VM_FISH_RED_END
 
@@ -365,13 +367,13 @@ std::expected<std::pair<entt::meta_any, uint32_t>, SerializationError> PacketSer
 
     auto identifier = reader.Read<uint32_t>();
 
-    if (entt::resolve(identifier).id() != identifier)
+    if (!entt::resolve(identifier))
         return std::unexpected(SerializationError::IdentifierUnknown);
 
-    const auto packet = DeserializePacket(identifier, reader);
+    const auto& packet = DeserializePacket(identifier, reader);
 
     if (packet.has_value())
-        return std::make_pair(packet, identifier);
+        return std::make_pair(packet.value(), identifier);
 
     VM_FISH_RED_END
 

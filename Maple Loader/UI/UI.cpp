@@ -101,7 +101,9 @@ void UI::Render()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    const bool loggedIn = Communication::GetState() == States::LoggedIn || Communication::GetState() == States::LoadingPayload;
+    auto& comms = Communication::Get();
+
+    const bool loggedIn = comms.GetState() == States::LoggedIn || comms.GetState() == States::LoadingPayload;
 
     const ImGuiStyle& style = ImGui::GetStyle();
 
@@ -148,7 +150,7 @@ void UI::Render()
                 {
                     const ImVec2 loginChildWindowContentSize = ImGui::GetCurrentWindow()->Size;
 
-                    const bool loggingIn = Communication::GetState() == States::LoggingIn;
+                    const bool loggingIn = comms.GetState() == States::LoggingIn;
 
                     if (loggingIn)
                         ImGui::BeginDisabled();
@@ -168,8 +170,8 @@ void UI::Render()
                         {
 	                        AutofillUtilities::RemoveTraces();
 
-							memset(Communication::LoginPassword, 0, sizeof(Communication::LoginPassword));
-							memset(Communication::LoginUsername, 0, sizeof(Communication::LoginUsername));
+							memset(comms.LoginPassword, 0, sizeof(comms.LoginPassword));
+							memset(comms.LoginUsername, 0, sizeof(comms.LoginUsername));
 
 							MessageBoxA(NativeWindow, xorstr_("Data erasure completed successfully."), xorstr_("Data erasure"), MB_ICONINFORMATION | MB_OK);
                         }
@@ -177,13 +179,13 @@ void UI::Render()
                     ImGui::PopFont();
 
                     ImGui::PushItemWidth(loginChildWindowContentSize.x);
-                    loginPressed |= ImGui::InputText(xorstr_("###username"), Communication::LoginUsername, 24, ImGuiInputTextFlags_EnterReturnsTrue);
+                    loginPressed |= ImGui::InputText(xorstr_("###username"), comms.LoginUsername, 24, ImGuiInputTextFlags_EnterReturnsTrue);
 
                     ImGui::Spacing();
 
                     ImGui::Text(xorstr_("Password"));
                     ImGui::PushItemWidth(loginChildWindowContentSize.x);
-                    loginPressed |= ImGui::InputText(xorstr_("###password"), Communication::LoginPassword, 256, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue);
+                    loginPressed |= ImGui::InputText(xorstr_("###password"), comms.LoginPassword, 256, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue);
 
                     if (loggingIn)
                         ImGui::EndDisabled();
@@ -195,13 +197,13 @@ void UI::Render()
                     if (loggingIn)
                         ImGui::BeginDisabled();
 
-                    loginPressed |= Widgets::Button(Communication::GetState() == States::LoggingIn ? xorstr_("Logging in...") : xorstr_("Log in"), ImVec2(loginChildWindowContentSize.x, ImGui::GetFrameHeight()));
+                    loginPressed |= Widgets::Button(comms.GetState() == States::LoggingIn ? xorstr_("Logging in...") : xorstr_("Log in"), ImVec2(loginChildWindowContentSize.x, ImGui::GetFrameHeight()));
 
                     if (loggingIn)
                         ImGui::EndDisabled();
 
                     if (loginPressed)
-                        Communication::LogIn();
+                        comms.LogIn();
 
                     Widgets::LinkWithText(xorstr_("Sign up"), xorstr_("https://maple.software/auth/signup"), xorstr_("Need an account?"));
                 }
@@ -211,7 +213,7 @@ void UI::Render()
         }
         else
         {
-	        const bool loadingImage = Communication::GetState() == States::LoadingPayload;
+	        const bool loadingImage = comms.GetState() == States::LoadingPayload;
 
             ImGui::BeginChild(xorstr_("Side Bar"), StyleProvider::MainWindowSideBarSize, false, ImGuiWindowFlags_NoBackground);
             {
@@ -249,14 +251,14 @@ void UI::Render()
 
                         ImGui::GetCurrentWindow()->DrawList->AddRectFilled(sideBarUserInfoPos, sideBarUserInfoPos + sideBarUserInfoSize, ImColor(StyleProvider::MenuColourVeryDark), style.ChildRounding);
 
-                        ImGui::GetWindowDrawList()->AddImageRounded(Communication::GetUser()->GetAvatarTexture(), sideBarUserInfoPos + ImVec2(sideBarUserInfoSize.y / 4, sideBarUserInfoSize.y / 4), sideBarUserInfoPos + ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2, sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), style.FrameRounding);
+                        ImGui::GetWindowDrawList()->AddImageRounded(comms.GetUser()->GetAvatarTexture(), sideBarUserInfoPos + ImVec2(sideBarUserInfoSize.y / 4, sideBarUserInfoSize.y / 4), sideBarUserInfoPos + ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2, sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), style.FrameRounding);
 
                         ImGui::PushFont(StyleProvider::FontDefaultBold);
                         ImGui::SetCursorPos(ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2 + style.ItemSpacing.x, sideBarUserInfoSize.y / 2 - style.ItemSpacing.y / 4 - ImGui::CalcTextSize("Welcome back").y));
                         ImGui::Text(xorstr_("Welcome back"));
 
                         ImGui::SetCursorPos(ImVec2(sideBarUserInfoSize.y / 4 + sideBarUserInfoSize.y / 2 + style.ItemSpacing.x, sideBarUserInfoSize.y / 2 + style.ItemSpacing.y / 4));
-                        Widgets::Link(Communication::GetUser()->GetUsername().c_str(), "https://maple.software/dashboard", false);
+                        Widgets::Link(comms.GetUser()->GetUsername().c_str(), "https://maple.software/dashboard", false);
                         ImGui::PopFont();
                     }
                     ImGui::EndChild();
@@ -277,14 +279,16 @@ void UI::Render()
                                 ImGui::SetNextTreeNodeOpen(true);
                             }
 
-                            for (unsigned int i = 0; i < Communication::GetAllGames().size(); i++)
+                            std::vector<Game>* games = comms.GetAllGames();
+
+                            for (unsigned int i = 0; i < games->size(); i++)
                             {
                                 ImGui::PushFont(StyleProvider::FontDefaultBold);
 
                                 if (loadingImage)
                                     ImGui::BeginDisabled();
 
-                                const bool nodeOpened = Widgets::TreeNode(Communication::GetAllGames()[i]->GetName().c_str(), Communication::GetAllGames()[i]->GetIconTexture());
+                                const bool nodeOpened = Widgets::TreeNode(games->at(i).GetName().c_str(), games->at(i).GetIconTexture());
 
                                 if (loadingImage)
                                     ImGui::EndDisabled();
@@ -293,9 +297,11 @@ void UI::Render()
 
                                 if (nodeOpened)
                                 {
-                                    for (unsigned int j = 0; j < Communication::GetAllCheats().size(); j++)
+                                    std::vector<Cheat>* cheats = comms.GetAllCheats();
+
+                                    for (unsigned int j = 0; j < cheats->size(); j++)
                                     {
-                                        if (Communication::GetAllCheats()[j]->GetGameID() != Communication::GetAllGames()[i]->GetID())
+                                        if (cheats->at(j).GetGameID() != games->at(i).GetID())
                                             continue;
 
                                         ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
@@ -303,7 +309,7 @@ void UI::Render()
                                         if (loadingImage)
                                             ImGui::BeginDisabled();
 
-                                        const bool selected = Widgets::Selectable(Communication::GetAllCheats()[j]->GetName().c_str(), Communication::GetSelectedCheat()->GetID() == Communication::GetAllCheats()[j]->GetID(), ImGuiSelectableFlags_SpanAllColumns);
+                                        const bool selected = Widgets::Selectable(cheats->at(j).GetName().c_str(), comms.GetSelectedCheat()->GetID() == cheats->at(j).GetID(), ImGuiSelectableFlags_SpanAllColumns);
 
                                         if (loadingImage)
                                             ImGui::EndDisabled();
@@ -312,8 +318,8 @@ void UI::Render()
 
                                         if (selected)
                                         {
-                                            Communication::SelectGame(Communication::GetAllCheats()[j]->GetGameID());
-                                            Communication::SelectCheat(Communication::GetAllCheats()[j]->GetID());
+                                            comms.SelectGame(cheats->at(j).GetGameID());
+                                            comms.SelectCheat(cheats->at(j).GetID());
                                         }
                                     }
 
@@ -334,7 +340,7 @@ void UI::Render()
             {
                 const ImVec2 cheatBannerSize = ImGui::GetCurrentWindow()->Size;
 
-                ImGui::Image(Communication::GetSelectedGame()->GetBannerTexture(), cheatBannerSize);
+                ImGui::Image(comms.GetSelectedGame()->GetBannerTexture(), cheatBannerSize);
                 Widgets::Gradient(ImVec2(0, cheatBannerSize.y), ImVec2(cheatBannerSize.x, 0), StyleProvider::CheatBannerGradientStartColour, StyleProvider::CheatBannerGradientEndColour);
 
                 ImGui::SetCursorPos(StyleProvider::Padding);
@@ -343,16 +349,16 @@ void UI::Render()
                     const ImVec2 cheatBannerContentSize = ImGui::GetCurrentWindow()->Size;
 
                     ImGui::PushFont(StyleProvider::FontHugeBold);
-                    ImGui::Text(Communication::GetSelectedCheat()->GetName().c_str());
+                    ImGui::Text(comms.GetSelectedCheat()->GetName().c_str());
                     ImGui::PopFont();
 
                     ImGui::SetCursorPosY(ImGui::GetCursorPos().y - ImGui::GetStyle().ItemSpacing.y);
                     ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-                    ImGui::Text(xorstr_("for %s"), Communication::GetSelectedGame()->GetName().c_str());
+                    ImGui::Text(xorstr_("for %s"), comms.GetSelectedGame()->GetName().c_str());
 
                     const float priceHeight = ImGui::CalcTextSize(xorstr_("Starts at 5 euro")).y;
                     ImGui::SetCursorPosY(cheatBannerContentSize.y - ImGui::GetFrameHeight() / 2 - priceHeight / 2);
-                    ImGui::Text(xorstr_("Starts at %i euro"), Communication::GetSelectedCheat()->GetStartingPrice());
+                    ImGui::Text(xorstr_("Starts at %i euro"), comms.GetSelectedCheat()->GetStartingPrice());
                     ImGui::PopFont();
 
                     const float widgetWidth = cheatBannerContentSize.x * 0.25f;
@@ -362,13 +368,13 @@ void UI::Render()
 
                     ImGui::SetCursorPos(cheatBannerContentSize - ImVec2(widgetWidth, ImGui::GetFrameHeight() * 2 + style.ItemSpacing.y));
                     ImGui::PushItemWidth(widgetWidth);
-                    Widgets::Combo(xorstr_("###ReleaseStream"), &Communication::GetSelectedCheat()->CurrentStream, Communication::GetSelectedCheat()->GetReleaseStreams());
+                    Widgets::Combo(xorstr_("###ReleaseStream"), &comms.GetSelectedCheat()->CurrentStream, comms.GetSelectedCheat()->GetReleaseStreams());
 
                     if (loadingImage)
                         ImGui::EndDisabled();
-
+                    
                     ImGui::SetCursorPos(cheatBannerContentSize - ImVec2(widgetWidth, ImGui::GetFrameHeight()));
-                    if (strcmp(Communication::GetSelectedCheat()->GetExpiration().c_str(), xorstr_("not subscribed")) == 0)
+                    if (strcmp(comms.GetSelectedCheat()->GetExpiration().c_str(), xorstr_("not subscribed")) == 0)
                     {
                         if (ImGui::Button(xorstr_("Buy now"), ImVec2(widgetWidth, ImGui::GetFrameHeight())))
                             ShellExecuteA(NULL, xorstr_("open"), xorstr_("https://maple.software/dashboard/store"), NULL, NULL, SW_SHOWNORMAL);
@@ -378,14 +384,14 @@ void UI::Render()
                         if (loadingImage)
                             ImGui::BeginDisabled();
 
-                        const bool loadClicked = Widgets::Button(Communication::GetState() == States::LoadingPayload ? xorstr_("Loading...") : xorstr_("Load"), ImVec2(widgetWidth, ImGui::GetFrameHeight()));
+                        const bool loadClicked = Widgets::Button(comms.GetState() == States::LoadingPayload ? xorstr_("Loading...") : xorstr_("Load"), ImVec2(widgetWidth, ImGui::GetFrameHeight()));
 
                         if (loadingImage)
                             ImGui::EndDisabled();
 
                         if (loadClicked)
                         {
-                            Communication::RequestLoader();
+                            comms.RequestLoader();
                         }
                     }
                 }
@@ -406,8 +412,8 @@ void UI::Render()
                     ImGui::PopFont();
 
                     ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-                    ImGui::Text(Communication::GetSelectedCheat()->GetExpiration().c_str());
-                    if (strcmp(Communication::GetSelectedCheat()->GetExpiration().c_str(), xorstr_("not subscribed")) == 0)
+                    ImGui::Text(comms.GetSelectedCheat()->GetExpiration().c_str());
+                    if (strcmp(comms.GetSelectedCheat()->GetExpiration().c_str(), xorstr_("not subscribed")) == 0)
                     {
                         ImGui::SameLine();
                         Widgets::Link(xorstr_("subscribe now!"), xorstr_("https://maple.software/dashboard/store"), false);
@@ -421,7 +427,7 @@ void UI::Render()
                     ImGui::PopFont();
 
                     ImGui::PushFont(StyleProvider::FontDefaultSemiBold);
-                    switch (Communication::GetSelectedCheat()->GetStatus())
+                    switch (comms.GetSelectedCheat()->GetStatus())
                     {
 	                    case CheatStatus::Undetected:
 	                        ImGui::TextColored(ImVec4(0, 1, 0, 1), xorstr_("undetected"));

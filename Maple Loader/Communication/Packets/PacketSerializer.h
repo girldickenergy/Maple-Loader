@@ -50,7 +50,7 @@ public:
 	template <typename T, std::enable_if_t<std::is_base_of_v<IPacket, T>>* = nullptr>
 	std::expected<std::vector<uint8_t>, SerializationError> Serialize(T& packet)
 	{
-		auto identifier = dynamic_cast<IPacket*>(&packet)->GetIdentifier();
+		auto identifier = static_cast<IPacket&>(packet).GetIdentifier();
 
 		if (entt::resolve(identifier).id() != identifier)
 			return std::unexpected(SerializationError::IdentifierUnknown);

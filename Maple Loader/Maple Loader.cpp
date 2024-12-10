@@ -9,7 +9,6 @@
 
 #include <WinSock2.h>
 #include <curl.h>
-#include <iostream>
 
 #include <ThemidaSDK.h>
 
@@ -102,7 +101,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     curl_global_init(CURL_GLOBAL_ALL);
 
-    if (!Communication::Connect())
+    auto& comms = Communication::Get();
+
+    if (!comms.Connect())
     {
         MessageBoxA(NULL, xorstr_("Failed to connect to server!\nThe application will now exit."), xorstr_("Fatal error"), MB_ICONERROR | MB_OK);
 
@@ -128,9 +129,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             CHECK_CODE_INTEGRITY(codeIntegrityVar, 0x45C89C38)
             if (codeIntegrityVar != 0x45C89C38)
             {
-                Communication::IntegritySignature1 -= 0x1;
-                Communication::IntegritySignature2 -= 0x1;
-                Communication::IntegritySignature3 -= 0x1;
+                comms.IntegritySignature1 -= 0x1;
+                comms.IntegritySignature2 -= 0x1;
+                comms.IntegritySignature3 -= 0x1;
             }
         }
 
@@ -142,9 +143,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             CHECK_DEBUGGER(debuggerVar, 0x723C5FC9)
             if (debuggerVar != 0x723C5FC9)
             {
-                Communication::IntegritySignature1 -= 0x1;
-                Communication::IntegritySignature2 -= 0x1;
-                Communication::IntegritySignature3 -= 0x1;
+                comms.IntegritySignature1 -= 0x1;
+                comms.IntegritySignature2 -= 0x1;
+                comms.IntegritySignature3 -= 0x1;
             }
         }
 
@@ -152,7 +153,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
 
     UI::Shutdown();
-    Communication::Disconnect();
+    comms.Disconnect();
 
     STR_ENCRYPT_END
     VM_FISH_RED_END

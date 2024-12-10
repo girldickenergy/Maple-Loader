@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <winsock2.h>
 #include <string>
 #include <vector>
@@ -17,11 +18,8 @@ class TCPClient
 	SOCKET m_socket;
 	std::thread* m_receiveThread = nullptr;
 
-	typedef void (*fn_receiveCallback)(const std::vector<uint8_t>& data);
-	fn_receiveCallback m_ReceiveCallback = nullptr;
-
-	typedef void (*fn_disconnectedCallback)();
-	fn_disconnectedCallback m_DisconnectedCallback = nullptr;
+	std::function<void(const std::vector<unsigned char>&)> m_ReceiveCallback = nullptr;
+	std::function<void()> m_DisconnectedCallback = nullptr;
 
 	std::vector<uint8_t> m_ReceiveStreamData;
 	bool m_IsReceiving = false;
@@ -29,10 +27,9 @@ class TCPClient
 	int m_ReceiveStreamRemainingLength;
 
 	void receiveThread();
-	void receive()
 public:
 	TCPClient() = default;
-	TCPClient(fn_receiveCallback receiveCallback, fn_disconnectedCallback disconnectedCallback);
+	TCPClient(const std::function<void(const std::vector<unsigned char>&)>& receiveCallback, const std::function<void()>& disconnectedCallback);
 	~TCPClient();
 
 	bool Connect(const std::string& host, const std::string& port);

@@ -26,6 +26,7 @@ public:
 	std::vector<unsigned char> AESDecrypt(const std::vector<unsigned char>& ciphertext);
 
 	std::vector<uint8_t> ApplyCryptoTransformations(const std::vector<uint8_t>& buffer, uint32_t key1, uint32_t key2, uint32_t key3, bool reverse = false);
+	std::vector<uint8_t> ApplyRollingXor(const std::vector<uint8_t>& buffer, const std::vector<uint8_t>& key);
 
 	__forceinline std::array<uint8_t, 32> ComputeHashMha256(const std::vector<uint8_t>& buffer) // DO NOT use outside vm macros
 	{

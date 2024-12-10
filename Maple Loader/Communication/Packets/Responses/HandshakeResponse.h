@@ -4,7 +4,7 @@
 
 #include "../IPacket.h"
 
-class HandshakeResponse : IPacket
+class HandshakeResponse : public IPacket
 {
 	std::vector<unsigned char> m_Key;
 	std::vector<unsigned char> m_EncryptedKey;

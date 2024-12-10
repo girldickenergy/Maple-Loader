@@ -2,26 +2,35 @@
 
 #include <vector>
 
+#include "Singleton.h"
+
 #include "States.h"
 #include "User.h"
 #include "Cheat.h"
 #include "Game.h"
+#include "Packets/PacketSerializer.h"
 #include "TCP/TCPClient.h"
 
-class Communication
+class Communication : public Singleton<Communication>
 {
-	static inline States state = States::Idle;
+	States m_State = States::Idle;
 
-	static inline User* user = nullptr;
-	static inline std::vector<Game*> games;
-	static inline Game* selectedGame = nullptr;
-	static inline std::vector<Cheat*> cheats;
-	static inline Cheat* selectedCheat;
+	User* m_User = nullptr;
+	std::vector<Game> m_Games;
+	Game* m_SelectedGame = nullptr;
+	std::vector<Cheat> m_Cheats;
+	Cheat* m_SelectedCheat;
+	bool m_HandshakeComplete = false;
 
-	static inline TCPClient tcpClient;
+	TCPClient m_TcpClient;
 
-	static void onReceive(const std::vector<unsigned char>& data);
-	static void onDisconnect();
+	std::unordered_map<uint32_t, std::function<void(entt::meta_any)>> m_PacketHandlers;
+
+	void OnReceive(const std::vector<unsigned char>& data);
+	void OnDisconnect();
+	void OnHandshake(const entt::meta_any& packet);
+	void OnLogin(const entt::meta_any& packet);
+	void OnLoaderStream(const entt::meta_any& packet);
 public:
 	static inline unsigned int IntegritySignature1 = 0xdeadbeef;
 	static inline unsigned int IntegritySignature2 = 0xefbeadde;
@@ -30,17 +39,19 @@ public:
 	static inline char LoginUsername[24];
 	static inline char LoginPassword[256];
 
-	static bool Connect();
-	static void Disconnect();
-	static void LogIn();
-	static void RequestLoader();
+	Communication(singletonLock);
 
-	static States GetState();
-	static User* GetUser();
-	static const std::vector<Game*>& GetAllGames();
-	static void SelectGame(unsigned int gameID);
-	static Game* GetSelectedGame();
-	static const std::vector<Cheat*>& GetAllCheats();
-	static void SelectCheat(unsigned int cheatID);
-	static Cheat* GetSelectedCheat();
+	bool Connect();
+	void Disconnect();
+	void LogIn();
+	void RequestLoader();
+
+	States GetState();
+	User* GetUser();
+	std::vector<Game>* GetAllGames();
+	void SelectGame(unsigned int gameID);
+	Game* GetSelectedGame();
+	std::vector<Cheat>* GetAllCheats();
+	void SelectCheat(unsigned int cheatID);
+	Cheat* GetSelectedCheat();
 };
