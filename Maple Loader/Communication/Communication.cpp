@@ -372,9 +372,11 @@ void Communication::Disconnect()
 
 void Communication::LogIn()
 {
+	VM_SHARK_BLACK_START
+
 	m_State = States::LoggingIn;
 
-	auto loginRequest = LoginRequest(LoginUsername, LoginPassword, "l-03122023", HardwareUtilities::GetHWID());
+	auto loginRequest = LoginRequest(LoginUsername, LoginPassword, xorstr_("l-03122023"), HardwareUtilities::GetHWID());
 	auto loginRequestSerialized = PacketSerializer::Get().Serialize(loginRequest);
 
 	if (!loginRequestSerialized.has_value())
@@ -385,6 +387,8 @@ void Communication::LogIn()
 	}
 
 	m_TcpClient.Send(CryptoProvider::Get().AESEncrypt(loginRequestSerialized.value()));
+
+	VM_SHARK_BLACK_END
 }
 
 void Communication::RequestLoader()
