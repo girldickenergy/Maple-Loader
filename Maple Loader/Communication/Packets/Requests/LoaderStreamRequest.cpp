@@ -1,39 +1,37 @@
 #include "LoaderStreamRequest.h"
 
-#include "json.hpp"
-#include "ThemidaSDK.h"
+#include "entt.hpp"
+#include "Fnv1a.h"
 
-#include "../../Crypto/CryptoProvider.h"
-#include "../../../Utilities/Strings/StringUtilities.h"
-#include "../../../Utilities/Security/xorstr.hpp"
-#include "../PacketType.h"
+#include "../PacketRegistrar.h"
 
-LoaderStreamRequest::LoaderStreamRequest(const std::string& sessionToken, unsigned int cheatID)
+static const PacketRegistrar<LoaderStreamRequest> registrar;
+
+uint32_t LoaderStreamRequest::GetStaticIdentifier()
 {
-	this->sessionToken = sessionToken;
-	this->cheatID = cheatID;
+	return Hash32Fnv1aConst("LoaderStreamRequest");
 }
 
-#pragma optimize("", off)
-std::vector<unsigned char> LoaderStreamRequest::Serialize()
+LoaderStreamRequest::LoaderStreamRequest(const std::string& sessionToken, unsigned int cheatID, const std::string& releaseStream)
 {
-	VM_SHARK_BLACK_START
-	STR_ENCRYPT_START
-
-	nlohmann::json jsonPayload;
-
-	jsonPayload[xorstr_("SessionToken")] = sessionToken;
-	jsonPayload[xorstr_("CheatID")] = cheatID;
-
-	std::vector payload(CryptoProvider::GetInstance()->AESEncrypt(StringUtilities::StringToByteArray(jsonPayload.dump())));
-
-	std::vector<unsigned char> packet;
-	packet.push_back(static_cast<unsigned char>(PacketType::LoaderStream));
-	packet.insert(packet.end(), payload.begin(), payload.end());
-
-	STR_ENCRYPT_END
-	VM_SHARK_BLACK_END
-
-	return packet;
+	m_SessionToken = sessionToken;
+	m_CheatID = cheatID;
+	m_ReleseStream = releaseStream;
 }
-#pragma optimize("", on)
+
+uint32_t LoaderStreamRequest::GetIdentifier()
+{
+	return GetStaticIdentifier();
+}
+
+void LoaderStreamRequest::Register()
+{
+	if (registrar.IsRegistered)
+		return;
+
+	entt::meta<LoaderStreamRequest>().type(GetStaticIdentifier())
+		.data<&LoaderStreamRequest::m_SessionToken>(Hash32Fnv1aConst("SessionToken"))
+		.data<&LoaderStreamRequest::m_CheatID>(Hash32Fnv1aConst("CheatID"))
+		.data<&LoaderStreamRequest::m_ReleseStream>(Hash32Fnv1aConst("ReleaseStream"));
+}
+

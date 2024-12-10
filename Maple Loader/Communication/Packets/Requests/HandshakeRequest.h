@@ -2,9 +2,16 @@
 
 #include <vector>
 
-class HandshakeRequest
+#include "../IPacket.h"
+
+class HandshakeRequest : IPacket
 {
+	std::vector<uint32_t> m_RandomJunk;
+
+	static uint32_t GetStaticIdentifier();
 public:
-	HandshakeRequest() = default;
-	std::vector<unsigned char> Serialize();
+	HandshakeRequest(const std::vector<uint32_t>& randomJunk);
+
+	uint32_t GetIdentifier() override;
+	static void Register();
 };

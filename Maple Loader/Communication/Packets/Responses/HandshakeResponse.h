@@ -2,15 +2,20 @@
 
 #include <vector>
 
-class HandshakeResponse
-{
-	std::vector<unsigned char> key;
-	std::vector<unsigned char> iv;
+#include "../IPacket.h"
 
-	HandshakeResponse(const std::vector<unsigned char>& key, const std::vector<unsigned char>& iv);
+class HandshakeResponse : IPacket
+{
+	std::vector<unsigned char> m_Key;
+	std::vector<unsigned char> m_EncryptedKey;
+	std::vector<unsigned char> m_EncryptedIV;
+
+	static uint32_t GetStaticIdentifier();
 public:
 	const std::vector<unsigned char>& GetKey();
-	const std::vector<unsigned char>& GetIV();
+	const std::vector<unsigned char>& GetEncryptedKey();
+	const std::vector<unsigned char>& GetEncryptedIV();
 
-	static HandshakeResponse Deserialize(const std::vector<unsigned char>& payload);
+	uint32_t GetIdentifier() override;
+	static void Register();
 };

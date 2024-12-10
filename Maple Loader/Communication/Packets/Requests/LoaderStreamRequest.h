@@ -1,13 +1,19 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
-class LoaderStreamRequest
+#include "../IPacket.h"
+
+class LoaderStreamRequest : IPacket
 {
-	std::string sessionToken;
-	unsigned int cheatID;
+	std::string m_SessionToken;
+	unsigned int m_CheatID;
+	std::string m_ReleseStream;
+
+	static uint32_t GetStaticIdentifier();
 public:
-	LoaderStreamRequest(const std::string& sessionToken, unsigned int cheatID);
-	std::vector<unsigned char> Serialize();
+	LoaderStreamRequest(const std::string& sessionToken, unsigned int cheatID, const std::string& releaseStream);
+
+	uint32_t GetIdentifier() override;
+	static void Register();
 };

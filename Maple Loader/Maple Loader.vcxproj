@@ -395,6 +395,7 @@
     <ClInclude Include="Communication\Game.h" />
     <ClInclude Include="Communication\Packets\BinaryReader.h" />
     <ClInclude Include="Communication\Packets\IPacket.h" />
+    <ClInclude Include="Communication\Packets\PacketRegistrar.h" />
     <ClInclude Include="Communication\Packets\PacketSerializer.h" />
     <ClInclude Include="Communication\Packets\RequestResult.h" />
     <ClInclude Include="Communication\Packets\Requests\HandshakeRequest.h" />

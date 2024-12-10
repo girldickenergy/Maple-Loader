@@ -1665,6 +1665,9 @@
     <ClInclude Include="Communication\Packets\RequestResult.h">
       <Filter>Communication\Packets</Filter>
     </ClInclude>
+    <ClInclude Include="Communication\Packets\PacketRegistrar.h">
+      <Filter>Communication\Packets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\CryptoPP\aes_armv4.S">

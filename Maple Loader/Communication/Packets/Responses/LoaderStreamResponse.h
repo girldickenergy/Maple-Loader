@@ -2,23 +2,19 @@
 
 #include <vector>
 
-enum class LoaderStreamResult
-{
-	Success = 0,
-	InvalidSession = 1,
-	NotSubscribed = 2,
-	UnknownError = 3
-};
+#include "../IPacket.h"
+#include "../RequestResult.h"
 
-class LoaderStreamResponse
+class LoaderStreamResponse : IPacket
 {
-	LoaderStreamResult result;
-	std::vector<unsigned char> loaderData;
+	int32_t m_Result;
+	std::vector<unsigned char> m_LoaderData;
 
-	LoaderStreamResponse(LoaderStreamResult result, const std::vector<unsigned char>& loaderData);
+	static uint32_t GetStaticIdentifier();
 public:
-	LoaderStreamResult GetResult();
+	RequestResult GetResult();
 	const std::vector<unsigned char>& GetLoaderData();
 
-	static LoaderStreamResponse Deserialize(const std::vector<unsigned char>& payload);
+	uint32_t GetIdentifier() override;
+	static void Register();
 };

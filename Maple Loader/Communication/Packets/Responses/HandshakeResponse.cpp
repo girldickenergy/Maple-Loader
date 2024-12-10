@@ -1,41 +1,41 @@
 #include "HandshakeResponse.h"
 
-#include "json.hpp"
-#include "ThemidaSDK.h"
+#include "entt.hpp"
+#include "Fnv1a.h"
 
-#include "../../Crypto/CryptoProvider.h"
-#include "../../../Utilities/Strings/StringUtilities.h"
-#include "../../../Utilities/Security/xorstr.hpp"
+#include "../PacketRegistrar.h"
 
-HandshakeResponse::HandshakeResponse(const std::vector<unsigned char>& key, const std::vector<unsigned char>& iv)
+static const PacketRegistrar<HandshakeResponse> registrar;
+
+uint32_t HandshakeResponse::GetStaticIdentifier()
 {
-	this->key = key;
-	this->iv = iv;
+	return Hash32Fnv1aConst("HandshakeResponse");
 }
 
 const std::vector<unsigned char>& HandshakeResponse::GetKey()
 {
-	return key;
+	return m_Key;
 }
 
-const std::vector<unsigned char>& HandshakeResponse::GetIV()
+const std::vector<unsigned char>& HandshakeResponse::GetEncryptedKey()
 {
-	return iv;
+	return m_EncryptedKey;
 }
 
-#pragma optimize("", off)
-HandshakeResponse HandshakeResponse::Deserialize(const std::vector<unsigned char>& payload)
+const std::vector<unsigned char>& HandshakeResponse::GetEncryptedIV()
 {
-	VM_SHARK_BLACK_START
-	STR_ENCRYPT_START
-
-	nlohmann::json jsonPayload = nlohmann::json::parse(StringUtilities::ByteArrayToString(CryptoProvider::GetInstance()->RSADecrypt(payload)));
-
-	HandshakeResponse response = HandshakeResponse(CryptoProvider::GetInstance()->Base64Decode(jsonPayload[xorstr_("Key")]), CryptoProvider::GetInstance()->Base64Decode(jsonPayload[xorstr_("IV")]));
-
-	STR_ENCRYPT_END
-	VM_SHARK_BLACK_END
-
-	return response;
+	return m_EncryptedIV;
 }
-#pragma optimize("", on)
+
+uint32_t HandshakeResponse::GetIdentifier()
+{
+	return GetStaticIdentifier();
+}
+
+void HandshakeResponse::Register()
+{
+	entt::meta<HandshakeResponse>().type(GetStaticIdentifier())
+		.data<&HandshakeResponse::m_Key>(Hash32Fnv1aConst("Key"))
+		.data<&HandshakeResponse::m_EncryptedKey>(Hash32Fnv1aConst("EncryptedKey"))
+		.data<&HandshakeResponse::m_EncryptedIV>(Hash32Fnv1aConst("EncryptedIV"));
+}

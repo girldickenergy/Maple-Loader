@@ -1,44 +1,38 @@
 #include "LoaderStreamResponse.h"
 
-#include "json.hpp"
-#include "ThemidaSDK.h"
+#include "entt.hpp"
+#include "Fnv1a.h"
 
-#include "../../../Utilities/Strings/StringUtilities.h"
-#include "../../../Utilities/Security/xorstr.hpp"
-#include "../../Crypto/CryptoProvider.h"
+#include "../PacketRegistrar.h"
 
-LoaderStreamResponse::LoaderStreamResponse(LoaderStreamResult result, const std::vector<unsigned char>& loaderData)
+static const PacketRegistrar<LoaderStreamResponse> registrar;
+
+uint32_t LoaderStreamResponse::GetStaticIdentifier()
 {
-	this->result = result;
-	this->loaderData = loaderData;
+	return Hash32Fnv1aConst("LoaderStreamResponse");
 }
 
-LoaderStreamResult LoaderStreamResponse::GetResult()
+RequestResult LoaderStreamResponse::GetResult()
 {
-	return result;
+	return static_cast<RequestResult>(m_Result);
 }
 
 const std::vector<unsigned char>& LoaderStreamResponse::GetLoaderData()
 {
-	return loaderData;
+	return m_LoaderData;
 }
 
-#pragma optimize("", off)
-LoaderStreamResponse LoaderStreamResponse::Deserialize(const std::vector<unsigned char>& payload)
+uint32_t LoaderStreamResponse::GetIdentifier()
 {
-	VM_SHARK_BLACK_START
-	STR_ENCRYPT_START
-
-	nlohmann::json jsonPayload = nlohmann::json::parse(StringUtilities::ByteArrayToString(CryptoProvider::GetInstance()->AESDecrypt(payload)));
-
-	LoaderStreamResult result = jsonPayload[xorstr_("Result")];
-	LoaderStreamResponse response = LoaderStreamResponse(result, {});
-	if (result == LoaderStreamResult::Success)
-		response = LoaderStreamResponse(result, CryptoProvider::GetInstance()->Base64Decode(jsonPayload[xorstr_("LoaderData")]));
-
-	STR_ENCRYPT_END
-	VM_SHARK_BLACK_END
-
-	return response;
+	return GetStaticIdentifier();
 }
-#pragma optimize("", on)
+
+void LoaderStreamResponse::Register()
+{
+	if (registrar.IsRegistered)
+		return;
+
+	entt::meta<LoaderStreamResponse>().type(GetStaticIdentifier())
+		.data<&LoaderStreamResponse::m_Result>(Hash32Fnv1aConst("Result"))
+		.data<&LoaderStreamResponse::m_LoaderData>(Hash32Fnv1aConst("LoaderData"));
+}
