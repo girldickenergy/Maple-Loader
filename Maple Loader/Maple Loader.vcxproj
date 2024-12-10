@@ -396,7 +396,7 @@
     <ClInclude Include="Communication\Packets\BinaryReader.h" />
     <ClInclude Include="Communication\Packets\IPacket.h" />
     <ClInclude Include="Communication\Packets\PacketSerializer.h" />
-    <ClInclude Include="Communication\Packets\PacketType.h" />
+    <ClInclude Include="Communication\Packets\RequestResult.h" />
     <ClInclude Include="Communication\Packets\Requests\HandshakeRequest.h" />
     <ClInclude Include="Communication\Packets\Requests\LoaderStreamRequest.h" />
     <ClInclude Include="Communication\Packets\Requests\LoginRequest.h" />
@@ -666,7 +666,6 @@
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
-    <ClInclude Include="Dependencies\JSON\json.hpp" />
     <ClInclude Include="Dependencies\Singleton\Singleton.h" />
     <ClInclude Include="Dependencies\stb\stb.h" />
     <ClInclude Include="Dependencies\stb\stb_image.h" />

@@ -727,9 +727,6 @@
     <Filter Include="Communication\Packets\Responses">
       <UniqueIdentifier>{3dc32f14-615f-4f79-b7fc-1cd0fa22dbcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependencies\JSON">
-      <UniqueIdentifier>{9a9328fe-a58b-42f9-824c-163e1086a363}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Dependencies\Fnv1a">
       <UniqueIdentifier>{43fc119d-cec5-40c9-8d53-746f7b8fe2cc}</UniqueIdentifier>
     </Filter>
@@ -1494,17 +1491,11 @@
     <ClInclude Include="Communication\TCP\TCPClient.h">
       <Filter>Communication\TCP</Filter>
     </ClInclude>
-    <ClInclude Include="Communication\Packets\PacketType.h">
-      <Filter>Communication\Packets</Filter>
-    </ClInclude>
     <ClInclude Include="Communication\Packets\Requests\HandshakeRequest.h">
       <Filter>Communication\Packets\Requests</Filter>
     </ClInclude>
     <ClInclude Include="Communication\Packets\Responses\HandshakeResponse.h">
       <Filter>Communication\Packets\Responses</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\JSON\json.hpp">
-      <Filter>Dependencies\JSON</Filter>
     </ClInclude>
     <ClInclude Include="Communication\Packets\Requests\LoginRequest.h">
       <Filter>Communication\Packets\Requests</Filter>
@@ -1670,6 +1661,9 @@
     </ClInclude>
     <ClInclude Include="Communication\Crypto\Mha256.h">
       <Filter>Communication\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Packets\RequestResult.h">
+      <Filter>Communication\Packets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
